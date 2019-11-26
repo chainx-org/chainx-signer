@@ -2,7 +2,7 @@
   "name": "chainx-signer",
   "version": "0.1.0",
   "private": true,
-  "main": "public/electron.js",
+  "main": "electron.js",
   "dependencies": {
     "@reduxjs/toolkit": "^1.0.4",
     "electron-is-dev": "^1.1.0",
@@ -10,7 +10,8 @@
     "react-dom": "^16.12.0",
     "react-redux": "^7.1.3",
     "react-scripts": "3.2.0",
-    "redux": "^4.0.4"
+    "redux": "^4.0.4",
+    "ws": "^7.2.0"
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
