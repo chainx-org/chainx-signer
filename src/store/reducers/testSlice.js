@@ -6,7 +6,7 @@ const testSlice = createSlice({
   reducers: {
     setTest: {
       reducer(state, action) {
-        const { text } = action.payload;
+        const { text } = action.payload
         return text
       },
       prepare(text) {
@@ -14,8 +14,8 @@ const testSlice = createSlice({
       }
     }
   }
-});
+})
 
-export const { setTest } = testSlice.actions;
+export const { setTest } = testSlice.actions
 
 export default testSlice.reducer
