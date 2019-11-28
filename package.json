@@ -6,6 +6,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.0.4",
     "electron-is-dev": "^1.1.0",
+    "jest": "^24.9.0",
+    "mock-socket": "^9.0.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-redux": "^7.1.3",
