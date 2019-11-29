@@ -1,4 +1,5 @@
 const electron = require('electron')
+const electronStore = require('electron-store')
 const sockets = require('./server')
 
 sockets.setMainWindow(electron.remote.getCurrentWindow())
@@ -12,4 +13,8 @@ window.wallet = {
   socketResponse: () => {
     console.log('哈哈哈哈哈哈')
   }
+}
+
+window.store = function(...args) {
+  return new electronStore(...args)
 }
