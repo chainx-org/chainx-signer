@@ -16,18 +16,9 @@ const sendToEmbed = payload => {
 
 class LowLevelSocketService {
   constructor() {
-    this.rekeyPromise = null
     this.openConnections = {}
     this.websockets = []
     this.ports = {}
-  }
-
-  async getNewKey(origin, id) {
-    return new Promise((resolve, reject) => {
-      this.rekeyPromise = { resolve, reject }
-      this.emit(origin, id, 'rekey')
-      return this.rekeyPromise
-    })
   }
 
   async emit(origin, id, path, data) {
@@ -90,8 +81,6 @@ class LowLevelSocketService {
         switch (type) {
           case 'pair':
             return sendToEmbed({ type: 'pair', request, id })
-          case 'rekeyed':
-            return this.rekeyPromise.resolve(request)
           case 'api':
             return sendToEmbed({ type: 'api', request, id })
         }
@@ -210,10 +199,6 @@ class HighLevelSockets {
 
   static async emit(origin, id, path, data) {
     return sockets.emit(origin, id, path, data)
-  }
-
-  static async getNewKey(origin, id) {
-    return sockets.getNewKey(origin, id)
   }
 }
 
