@@ -10,9 +10,8 @@ const random = () => {
 }
 
 export default class SocketService {
-  constructor(_plugin, _timeout) {
+  constructor(_plugin) {
     this.plugin = _plugin
-    this.timeout = _timeout
 
     this.uuid = null
     this.socket = null
@@ -50,20 +49,22 @@ export default class SocketService {
 
           switch (type) {
             case 'paired':
-              return msg_paired(data)
+              return msgPaired(data)
             case 'api':
-              return msg_api(data)
+              return msgApi(data)
             case 'event':
-              return event_api(data)
+              return eventApi(data)
+            default:
+              break
           }
         }
 
-        const msg_paired = result => {
+        const msgPaired = result => {
           this.paired = result
           this.pairingPromise.resolve(result)
         }
 
-        const msg_api = response => {
+        const msgApi = response => {
           const openRequest = this.openRequests.find(x => x.id === response.id)
           if (!openRequest) return
 
@@ -80,11 +81,12 @@ export default class SocketService {
           else openRequest.resolve(response.result)
         }
 
-        const event_api = ({ event, payload }) => {
-          if (Object.keys(this.eventHandlers).length)
-            Object.keys(this.eventHandlers).map(key => {
+        const eventApi = ({ event, payload }) => {
+          if (Object.keys(this.eventHandlers).length) {
+            for (const key of Object.keys(this.eventHandlers)) {
               this.eventHandlers[key](event, payload)
-            })
+            }
+          }
         }
       }
 
@@ -99,7 +101,7 @@ export default class SocketService {
         const checkPort = (host, cb) =>
           fetch(host)
             .then(r => r.text())
-            .then(r => cb(r === 'scatter'))
+            .then(r => cb(r === 'chainx'))
             .catch(() => cb(false))
 
         let startingPort = 60005
@@ -121,26 +123,21 @@ export default class SocketService {
           portResolver(preparePorts())
         }
 
-        await Promise.all(
-          [...new Array(5).keys()].map(async i => {
-            if (returned) return
-            const _port = startingPort + i * 1500
-            await checkPort(`http://` + getHostname(_port, false), x =>
-              x ? resolveAndPushPort(_port) : null
-            )
-
-            return true
+        for (const i of [...new Array(5).keys()]) {
+          if (returned) return
+          const _port = startingPort + i * 1500
+          await checkPort(`http://` + getHostname(_port), x => {
+            return x ? resolveAndPushPort(_port) : null
           })
-        )
+        }
 
         resolveAndPushPort()
       })
 
       const trySocket = port =>
         new Promise(socketResolver => {
-          const ssl = !(port % 2)
-          const hostname = getHostname(port, ssl)
-          const protocol = ssl ? 'wss://' : 'ws://'
+          const hostname = getHostname(port)
+          const protocol = 'ws://'
           const s = new WebSocket(`${protocol}${hostname}${suffix}`)
 
           s.onerror = () => socketResolver(false)
@@ -217,7 +214,7 @@ export default class SocketService {
   }
 
   send(type = null, data = null) {
-    if (type === null && data === null) this.socket.send('40/scatter')
+    if (type === null && data === null) this.socket.send('40/chainx')
     else
       this.socket.send(
         '42/chainx,' +
@@ -231,13 +228,13 @@ export default class SocketService {
 
   static getOriginOrPlugin(plugin) {
     let origin
-    if (typeof location !== 'undefined')
+    if (typeof window.location !== 'undefined')
       if (
-        location.hasOwnProperty('hostname') &&
-        location.hostname.length &&
-        location.hostname !== 'localhost'
+        window.location.hasOwnProperty('hostname') &&
+        window.location.hostname.length &&
+        window.location.hostname !== 'localhost'
       )
-        origin = location.hostname
+        origin = window.location.hostname
       else origin = plugin
     else origin = plugin
     if (origin.substr(0, 4) === 'www.') origin = origin.replace('www.', '')

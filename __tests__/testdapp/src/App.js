@@ -1,8 +1,11 @@
 import React from 'react'
-import logo from './logo.svg'
 import './App.css'
+import Signer from './signer'
 
 function App() {
+  const signer = new Signer('dapp')
+
+  signer.link()
   return (
     <div className="App">
       <header className="App-header">
