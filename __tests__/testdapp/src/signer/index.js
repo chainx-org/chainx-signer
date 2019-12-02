@@ -13,7 +13,6 @@ export default class SocketService {
   constructor(_plugin) {
     this.plugin = _plugin
 
-    this.uuid = null
     this.socket = null
     this.connected = false
     this.paired = false
@@ -198,6 +197,7 @@ export default class SocketService {
           request.payload.origin = this.getOrigin()
 
         this.openRequests.push(Object.assign(request, { resolve, reject }))
+
         this.send('api', { data: request, plugin: this.plugin })
       })
     })
@@ -217,8 +217,7 @@ export default class SocketService {
     if (type === null && data === null) this.socket.send('40/chainx')
     else
       this.socket.send(
-        '42/chainx,' +
-          JSON.stringify([type, Object.assign(data, { uuid: this.uuid })])
+        '42/chainx,' + JSON.stringify([type, Object.assign(data)])
       )
   }
 
