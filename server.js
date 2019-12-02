@@ -163,10 +163,8 @@ class LowLevelSocketService {
       while (!(await isPortAvailable(port))) port += 1500
       return port
     }
-
     const http = await findPort()
-    const https = await findPort(1)
-    this.ports = { [http]: false, [https]: true }
+    this.ports = { [http]: true }
     return true
   }
 }
