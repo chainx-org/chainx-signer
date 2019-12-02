@@ -33,7 +33,7 @@ export default class SocketService {
     delete this.eventHandlers[key]
   }
 
-  link(allowHttp = true, _uuid = null, socketHost = null) {
+  link(_uuid = null, socketHost = null) {
     this.uuid = _uuid
 
     return new Promise(async resolve => {
@@ -88,9 +88,9 @@ export default class SocketService {
         }
       }
 
-      const getHostname = (port, ssl) => {
+      const getHostname = port => {
         if (socketHost) return socketHost
-        return ssl ? `local.get-scatter.com:${port}` : `127.0.0.1:${port}`
+        return `127.0.0.1:${port}`
       }
 
       const ports = await new Promise(async portResolver => {
@@ -102,22 +102,16 @@ export default class SocketService {
             .then(r => cb(r === 'scatter'))
             .catch(() => cb(false))
 
-        let startingPort = 50005
+        let startingPort = 60005
         let availablePorts = []
 
         const preparePorts = () =>
           (!availablePorts.length
-            ? /* BACKWARDS COMPAT */ [50006, 50005]
+            ? /* BACKWARDS COMPAT */ [60005]
             : availablePorts
-          )
-            .filter(x => {
-              if (allowHttp) return true
-              return !(x % 2)
-            })
-            .sort((a, b) => {
-              // Always try to use SSL first.
-              return !(b % 2) ? 1 : !(a % 2) ? -1 : 0
-            })
+          ).filter(x => {
+            return true
+          })
 
         let returned = false
         const resolveAndPushPort = (port = null) => {
@@ -131,14 +125,9 @@ export default class SocketService {
           [...new Array(5).keys()].map(async i => {
             if (returned) return
             const _port = startingPort + i * 1500
-
-            await checkPort(`https://` + getHostname(_port + 1, true), x =>
-              x ? resolveAndPushPort(_port + 1) : null
+            await checkPort(`http://` + getHostname(_port, false), x =>
+              x ? resolveAndPushPort(_port) : null
             )
-            if (allowHttp)
-              await checkPort(`http://` + getHostname(_port, false), x =>
-                x ? resolveAndPushPort(_port) : null
-              )
 
             return true
           })
