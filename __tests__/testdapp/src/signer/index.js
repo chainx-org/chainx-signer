@@ -1,4 +1,3 @@
-import StorageService from './StorageService'
 import getRandomValues from 'get-random-values'
 import createHash from 'create-hash'
 import WebSocket from 'isomorphic-ws'
@@ -28,9 +27,6 @@ export default class SocketService {
     this.openRequests = []
     this.pairingPromise = null
     this.eventHandlers = {}
-
-    this.appkey = StorageService.getAppKey()
-    if (!this.appkey) this.appkey = 'appkey:' + random()
   }
 
   addEventHandler(handler, key) {
@@ -50,19 +46,17 @@ export default class SocketService {
       const setupSocket = () => {
         this.socket.onmessage = msg => {
           // Handshaking/Upgrading
-          if (msg.data.indexOf('42/scatter') === -1) return false
+          if (msg.data.indexOf('42/chainx') === -1) return false
 
           // Real message
-          const [type, data] = JSON.parse(msg.data.replace('42/scatter,', ''))
+          const [type, data] = JSON.parse(msg.data.replace('42/chainx,', ''))
 
           if (type === 'pong') return
-          if (type === 'ping') return this.socket.send(`42/scatter,["pong"]`)
+          if (type === 'ping') return this.socket.send(`42/chainx,["pong"]`)
 
           switch (type) {
             case 'paired':
               return msg_paired(data)
-            case 'rekey':
-              return msg_rekey()
             case 'api':
               return msg_api(data)
             case 'event':
@@ -72,29 +66,7 @@ export default class SocketService {
 
         const msg_paired = result => {
           this.paired = result
-
-          if (this.paired) {
-            const savedKey = StorageService.getAppKey()
-            const hashed =
-              this.appkey.indexOf('appkey:') > -1
-                ? sha256(this.appkey)
-                : this.appkey
-
-            if (!savedKey || savedKey !== hashed) {
-              StorageService.setAppKey(hashed)
-              this.appkey = StorageService.getAppKey()
-            }
-          }
-
           this.pairingPromise.resolve(result)
-        }
-
-        const msg_rekey = () => {
-          this.appkey = 'appkey:' + random()
-          this.send('rekeyed', {
-            data: { appkey: this.appkey, origin: this.getOrigin() },
-            plugin: this.plugin
-          })
         }
 
         const msg_api = response => {
@@ -233,21 +205,11 @@ export default class SocketService {
           return reject({
             code: 'not_paired',
             message:
-              'The user did not allow this app to connect to their Scatter'
+              'The user did not allow this app to connect to their Chainx'
           })
 
         // Request ID used for resolving promises
         request.id = random()
-
-        // Set Application Key
-        request.appkey = this.appkey
-
-        // Nonce used to authenticate this request
-        request.nonce = StorageService.getNonce() || 0
-        // Next nonce used to authenticate the next request
-        const nextNonce = random()
-        request.nextNonce = sha256(nextNonce)
-        StorageService.setNonce(nextNonce)
 
         if (
           request.hasOwnProperty('payload') &&
@@ -265,7 +227,7 @@ export default class SocketService {
     return new Promise((resolve, reject) => {
       this.pairingPromise = { resolve, reject }
       this.send('pair', {
-        data: { appkey: this.appkey, origin: this.getOrigin(), passthrough },
+        data: { origin: this.getOrigin(), passthrough },
         plugin: this.plugin
       })
     })
@@ -275,7 +237,7 @@ export default class SocketService {
     if (type === null && data === null) this.socket.send('40/scatter')
     else
       this.socket.send(
-        '42/scatter,' +
+        '42/chainx,' +
           JSON.stringify([type, Object.assign(data, { uuid: this.uuid })])
       )
   }
