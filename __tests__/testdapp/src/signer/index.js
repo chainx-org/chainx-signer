@@ -94,7 +94,7 @@ export default class SocketService {
       }
 
       const ports = await new Promise(async portResolver => {
-        if (socketHost) return portResolver([50006])
+        if (socketHost) return portResolver([60005])
 
         const checkPort = (host, cb) =>
           fetch(host)
