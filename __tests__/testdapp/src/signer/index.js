@@ -1,13 +1,7 @@
 import getRandomValues from 'get-random-values'
-import createHash from 'create-hash'
 import WebSocket from 'isomorphic-ws'
 
 const suffix = '/socket.io/?EIO=3&transport=websocket'
-
-const sha256 = data =>
-  createHash('sha256')
-    .update(data)
-    .digest('hex')
 
 const random = () => {
   const array = new Uint8Array(24)
