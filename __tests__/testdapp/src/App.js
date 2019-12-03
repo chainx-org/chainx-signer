@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
 import Signer from './signer'
-
+// import chainx from ''
 const signer = new Signer('dapp')
 
 signer.link().then(async () => {
@@ -12,8 +12,21 @@ signer.link().then(async () => {
       params: []
     }
   })
-  console.log(accounts)
-  //
+
+  const account = accounts[0]
+
+  // 发送交易
+  const txresult = await signer.sendApiRequest({
+    payload: {
+      method: 'chainx_call',
+      params: [
+        {
+          from: account,
+          data: '0x1111'
+        }
+      ]
+    }
+  })
 })
 
 function App() {
