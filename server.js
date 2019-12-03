@@ -1,28 +1,31 @@
-// const CoreSocketService = require('@walletpack/core/services/utility/SocketService')
-const { app, BrowserWindow } = require('electron')
-
 const http = require('http')
-const https = require('https')
 const WebSocket = require('ws')
 const net = require('net')
 
-const isDev = true
-
 let mainWindow
 
-const sendToEmbed = payload => {
-  return mainWindow.webContents.send('socketResponse', payload)
-}
+const sendToEmbed = payload =>
+  mainWindow.webContents.send('socketResponse', payload)
 
 class LowLevelSocketService {
   constructor() {
+    this.rekeyPromise = null
     this.openConnections = {}
     this.websockets = []
     this.ports = {}
   }
 
+  async getNewKey(origin, id) {
+    return new Promise((resolve, reject) => {
+      this.rekeyPromise = { resolve, reject }
+      this.emit(origin, id, 'rekey')
+      return this.rekeyPromise
+    })
+  }
+
   async emit(origin, id, path, data) {
     const socket = this.openConnections[origin + id]
+    console.log(this.openConnections)
     return this.emitSocket(socket, path, data)
   }
 
@@ -41,16 +44,11 @@ class LowLevelSocketService {
 
       const id = Math.round(Math.random() * 999999999).toString()
 
-      // Just logging errors for debugging purposes (dev only)
-      if (isDev)
-        socket.on('error', async request => console.log('error', request))
-
       // Different clients send different message types for disconnect (ws vs socket.io)
       socket.on('close', () => delete this.openConnections[origin + id])
       socket.on('disconnect', () => delete this.openConnections[origin + id])
 
       socket.on('message', msg => {
-        console.log('msg:', msg)
         if (msg.indexOf('42/chainx') === -1) return false
         const [type, request] = JSON.parse(msg.replace('42/chainx,', ''))
 
@@ -81,6 +79,8 @@ class LowLevelSocketService {
         switch (type) {
           case 'pair':
             return sendToEmbed({ type: 'pair', request, id })
+          case 'rekeyed':
+            return this.rekeyPromise.resolve(request)
           case 'api':
             return sendToEmbed({ type: 'api', request, id })
         }
@@ -103,13 +103,10 @@ class LowLevelSocketService {
 
     await Promise.all(
       Object.keys(this.ports).map(async port => {
-        // const server = this.ports[port]
-        //   ? https.createServer(_certs, requestHandler)
-        //   : http.createServer(requestHandler)
         const server = http.createServer(requestHandler)
         this.websockets.push(new WebSocket.Server({ server }))
         server.listen(port)
-        console.log('listen port', port)
+
         return true
       })
     )
@@ -163,6 +160,7 @@ class LowLevelSocketService {
       while (!(await isPortAvailable(port))) port += 1500
       return port
     }
+
     const http = await findPort()
     this.ports = { [http]: true }
     return true
@@ -170,16 +168,12 @@ class LowLevelSocketService {
 }
 
 let sockets = new LowLevelSocketService()
-
 class HighLevelSockets {
   static setMainWindow(w) {
-    console.log(w)
     mainWindow = w
   }
 
   static async initialize() {
-    // const certs = await CoreSocketService.getCerts()
-    // return sockets.initialize(certs)
     return sockets.initialize()
   }
 
@@ -197,6 +191,10 @@ class HighLevelSockets {
 
   static async emit(origin, id, path, data) {
     return sockets.emit(origin, id, path, data)
+  }
+
+  static async getNewKey(origin, id) {
+    return sockets.getNewKey(origin, id)
   }
 }
 

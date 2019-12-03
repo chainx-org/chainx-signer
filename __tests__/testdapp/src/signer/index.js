@@ -1,7 +1,14 @@
+import StorageService from './StorageService'
 import getRandomValues from 'get-random-values'
+import createHash from 'create-hash'
 import WebSocket from 'isomorphic-ws'
 
 const suffix = '/socket.io/?EIO=3&transport=websocket'
+
+const sha256 = data =>
+  createHash('sha256')
+    .update(data)
+    .digest('hex')
 
 const random = () => {
   const array = new Uint8Array(24)
@@ -10,8 +17,9 @@ const random = () => {
 }
 
 export default class SocketService {
-  constructor(_plugin) {
+  constructor(_plugin, _timeout) {
     this.plugin = _plugin
+    this.timeout = _timeout
 
     this.socket = null
     this.connected = false
@@ -19,6 +27,9 @@ export default class SocketService {
     this.openRequests = []
     this.pairingPromise = null
     this.eventHandlers = {}
+
+    this.appkey = StorageService.getAppKey()
+    if (!this.appkey) this.appkey = 'appkey:' + random()
   }
 
   addEventHandler(handler, key) {
@@ -31,9 +42,7 @@ export default class SocketService {
     delete this.eventHandlers[key]
   }
 
-  link(_uuid = null, socketHost = null) {
-    this.uuid = _uuid
-
+  link() {
     return new Promise(async resolve => {
       const setupSocket = () => {
         this.socket.onmessage = msg => {
@@ -48,22 +57,50 @@ export default class SocketService {
 
           switch (type) {
             case 'paired':
-              return msgPaired(data)
+              return msg_paired(data)
+            case 'rekey':
+              return msg_rekey()
             case 'api':
-              return msgApi(data)
+              return msg_api(data)
             case 'event':
-              return eventApi(data)
-            default:
-              break
+              return event_api(data)
           }
         }
 
-        const msgPaired = result => {
+        const msg_paired = result => {
           this.paired = result
+
+          if (this.paired) {
+            const savedKey = StorageService.getAppKey()
+            const hashed =
+              this.appkey.indexOf('appkey:') > -1
+                ? sha256(this.appkey)
+                : this.appkey
+
+            if (!savedKey || savedKey !== hashed) {
+              StorageService.setAppKey(hashed)
+              this.appkey = StorageService.getAppKey()
+            }
+          }
+
           this.pairingPromise.resolve(result)
         }
 
-        const msgApi = response => {
+        const msg_rekey = () => {
+          this.appkey = 'appkey:' + random()
+          this.send('rekeyed', {
+            data: { appkey: this.appkey, origin: this.getOrigin() },
+            plugin: this.plugin
+          })
+        }
+
+        const msg_api = response => {
+          try {
+            response = JSON.parse(response)
+          } catch (e) {
+            console.error('Error parsing json for response: ', response)
+          }
+
           const openRequest = this.openRequests.find(x => x.id === response.id)
           if (!openRequest) return
 
@@ -80,23 +117,19 @@ export default class SocketService {
           else openRequest.resolve(response.result)
         }
 
-        const eventApi = ({ event, payload }) => {
-          if (Object.keys(this.eventHandlers).length) {
-            for (const key of Object.keys(this.eventHandlers)) {
+        const event_api = ({ event, payload }) => {
+          if (Object.keys(this.eventHandlers).length)
+            Object.keys(this.eventHandlers).map(key => {
               this.eventHandlers[key](event, payload)
-            }
-          }
+            })
         }
       }
 
       const getHostname = port => {
-        if (socketHost) return socketHost
         return `127.0.0.1:${port}`
       }
 
       const ports = await new Promise(async portResolver => {
-        if (socketHost) return portResolver([60005])
-
         const checkPort = (host, cb) =>
           fetch(host)
             .then(r => r.text())
@@ -106,15 +139,10 @@ export default class SocketService {
         let startingPort = 60005
         let availablePorts = []
 
-        const preparePorts = () =>
-          (!availablePorts.length
-            ? /* BACKWARDS COMPAT */ [60005]
-            : availablePorts
-          ).filter(x => {
-            return true
-          })
+        const preparePorts = () => [60005]
 
         let returned = false
+
         const resolveAndPushPort = (port = null) => {
           if (returned) return
           returned = true
@@ -124,10 +152,12 @@ export default class SocketService {
 
         for (const i of [...new Array(5).keys()]) {
           if (returned) return
+
           const _port = startingPort + i * 1500
-          await checkPort(`http://` + getHostname(_port), x => {
-            return x ? resolveAndPushPort(_port) : null
-          })
+
+          await checkPort(`http://` + getHostname(_port), x =>
+            x ? resolveAndPushPort(_port) : null
+          )
         }
 
         resolveAndPushPort()
@@ -184,11 +214,21 @@ export default class SocketService {
           return reject({
             code: 'not_paired',
             message:
-              'The user did not allow this app to connect to their Chainx'
+              'The user did not allow this app to connect to their chainx'
           })
 
         // Request ID used for resolving promises
         request.id = random()
+
+        // Set Application Key
+        request.appkey = this.appkey
+
+        // Nonce used to authenticate this request
+        request.nonce = StorageService.getNonce() || 0
+        // Next nonce used to authenticate the next request
+        const nextNonce = random()
+        request.nextNonce = sha256(nextNonce)
+        StorageService.setNonce(nextNonce)
 
         if (
           request.hasOwnProperty('payload') &&
@@ -207,7 +247,7 @@ export default class SocketService {
     return new Promise((resolve, reject) => {
       this.pairingPromise = { resolve, reject }
       this.send('pair', {
-        data: { origin: this.getOrigin(), passthrough },
+        data: { appkey: this.appkey, origin: this.getOrigin(), passthrough },
         plugin: this.plugin
       })
     })
@@ -215,10 +255,7 @@ export default class SocketService {
 
   send(type = null, data = null) {
     if (type === null && data === null) this.socket.send('40/chainx')
-    else
-      this.socket.send(
-        '42/chainx,' + JSON.stringify([type, Object.assign(data)])
-      )
+    else this.socket.send('42/chainx,' + JSON.stringify([type, data]))
   }
 
   getOrigin() {

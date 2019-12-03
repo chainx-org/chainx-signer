@@ -1,16 +1,28 @@
 import React from 'react'
 
-const wallet = window.wallet
-const sockets = window.sockets
+import {
+  handlePairedResponse,
+  handleApiResponse,
+  SocketService
+} from './services/socketService'
 
-sockets.initialize().then(() => {
-  wallet.socketResponse = ({ id, request, type }) => {
-    if (type === 'pair') {
-      console.log(id, request, type)
-      sockets.emit(request.plugin, id, 'paired', true)
-    }
+const wallet = window.wallet
+
+wallet.socketResponse = data => {
+  if (typeof data === 'string') data = JSON.parse(data)
+  switch (data.type) {
+    case 'api':
+      return handleApiResponse(data.request, data.id)
+    case 'pair':
+      return handlePairedResponse(data.request, data.id)
+    default:
+      return
   }
-})
+}
+
+SocketService.init(window.sockets)
+
+SocketService.initialize()
 
 function App() {
   console.log(wallet)
