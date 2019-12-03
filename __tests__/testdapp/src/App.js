@@ -4,17 +4,16 @@ import Signer from './signer'
 
 const signer = new Signer('dapp')
 
-signer.link().then(() => {
-  console.log('喔喔喔喔')
-  signer
-    .sendApiRequest({
-      payload: {
-        data: '哈哈哈哈'
-      }
-    })
-    .then(result => {
-      console.log(result)
-    })
+signer.link().then(async () => {
+  // 获取账户
+  const accounts = await signer.sendApiRequest({
+    payload: {
+      method: 'chainx_accounts',
+      params: []
+    }
+  })
+  console.log(accounts)
+  //
 })
 
 function App() {

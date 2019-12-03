@@ -25,7 +25,6 @@ class LowLevelSocketService {
 
   async emit(origin, id, path, data) {
     const socket = this.openConnections[origin + id]
-    console.log(this.openConnections)
     return this.emitSocket(socket, path, data)
   }
 

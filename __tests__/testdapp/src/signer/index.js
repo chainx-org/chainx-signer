@@ -95,17 +95,21 @@ export default class SocketService {
         }
 
         const msg_api = response => {
-          try {
-            response = JSON.parse(response)
-          } catch (e) {
-            console.error('Error parsing json for response: ', response)
+          if (typeof response === 'string') {
+            try {
+              response = JSON.parse(response)
+            } catch (e) {
+              console.error('Error parsing json for response: ', response)
+            }
           }
 
-          const openRequest = this.openRequests.find(x => x.id === response.id)
+          const openRequest = this.openRequests.find(
+            x => x.payload.id === response.id
+          )
           if (!openRequest) return
 
           this.openRequests = this.openRequests.filter(
-            x => x.id !== response.id
+            x => x.payload.id !== response.id
           )
 
           const isErrorResponse =
@@ -206,9 +210,6 @@ export default class SocketService {
 
   sendApiRequest(request) {
     return new Promise((resolve, reject) => {
-      if (request.type === 'identityFromPermissions' && !this.paired)
-        return resolve(false)
-
       this.pair().then(() => {
         if (!this.paired)
           return reject({
@@ -216,9 +217,6 @@ export default class SocketService {
             message:
               'The user did not allow this app to connect to their chainx'
           })
-
-        // Request ID used for resolving promises
-        request.id = random()
 
         // Set Application Key
         request.appkey = this.appkey
@@ -230,11 +228,8 @@ export default class SocketService {
         request.nextNonce = sha256(nextNonce)
         StorageService.setNonce(nextNonce)
 
-        if (
-          request.hasOwnProperty('payload') &&
-          !request.payload.hasOwnProperty('origin')
-        )
-          request.payload.origin = this.getOrigin()
+        request.payload.origin = this.getOrigin()
+        request.payload.id = random()
 
         this.openRequests.push(Object.assign(request, { resolve, reject }))
 

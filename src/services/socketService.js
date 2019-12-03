@@ -1,17 +1,23 @@
+import ApiService from './ApiService'
+
 let service
 
 const emit = (origin, id, path, data) => service.emit(origin, id, path, data)
 
 export const handleApiResponse = async (request, id) => {
   // @todo 校验 appkey。校验 nonce
+  const payload = request.data.payload
 
-  console.log(request)
+  const resp = await ApiService.handler(request.data.payload)
 
-  emit(request.data.payload.origin, id, 'api', '哈哈哈哈')
+  return emit(payload.origin, id, 'api', {
+    id: payload.id,
+    ...resp
+  })
 }
 
 export const handlePairedResponse = async (request, id) => {
-  return emit(request.data.origin, id, 'paired', true)
+  return await emit(request.data.origin, id, 'paired', true)
 }
 
 export class SocketService {
