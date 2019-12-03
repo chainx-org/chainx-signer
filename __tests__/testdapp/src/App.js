@@ -6,11 +6,15 @@ const signer = new Signer('dapp')
 
 signer.link().then(() => {
   console.log('喔喔喔喔')
-  signer.sendApiRequest({
-    payload: {
-      data: '哈哈哈哈'
-    }
-  })
+  signer
+    .sendApiRequest({
+      payload: {
+        data: '哈哈哈哈'
+      }
+    })
+    .then(result => {
+      console.log(result)
+    })
 })
 
 function App() {
