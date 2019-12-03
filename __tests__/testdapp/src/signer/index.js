@@ -113,11 +113,9 @@ export default class SocketService {
           )
 
           const isErrorResponse =
-            typeof response.result === 'object' &&
-            response.result !== null &&
-            response.result.hasOwnProperty('isError')
+            response.error !== null && response.error !== undefined
 
-          if (isErrorResponse) openRequest.reject(response.result)
+          if (isErrorResponse) openRequest.reject(response.error)
           else openRequest.resolve(response.result)
         }
 
