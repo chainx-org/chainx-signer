@@ -10,10 +10,8 @@ const signer = new Signer('dapp')
 signer.link().then(async () => {
   // 获取账户
   const accounts = await signer.sendApiRequest({
-    payload: {
-      method: 'chainx_accounts',
-      params: []
-    }
+    method: 'chainx_accounts',
+    params: []
   })
 
   const account = accounts[0]
@@ -27,17 +25,17 @@ signer.link().then(async () => {
     ''
   )
 
+  // extrinsic.module
+
   // 发送交易
   const txresult = await signer.sendApiRequest({
-    payload: {
-      method: 'chainx_sign',
-      params: [
-        {
-          from: account,
-          data: extrinsic.method.toHex()
-        }
-      ]
-    }
+    method: 'chainx_sign',
+    params: [
+      {
+        from: account,
+        data: extrinsic.method.toHex()
+      }
+    ]
   })
 })
 

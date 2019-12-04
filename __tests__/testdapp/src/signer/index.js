@@ -206,7 +206,7 @@ export default class SocketService {
     return true
   }
 
-  sendApiRequest(request) {
+  sendApiRequest(payload) {
     return new Promise((resolve, reject) => {
       this.pair().then(() => {
         if (!this.paired)
@@ -216,9 +216,10 @@ export default class SocketService {
               'The user did not allow this app to connect to their chainx'
           })
 
+        const request = {}
+
         // Set Application Key
         request.appkey = this.appkey
-
         // Nonce used to authenticate this request
         request.nonce = StorageService.getNonce() || 0
         // Next nonce used to authenticate the next request
@@ -226,6 +227,7 @@ export default class SocketService {
         request.nextNonce = sha256(nextNonce)
         StorageService.setNonce(nextNonce)
 
+        request.payload = payload
         request.payload.origin = this.getOrigin()
         request.payload.id = random()
 
