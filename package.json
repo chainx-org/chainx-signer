@@ -4,7 +4,9 @@
   "private": true,
   "main": "electron.js",
   "dependencies": {
+    "@chainx/types": "^2.22.25",
     "@reduxjs/toolkit": "^1.0.4",
+    "chainx.js": "^2.22.28",
     "electron-is-dev": "^1.1.0",
     "electron-store": "^5.1.0",
     "jest": "^24.9.0",
