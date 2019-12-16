@@ -1,5 +1,4 @@
 import Chainx from 'chainx.js'
-import { Method } from '@chainx/types'
 
 const chainx = new Chainx('wss://w1.chainx.org/ws')
 
@@ -73,6 +72,8 @@ export default class ApiService {
           }
         }
       )
+
+      console.log(txid)
     })
 
     // return {

@@ -4,7 +4,7 @@ import {
   handlePairedResponse,
   handleApiResponse,
   SocketService
-} from './services/SocketService'
+} from './services/socketService'
 
 const wallet = window.wallet
 
