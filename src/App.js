@@ -3,7 +3,7 @@ import React from 'react'
 import {
   handlePairedResponse,
   handleApiResponse,
-  SocketService
+  setService
 } from './services/socketService'
 
 const wallet = window.wallet
@@ -20,9 +20,9 @@ wallet.socketResponse = data => {
   }
 }
 
-SocketService.init(window.sockets)
+setService(window.sockets)
 
-SocketService.initialize()
+window.sockets.initialize().then(() => console.log('sockets initialized'))
 
 function App() {
   console.log(wallet)
