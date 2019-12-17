@@ -64,6 +64,8 @@ export default class SocketService {
               return msg_api(data)
             case 'event':
               return event_api(data)
+            default:
+              console.log(`Unknown type message ${type}`)
           }
         }
 
@@ -131,38 +133,25 @@ export default class SocketService {
         return `127.0.0.1:${port}`
       }
 
-      const ports = await new Promise(async portResolver => {
-        const checkPort = (host, cb) =>
-          fetch(host)
-            .then(r => r.text())
-            .then(r => cb(r === 'chainx'))
-            .catch(() => cb(false))
-
-        let startingPort = 60005
-        let availablePorts = []
-
-        const preparePorts = () => [60005]
-
-        let returned = false
-
-        const resolveAndPushPort = (port = null) => {
-          if (returned) return
-          returned = true
-          if (port !== null) availablePorts.push(port)
-          portResolver(preparePorts())
-        }
+      const targetPort = await new Promise(async portResolver => {
+        const startingPort = 60005
 
         for (const i of [...new Array(5).keys()]) {
-          if (returned) return
-
-          const _port = startingPort + i * 1500
-
-          await checkPort(`http://` + getHostname(_port), x =>
-            x ? resolveAndPushPort(_port) : null
-          )
+          const port = startingPort + i * 1500
+          const host = `http://${getHostname(port)}`
+          try {
+            const res = await fetch(host)
+            const text = await res.text()
+            if (text === 'chainx') {
+              portResolver(port)
+              return
+            }
+          } catch (e) {
+            console.log(`port ${port} failed, try to test another port`)
+          }
         }
 
-        resolveAndPushPort()
+        portResolver(startingPort)
       })
 
       const trySocket = port =>
@@ -175,20 +164,14 @@ export default class SocketService {
           s.onopen = () => socketResolver(s)
         })
 
-      let connected = false
-      for (let i = 0; i < ports.length; i++) {
-        if (connected) continue
-        const s = await trySocket(ports[i])
-        if (s) {
-          connected = true
-          this.socket = s
-          this.send()
-          this.connected = true
-          setupSocket()
-          this.pairingPromise = null
-          this.pair(true).then(() => resolve(true))
-          break
-        }
+      const s = await trySocket(targetPort)
+      if (s) {
+        this.socket = s
+        this.send()
+        this.connected = true
+        setupSocket()
+        this.pairingPromise = null
+        this.pair(true).then(() => resolve(true))
       }
     })
   }
