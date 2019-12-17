@@ -1,8 +1,8 @@
 const electron = require('electron')
 const electronStore = require('electron-store')
-const sockets = require('./server')
+const { sockets, setMainWindow } = require('./server')
 
-sockets.setMainWindow(electron.remote.getCurrentWindow())
+setMainWindow(electron.remote.getCurrentWindow())
 
 electron.ipcRenderer.on('socketResponse', (event, data) =>
   window.wallet.socketResponse(data)

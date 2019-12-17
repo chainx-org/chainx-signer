@@ -4,6 +4,10 @@ const net = require('net')
 
 let mainWindow
 
+function setMainWindow(w) {
+  mainWindow = w
+}
+
 const sendToEmbed = payload =>
   mainWindow.webContents.send('socketResponse', payload)
 
@@ -169,34 +173,5 @@ class LowLevelSocketService {
 }
 
 let sockets = new LowLevelSocketService()
-class HighLevelSockets {
-  static setMainWindow(w) {
-    mainWindow = w
-  }
 
-  static async initialize() {
-    return sockets.initialize()
-  }
-
-  static async close() {
-    return sockets.close()
-  }
-
-  static async sendEvent(event, payload, origin) {
-    return sockets.sendEvent(event, payload, origin)
-  }
-
-  static async broadcastEvent(event, payload) {
-    return sockets.broadcastEvent(event, payload)
-  }
-
-  static async emit(origin, id, path, data) {
-    return sockets.emit(origin, id, path, data)
-  }
-
-  static async getNewKey(origin, id) {
-    return sockets.getNewKey(origin, id)
-  }
-}
-
-module.exports = HighLevelSockets
+module.exports = { sockets, setMainWindow }
