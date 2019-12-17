@@ -82,6 +82,8 @@ class LowLevelSocketService {
             return this.rekeyPromise.resolve(request)
           case 'api':
             return sendToEmbed({ type: 'api', request, id })
+          default:
+            console.log(`Unknown type ${type}`)
         }
       })
     }
