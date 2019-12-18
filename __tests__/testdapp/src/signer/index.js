@@ -17,9 +17,8 @@ const random = () => {
 }
 
 export default class SocketService {
-  constructor(_plugin, _timeout) {
-    this.plugin = _plugin
-    this.timeout = _timeout
+  constructor(name) {
+    this.plugin = name
 
     this.socket = null
     this.connected = false
@@ -117,8 +116,11 @@ export default class SocketService {
           const isErrorResponse =
             response.error !== null && response.error !== undefined
 
-          if (isErrorResponse) openRequest.reject(response.error)
-          else openRequest.resolve(response.result)
+          if (isErrorResponse) {
+            openRequest.reject(response.error)
+          } else {
+            openRequest.resolve(response.result)
+          }
         }
 
         const event_api = ({ event, payload }) => {
