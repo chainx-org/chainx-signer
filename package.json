@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3001 && electron .\""
+    "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3001 && electron .\""
   },
   "eslintConfig": {
     "extends": "react-app"
