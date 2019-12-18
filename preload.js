@@ -16,6 +16,12 @@ window.wallet = {
   }
 }
 
-window.store = function(...args) {
+window.ElectronStore = function(...args) {
   return new electronStore(...args)
 }
+
+window.accountStore = new window.ElectronStore({
+  name: 'accounts',
+  defaults: []
+})
+window.nodeStore = new window.ElectronStore({ name: 'nodes', defaults: [] })
