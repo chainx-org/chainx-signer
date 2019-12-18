@@ -10,6 +10,7 @@ electron.ipcRenderer.on('socketResponse', (event, data) =>
 
 window.sockets = sockets
 window.wallet = {
+  // Placeholder function. Will be rewrite in page script.
   socketResponse: () => {
     console.log('哈哈哈哈哈哈')
   }
