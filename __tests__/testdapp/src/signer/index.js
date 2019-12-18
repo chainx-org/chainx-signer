@@ -232,8 +232,11 @@ export default class SocketService {
   }
 
   send(type = null, data = null) {
-    if (type === null && data === null) this.socket.send('40/chainx')
-    else this.socket.send('42/chainx,' + JSON.stringify([type, data]))
+    if (type === null && data === null) {
+      this.socket.send('40/chainx')
+    } else {
+      this.socket.send('42/chainx,' + JSON.stringify([type, data]))
+    }
   }
 
   getOrigin() {
@@ -242,16 +245,22 @@ export default class SocketService {
 
   static getOriginOrPlugin(plugin) {
     let origin
-    if (typeof window.location !== 'undefined')
+    if (typeof window.location !== 'undefined') {
       if (
         window.location.hasOwnProperty('hostname') &&
         window.location.hostname.length &&
         window.location.hostname !== 'localhost'
-      )
+      ) {
         origin = window.location.hostname
-      else origin = plugin
-    else origin = plugin
-    if (origin.substr(0, 4) === 'www.') origin = origin.replace('www.', '')
+      } else {
+        origin = plugin
+      }
+    } else {
+      origin = plugin
+    }
+    if (origin.substr(0, 4) === 'www.') {
+      origin = origin.replace('www.', '')
+    }
     return origin
   }
 }
