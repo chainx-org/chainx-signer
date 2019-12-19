@@ -22,6 +22,10 @@ window.ElectronStore = function(...args) {
 
 window.accountStore = new window.ElectronStore({
   name: 'accounts',
-  defaults: []
+  defaults: {}
 })
-window.nodeStore = new window.ElectronStore({ name: 'nodes', defaults: [] })
+window.nodeStore = new window.ElectronStore({ name: 'nodes', defaults: {} })
+window.settingStore = new window.ElectronStore({
+  name: 'settings',
+  default: {}
+})
