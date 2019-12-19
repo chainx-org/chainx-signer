@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
-import {
-  CHAINX_MAIN,
-  CHAINX_TEST,
-  defaultNodeInitialState,
-  NODE_STORE_KEY
-} from './constants'
+import { CHAINX_MAIN, CHAINX_TEST, NODE_STORE_KEY } from './constants'
+
+const defaultNodeInitialState = {
+  version: 0,
+  chainxMainNetNodes: [],
+  currentChainXMainNetNode: null,
+  chainxTestNetNodes: [],
+  currentChainXTestNetNode: null
+}
 
 const initialState =
   window.nodeStore.get(NODE_STORE_KEY) || defaultNodeInitialState
@@ -36,6 +39,13 @@ const nodeSlice = createSlice({
 
       // TODO: 处理存在相同url的情况
     },
+    setCurrentChainXMainNetNode(state, { payload: { url } }) {
+      const target = state.chainxMainNetNodes.find(n => n.url === url)
+      if (!target) {
+        throw new Error(`No ChainX mainnet node with url ${url}`)
+      }
+      state.currentChainXMainNetNode = target
+    },
     removeNode(state, { chainId, url }) {
       const targetNodes = findTargetNodes(state, chainId)
       const index = targetNodes.findIndex(n => n.url === url)
@@ -45,10 +55,22 @@ const nodeSlice = createSlice({
       }
 
       // TODO: 处理不存在url的情况
+    },
+    setCurrentChainXTestNetNode(state, { payload: { url } }) {
+      const target = state.chainxTestNetNodes.find(n => n.url === url)
+      if (!target) {
+        throw new Error(`No ChainX testnet node with url ${url}`)
+      }
+      state.currentChainXTestNetNode = target
     }
   }
 })
 
-export const { addNode, removeNode } = nodeSlice.actions
+export const {
+  addNode,
+  removeNode,
+  setCurrentChainXMainNetNode,
+  setCurrentChainXTestNetNode
+} = nodeSlice.actions
 
 export default nodeSlice.reducer

@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
-import {
-  ACCOUNT_STORE_KEY,
-  CHAINX_MAIN,
-  CHAINX_TEST,
-  defaultAccountInitialState
-} from './constants'
+import { ACCOUNT_STORE_KEY, CHAINX_MAIN, CHAINX_TEST } from './constants'
+
+const defaultAccountInitialState = {
+  version: 0,
+  chainxMainNetAccounts: [],
+  currentChainXMainNetAccount: null,
+  chainxTestNetAccounts: [],
+  currentChainxTestNetAccount: null
+}
 
 let initialState =
   window.accountStore.get(ACCOUNT_STORE_KEY) || defaultAccountInitialState
@@ -36,6 +39,17 @@ const accountSlice = createSlice({
 
       // TODO: 处理存在相同address的情况
     },
+    setCurrentChainXMainNetAccount(state, { payload: { address } }) {
+      const target = state.chainxMainNetAccounts.find(
+        a => a.address === address
+      )
+      if (!target) {
+        throw new Error(`No ChainX mainnet account with address ${address}`)
+      }
+
+      state.currentChainXMainNetAccount = target
+      // TODO: 账户改变后通知所有连接的客户端
+    },
     removeAccount(state, { chainId, address }) {
       const targetAccounts = findTargetAccounts(state, chainId)
 
@@ -46,10 +60,25 @@ const accountSlice = createSlice({
       }
 
       // TODO: 处理不存在address的情况
+    },
+    setCurrentChainXTestNetAccount(state, { payload: { address } }) {
+      const target = state.chainxTestNetAccounts.find(
+        a => a.address === address
+      )
+      if (!target) {
+        throw new Error(`No ChainX testnet account with address ${address}`)
+      }
+
+      state.currentChainxTestNetAccount = target
     }
   }
 })
 
-export const { addAccount, removeAccount } = accountSlice.actions
+export const {
+  addAccount,
+  removeAccount,
+  setCurrentChainXMainNetAccount,
+  setCurrentChainXTestNetAccount
+} = accountSlice.actions
 
 export default accountSlice.reducer
