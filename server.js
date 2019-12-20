@@ -58,26 +58,37 @@ class LowLevelSocketService {
         const killRequest = () =>
           this.emitSocket(socket, 'api', { id: request.data.id, result: null })
 
-        if (!request.plugin || request.plugin.length > 100) return killRequest()
+        if (!request.plugin || request.plugin.length > 100) {
+          return killRequest()
+        }
         request.plugin = request.plugin.replace(/\s/g, '').trim()
 
-        if (request.plugin.toLowerCase() === 'chainx') return killRequest()
+        if (request.plugin.toLowerCase() === 'chainx') {
+          return killRequest()
+        }
 
         let requestOrigin
         if (request.data.hasOwnProperty('payload')) {
           request.data.payload.origin = request.data.payload.origin
             .replace(/\s/g, '')
             .trim()
-          if (request.data.payload.origin.toLowerCase() === 'chainx')
+          if (request.data.payload.origin.toLowerCase() === 'chainx') {
             return killRequest()
+          }
           requestOrigin = request.data.payload.origin
-        } else requestOrigin = request.data.origin.replace(/\s/g, '').trim()
+        } else {
+          requestOrigin = request.data.origin.replace(/\s/g, '').trim()
+        }
 
-        if (!origin) origin = requestOrigin
-        else if (origin && requestOrigin !== origin) return killRequest()
+        if (!origin) {
+          origin = requestOrigin
+        } else if (origin && requestOrigin !== origin) {
+          return killRequest()
+        }
 
-        if (!this.openConnections.hasOwnProperty(origin + id))
+        if (!this.openConnections.hasOwnProperty(origin + id)) {
           this.openConnections[origin + id] = socket
+        }
 
         switch (type) {
           case 'pair':
@@ -87,7 +98,7 @@ class LowLevelSocketService {
           case 'api':
             return sendToEmbed({ type: 'api', request, id })
           default:
-            console.log(`Unknown type ${type}`)
+            console.error(`Unknown type ${type}`)
         }
       })
     }

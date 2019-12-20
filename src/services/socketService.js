@@ -20,5 +20,6 @@ export const handleApiResponse = async (request, id) => {
 }
 
 export const handlePairedResponse = async (request, id) => {
+  // TODO: 外部dapp请求连接，打开确认框让用户确认
   return await service.emit(request.data.origin, id, 'paired', true)
 }
