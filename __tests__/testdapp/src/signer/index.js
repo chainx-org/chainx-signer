@@ -1,9 +1,7 @@
 import StorageService from './StorageService'
 import getRandomValues from 'get-random-values'
 import createHash from 'create-hash'
-import WebSocket from 'isomorphic-ws'
-
-const suffix = '/socket.io/?EIO=3&transport=websocket'
+import { findTargetPort, trySocket } from './utils'
 
 const sha256 = data =>
   createHash('sha256')
@@ -41,145 +39,104 @@ export default class SocketService {
     delete this.eventHandlers[key]
   }
 
+  onMsgPaired(result) {
+    this.paired = result
+
+    if (this.paired) {
+      const savedKey = StorageService.getAppKey()
+      const hashed =
+        this.appkey.indexOf('appkey:') > -1 ? sha256(this.appkey) : this.appkey
+
+      if (!savedKey || savedKey !== hashed) {
+        StorageService.setAppKey(hashed)
+        this.appkey = StorageService.getAppKey()
+      }
+    }
+
+    this.pairingPromise.resolve(result)
+  }
+
+  onMsgRekey() {
+    this.appkey = 'appkey:' + random()
+    this.send('rekeyed', {
+      data: { appkey: this.appkey, origin: this.getOrigin() },
+      plugin: this.plugin
+    })
+  }
+
+  onMsgApi(response) {
+    if (typeof response === 'string') {
+      try {
+        response = JSON.parse(response)
+      } catch (e) {
+        console.error('Error parsing json for response: ', response)
+      }
+    }
+
+    const openRequest = this.openRequests.find(
+      x => x.payload.id === response.id
+    )
+    if (!openRequest) return
+
+    this.openRequests = this.openRequests.filter(
+      x => x.payload.id !== response.id
+    )
+
+    const isErrorResponse =
+      response.error !== null && response.error !== undefined
+
+    if (isErrorResponse) {
+      openRequest.reject(response.error)
+    } else {
+      openRequest.resolve(response.result)
+    }
+  }
+
+  onMsgEvent({ event, payload }) {
+    if (Object.keys(this.eventHandlers).length) {
+      Object.keys(this.eventHandlers).map(key =>
+        this.eventHandlers[key](event, payload)
+      )
+    }
+  }
+
+  socketMsgHandler(msg) {
+    // Handshaking/Upgrading
+    if (msg.data.indexOf('42/chainx') === -1) return false
+
+    // Real message
+    const [type, data] = JSON.parse(msg.data.replace('42/chainx,', ''))
+
+    if (type === 'pong') return
+    if (type === 'ping') return this.socket.send(`42/chainx,["pong"]`)
+
+    switch (type) {
+      case 'paired':
+        return this.onMsgPaired(data)
+      case 'rekey':
+        return this.onMsgRekey()
+      case 'api':
+        return this.onMsgApi(data)
+      case 'event':
+        return this.onMsgEvent(data)
+      default:
+        console.log(`Unknown type message ${type}`)
+    }
+  }
+
   link() {
     return new Promise(async (resolve, reject) => {
-      const setupSocket = () => {
-        this.socket.onmessage = msg => {
-          // Handshaking/Upgrading
-          if (msg.data.indexOf('42/chainx') === -1) return false
-
-          // Real message
-          const [type, data] = JSON.parse(msg.data.replace('42/chainx,', ''))
-
-          if (type === 'pong') return
-          if (type === 'ping') return this.socket.send(`42/chainx,["pong"]`)
-
-          switch (type) {
-            case 'paired':
-              return msg_paired(data)
-            case 'rekey':
-              return msg_rekey()
-            case 'api':
-              return msg_api(data)
-            case 'event':
-              return event_api(data)
-            default:
-              console.log(`Unknown type message ${type}`)
-          }
-        }
-
-        const msg_paired = result => {
-          this.paired = result
-
-          if (this.paired) {
-            const savedKey = StorageService.getAppKey()
-            const hashed =
-              this.appkey.indexOf('appkey:') > -1
-                ? sha256(this.appkey)
-                : this.appkey
-
-            if (!savedKey || savedKey !== hashed) {
-              StorageService.setAppKey(hashed)
-              this.appkey = StorageService.getAppKey()
-            }
-          }
-
-          this.pairingPromise.resolve(result)
-        }
-
-        const msg_rekey = () => {
-          this.appkey = 'appkey:' + random()
-          this.send('rekeyed', {
-            data: { appkey: this.appkey, origin: this.getOrigin() },
-            plugin: this.plugin
-          })
-        }
-
-        const msg_api = response => {
-          if (typeof response === 'string') {
-            try {
-              response = JSON.parse(response)
-            } catch (e) {
-              console.error('Error parsing json for response: ', response)
-            }
-          }
-
-          const openRequest = this.openRequests.find(
-            x => x.payload.id === response.id
-          )
-          if (!openRequest) return
-
-          this.openRequests = this.openRequests.filter(
-            x => x.payload.id !== response.id
-          )
-
-          const isErrorResponse =
-            response.error !== null && response.error !== undefined
-
-          if (isErrorResponse) {
-            openRequest.reject(response.error)
-          } else {
-            openRequest.resolve(response.result)
-          }
-        }
-
-        const event_api = ({ event, payload }) => {
-          if (Object.keys(this.eventHandlers).length)
-            Object.keys(this.eventHandlers).map(key => {
-              this.eventHandlers[key](event, payload)
-            })
-        }
-      }
-
-      const getHostname = port => {
-        return `127.0.0.1:${port}`
-      }
-
-      async function findTargetPort() {
-        const startingPort = 10013
-        const iterStep = 13
-        const maxPort = 65535
-
-        let iterPort = startingPort
-        while (iterPort < maxPort) {
-          const host = `http://${getHostname(iterPort)}`
-          try {
-            const res = await fetch(host)
-            const text = await res.text()
-            if (text === 'chainx') {
-              return iterPort
-            }
-          } catch (e) {
-            console.log(`port ${iterPort} failed, try to test another port`)
-          }
-
-          iterPort += iterStep
-        }
-
-        return null
-      }
-
       const targetPort = await findTargetPort()
       if (!targetPort) {
         reject()
       }
-
-      const trySocket = port =>
-        new Promise(socketResolver => {
-          const hostname = getHostname(port)
-          const protocol = 'ws://'
-          const s = new WebSocket(`${protocol}${hostname}${suffix}`)
-
-          s.onerror = () => socketResolver(false)
-          s.onopen = () => socketResolver(s)
-        })
 
       const s = await trySocket(targetPort)
       if (s) {
         this.socket = s
         this.send()
         this.connected = true
-        setupSocket()
+        this.socket.onmessage = this.socketMsgHandler.bind(this)
         this.pairingPromise = null
         this.pair(true).then(() => resolve(true))
       }
