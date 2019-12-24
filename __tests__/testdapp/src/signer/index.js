@@ -42,7 +42,7 @@ export default class SocketService {
   }
 
   link() {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve, reject) => {
       const setupSocket = () => {
         this.socket.onmessage = msg => {
           // Handshaking/Upgrading
@@ -135,26 +135,34 @@ export default class SocketService {
         return `127.0.0.1:${port}`
       }
 
-      const targetPort = await new Promise(async portResolver => {
+      async function findTargetPort() {
         const startingPort = 10013
+        const iterStep = 13
+        const maxPort = 65535
 
-        for (const i of [...new Array(5).keys()]) {
-          const port = startingPort + i * 13
-          const host = `http://${getHostname(port)}`
+        let iterPort = startingPort
+        while (iterPort < maxPort) {
+          const host = `http://${getHostname(iterPort)}`
           try {
             const res = await fetch(host)
             const text = await res.text()
             if (text === 'chainx') {
-              portResolver(port)
-              return
+              return iterPort
             }
           } catch (e) {
-            console.log(`port ${port} failed, try to test another port`)
+            console.log(`port ${iterPort} failed, try to test another port`)
           }
+
+          iterPort += iterStep
         }
 
-        portResolver(startingPort)
-      })
+        return null
+      }
+
+      const targetPort = await findTargetPort()
+      if (!targetPort) {
+        reject()
+      }
 
       const trySocket = port =>
         new Promise(socketResolver => {
