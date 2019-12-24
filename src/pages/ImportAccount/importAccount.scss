@@ -1,0 +1,71 @@
+@import '../../assets/variables.scss';
+
+.import-account {
+  display: flex;
+  flex-direction: column;
+  min-height: 86px;
+  .import-account-title {
+    font-size: 20px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .import-account-title-select {
+      display: flex;
+      justify-content: space-between;
+      .second-choice {
+        color: $placeholderColor;
+        cursor: pointer;
+      }
+    }
+    .import-account-sub-title {
+      margin-top: 8px;
+      color: $subTitle;
+      font-size: 14px;
+    }
+  }
+  .import-account-body {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    .import-account-body-content {
+      .import-mnemonic {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        .word-item {
+          text-align: center;
+          margin-top: 16px;
+          width: 100px;
+          height: 40px;
+          background: #FFFFFF;
+          border: 1px solid $grayDivide;
+          border-radius: 20px;
+          color: $fontgray;
+          caret-color: $yellow;
+          font-size: 14px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .import-private-key {
+        textarea {
+          margin-top: 16px;
+          width: 296px;
+          height: 64px;
+          padding: 12px;
+          font-size: 14px;
+          color: $subTitle;
+          border: 1px solid $grayDivide;
+          resize: none;
+          border-radius: 6px;
+        }
+      }
+      .word-item-selected {
+        background: #F2F3F4;
+        border: 1px solid $grayDivide;
+      }
+    }
+  }
+}

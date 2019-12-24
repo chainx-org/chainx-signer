@@ -1,0 +1,263 @@
+@import '../../assets/variables.scss';
+
+.header {
+  height: 70px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #DCE0E2;
+  .container-header {
+    justify-content: space-between;
+    .logo {
+      width: 32px;
+      height: 32px;
+    }
+    .testnet {
+      position: absolute;
+      margin-bottom: 24px;
+    }
+    .center-title {
+      font-weight: 500;
+      font-size: 20px;
+      color: $fontgray;
+    }
+    .right {
+      display: flex;
+      .current-node {
+        height: 32px;
+        width: 123px;
+        border-radius: 16px;
+        border: 1px solid #DCE0E2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 26px;
+        cursor: pointer;
+        .dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 3px;
+          margin-right: 6px;
+        }
+      }
+      .setting {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        .setting-icon {
+          color: $fontgray;
+        }
+      }
+    }
+    
+  }
+  .node-list-area {
+    &.hide {
+      display: none;
+    }
+    position: absolute;
+    top: 70px;
+    left: 64px;
+    padding-top: 10px;
+    width: 226px;
+    min-height: 78px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #DCE0E2;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.08), 0 8px 8px 0 rgba(0,0,0,0.16);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    .node-list {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid $grayDivide;
+      .node-item {
+        display: flex;
+        height: 32px;
+        &:hover {
+          background-color: $itemBgColor;
+          cursor: pointer;
+        }
+        &.active {
+          background-color: $itemBgColor;
+          .node-item-active-flag {
+            background-color: $yellow;
+          }
+        }
+        .node-item-active-flag {
+          width: 3px;
+          height: 100%;
+          border-radius: 1.5px;
+        }
+        .node-item-detail {
+          margin-left: 13px;
+          margin-right: 15px;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          &:hover {
+            .node-item-detail-url {
+              .custom {
+                display: block;
+              }
+            }
+          }
+          .node-item-detail-url {
+            display: flex;
+            align-items: center;
+            width: 142px;
+            .url {
+              width: 122px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            .node-item-detail-edit {
+              font-size: 14px;
+              color: $yellow;
+              margin-left: 5px;
+              width: 20px;
+              height: 20px;
+              display: none;
+            }
+          }
+        }
+      }
+    }
+    .auto-select {
+      height: 36px;
+      margin-left: 16px;
+      display: flex;
+      align-items: center;
+    }
+    .add-node {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .switch-net {
+      border-radius: 0px 0px 10px 10px;
+    }
+    .node-action-item {
+      height: 48px;
+      background: #3F3F3F;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      .node-action-item-img {
+        margin-left: 15px;
+        color: $yellow;
+      }
+      span {
+        margin-left: 6px;
+        color: #fff;
+      }
+    }
+  }
+  .account-area {
+    position: absolute;
+    right: 20px;
+    top: 70px;
+    min-height: 47px;
+    width: 256px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #DCE0E2;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.08), 0 8px 8px 0 rgba(0,0,0,0.16);
+    .action {
+      height: 47px;
+      display: flex;
+      justify-content: space-around;
+      border-bottom: 1px solid $grayDivide;
+      font-size: 14px;
+      color: $fontgray;
+      div {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        span {
+          margin-left: 6px;
+        }
+      }
+      div:first-child {
+        border-right: 1px solid $grayDivide;
+      }
+    }
+    a {
+      text-decoration: none; 
+      color: $fontgray; 
+    }
+    .account-area-icon {
+      color: $yellow;
+    }
+  }
+  .accounts {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    .account-item {
+      display: flex;
+      height: 62px;
+      width: 100%;
+      font-size: 12px;
+      color: $addressColor;
+      cursor: pointer;
+      &:hover {
+        background-color: $itemBgColor;
+        .account-copy {
+          background-color: $itemBgColor;
+        }
+      }
+      &.active {
+        background-color: $itemBgColor;
+        .account-item-active-flag {
+          background-color: $yellow;
+        }
+        .account-copy {
+          background-color: $itemBgColor;
+        }
+      }
+      .account-item-active-flag {
+        border-radius: 2px;
+        width: 4px;
+        height: 62px;
+      }
+      .account-item-detail {
+        margin-left: 12px;
+        margin-right: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 100%;
+        font-size: 12px;
+        color: $addressColor;
+        .name {
+          font-size: 13px;
+          color: $fontgray;
+          font-weight: 500;
+        }
+        .address {
+          display: flex;
+          justify-content: space-between;
+          .account-copy {
+            cursor: pointer;
+            border: none;
+          }
+
+          .extension-tooltip {
+            padding: 8px 10px !important;
+          }
+
+          .copy-icon {
+            font-size: 12px;
+            color: $yellow;
+          }
+        }
+      }
+    }
+  }
+}

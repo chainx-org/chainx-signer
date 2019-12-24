@@ -1,0 +1,25 @@
+@import '../../assets/variables.scss';
+
+.static-warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  .warning-title {
+    margin-top: 16px;
+    font-size: 16px;
+    color: $fontgray;
+    font-weight: 500;
+  }
+  .warning-icon {
+    width: 64px;
+    height: 56px;
+  }
+  .warning-desc {
+    margin-top: 16px;
+    font-size: 14px;
+    width: 246px;
+    color: $subTitle;
+    text-align: center;
+  }
+}

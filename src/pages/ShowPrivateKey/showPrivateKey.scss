@@ -1,0 +1,27 @@
+@import '../../assets/variables.scss';
+
+.show-private-key {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .title {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    color: $fontgray;
+  }
+  .pk {
+    margin-top: 24px;
+    width: 100%;
+    height: 60px;
+    background-color: $yellow;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    span {
+      width: 245px;
+    }
+  }
+}

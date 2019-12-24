@@ -1,0 +1,12 @@
+@import '../../assets/variables.scss';
+
+.error-message {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  width: 318px;
+  span {
+    color: red;
+    font-size: 16px;
+  }
+}
