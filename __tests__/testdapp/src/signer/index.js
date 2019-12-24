@@ -136,10 +136,10 @@ export default class SocketService {
       }
 
       const targetPort = await new Promise(async portResolver => {
-        const startingPort = 60005
+        const startingPort = 10013
 
         for (const i of [...new Array(5).keys()]) {
-          const port = startingPort + i * 1500
+          const port = startingPort + i * 13
           const host = `http://${getHostname(port)}`
           try {
             const res = await fetch(host)

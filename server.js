@@ -1,6 +1,7 @@
 const http = require('http')
 const WebSocket = require('ws')
 const net = require('net')
+const startPort = 10013
 
 let mainWindow
 
@@ -171,9 +172,11 @@ class LowLevelSocketService {
       })
     }
 
-    const findPort = async (delta = 0) => {
-      let port = 60005 + delta
-      while (!(await isPortAvailable(port))) port += 1500
+    const findPort = async () => {
+      let port = startPort
+      while (!(await isPortAvailable(port))) {
+        port += 13
+      }
       return port
     }
 
