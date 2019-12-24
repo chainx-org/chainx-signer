@@ -2,7 +2,7 @@ import React from 'react'
 import './showPrivateKey.scss'
 import StaticWarning from '../../components/StaticWarning'
 
-function ShowPrivateKey(props: any) {
+function ShowPrivateKey(props) {
   return (
     <div className="show-private-key">
       <span className="title">Private Key</span>

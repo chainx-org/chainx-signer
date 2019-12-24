@@ -7,7 +7,7 @@ import StaticWarning from '../../components/StaticWarning'
 import ErrorMessage from '../../components/ErrorMessage'
 import NameAndPassword from '../../components/NameAndPassword'
 
-function CreateAccount(props: any) {
+function CreateAccount(props) {
   const titleList = [
     'New Account',
     'Backup Mnemonic',
@@ -33,7 +33,7 @@ function CreateAccount(props: any) {
   const [validateMnemonicList, setValidateMnemonicList] = useState(
     new Array(12).fill('')
   )
-  const mnemonicWords = mnemonicList.map((item: string, index: number) => ({
+  const mnemonicWords = mnemonicList.map((item, index) => ({
     value: item,
     index: index
   }))
@@ -64,13 +64,13 @@ function CreateAccount(props: any) {
         <div className="create-account-body-content">
           {currentStep === 0 && <StaticWarning title="Backup Mnemonic" />}
           {currentStep === 1 &&
-            mnemonicWords.map((item: any) => (
+            mnemonicWords.map(item => (
               <div className="word-item" key={item.index}>
                 {item.value}
               </div>
             ))}
           {currentStep === 2 &&
-            shuffleMnemonicList.map((item: any, index: number) => (
+            shuffleMnemonicList.map((item, index) => (
               <div
                 className={
                   'word-item word-item-click ' +

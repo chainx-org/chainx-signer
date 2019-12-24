@@ -59,7 +59,7 @@ function AddNode(props) {
     }
   }
 
-  const deleteNode = async (name: string, url: string) => {
+  const deleteNode = async (name, url) => {
     if (nodeList.length < 2) {
       setErrMsg('can not remove the last node')
       return
