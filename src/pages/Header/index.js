@@ -24,7 +24,9 @@ import {
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
   currentChainxNodeSelector,
-  chainxNodesSelector
+  chainxNodesSelector,
+  setCurrentChainXMainNetNode,
+  setCurrentChainXTestNetNode
 } from '../../store/reducers/nodeSlice'
 
 function Header(props) {
@@ -93,15 +95,11 @@ function Header(props) {
   }
 
   async function setNode(url) {
-    await setChainxNode(url, isTestNet)
-    // updateNodeStatus(
-    //   setCurrentNode,
-    //   isTestNet ? setCurrentTestDelay : setCurrentDelay,
-    //   setNodeList,
-    //   isTestNet ? testDelayList : delayList,
-    //   isTestNet ? setTestDelayList : setDelayList,
-    //   isTestNet
-    // )
+    if (isTestNet) {
+      dispatch(setCurrentChainXTestNetNode({ url }))
+    } else {
+      dispatch(setCurrentChainXMainNetNode({ url }))
+    }
     setShowNodeListArea(false)
   }
 
