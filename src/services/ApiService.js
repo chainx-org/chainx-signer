@@ -1,8 +1,4 @@
-import Chainx from 'chainx.js'
-
-const chainx = new Chainx('wss://w1.chainx.org/ws')
-
-chainx.isRpcReady()
+import { getChainx } from '../shared/chainx'
 
 export default class ApiService {
   static async handler(data) {
@@ -40,7 +36,7 @@ export default class ApiService {
   }
 
   static async sign(params) {
-    // console.log(new Method(params[0].data).toJSON())
+    const chainx = getChainx()
     const extrinsic = chainx.api.createExtrinsic(params[0].data)
 
     return new Promise((resolve, reject) => {
