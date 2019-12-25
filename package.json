@@ -14,6 +14,7 @@
     "electron-is-dev": "^1.1.0",
     "electron-store": "^5.1.0",
     "jest": "^24.9.0",
+    "lodash": "^4.17.15",
     "lodash.shuffle": "^4.2.0",
     "mock-socket": "^9.0.2",
     "react": "^16.12.0",
@@ -21,8 +22,8 @@
     "react-redux": "^7.1.3",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.0.1",
-    "react-tooltip": "^3.11.1",
     "react-scripts": "3.2.0",
+    "react-tooltip": "^3.11.1",
     "redux": "^4.0.4",
     "redux-starter-kit": "^0.9.1",
     "ws": "^7.2.0"

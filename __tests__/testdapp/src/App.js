@@ -9,13 +9,12 @@ const signer = new Signer('dapp')
 
 signer.link().then(async () => {
   // 获取账户
-  const accounts = await signer.sendApiRequest({
-    method: 'chainx_accounts',
+  const account = await signer.sendApiRequest({
+    method: 'chainx_account',
     params: []
   })
 
-  const account = accounts[0]
-
+  console.log('account', account)
   await chainx.isRpcReady()
 
   const extrinsic = chainx.api.tx.xAssets.transfer(

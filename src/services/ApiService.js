@@ -1,4 +1,18 @@
 import { getChainx } from '../shared/chainx'
+import store from '../store'
+import {
+  chainxAccountsSelector,
+  currentChainxAccountSelector
+} from '../store/reducers/accountSlice'
+import _ from 'lodash'
+
+function getAccount() {
+  const state = store.getState()
+  const account = currentChainxAccountSelector(state)
+  return {
+    result: _.pick(account, ['name', 'address'])
+  }
+}
 
 export default class ApiService {
   static async handler(data) {
@@ -12,6 +26,8 @@ export default class ApiService {
     }
 
     switch (data.method) {
+      case 'chainx_account':
+        return getAccount()
       case 'chainx_accounts': {
         return ApiService.getAccounts()
       }
@@ -30,8 +46,10 @@ export default class ApiService {
   }
 
   static getAccounts() {
+    const state = store.getState()
+    const accounts = chainxAccountsSelector(state)
     return {
-      result: ['5R8wTkX6wobiF1Ax9M2NRYb7VtJLS3uq3pn61vqjpPP9EDAs']
+      result: accounts
     }
   }
 
