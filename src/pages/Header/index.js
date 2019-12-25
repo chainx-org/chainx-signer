@@ -8,17 +8,22 @@ import {
   useOutsideClick,
   isCurrentNodeInit
 } from '../../shared'
-import {
-  setChainxCurrentAccount,
-  setChainxNode,
-  setNetwork
-} from '../../messaging'
+import { setChainxNode } from '../../messaging'
 import Icon from '../../components/Icon'
 import DotInCenterStr from '../../components/DotInCenterStr'
 import logo from '../../assets/extension_logo.svg'
 import testNetImg from '../../assets/testnet.svg'
 import switchImg from '../../assets/switch.svg'
 import './header.scss'
+import { useSelector, useDispatch } from 'react-redux'
+import { networkSelector, setNetwork } from '../../store/reducers/settingSlice'
+import {
+  currentChainxAccountSelector,
+  chainxAccountsSelector,
+  setCurrentChainXTestNetAccount,
+  setCurrentChainXMainNetAccount
+} from '../../store/reducers/accountSlice'
+import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 
 function Header(props) {
   const refNodeList = useRef(null)
@@ -26,9 +31,8 @@ function Header(props) {
   const [showNodeListArea, setShowNodeListArea] = useState(false)
   const [showAccountArea, setShowAccountArea] = useState(false)
   const [copyText, setCopyText] = useState('Copy')
-  const [{ currentAccount }, setCurrentAccount] = useRedux('currentAccount')
-  const [{ accounts }] = useRedux('accounts')
-  const [{ isTestNet }, setIsTestNet] = useRedux('isTestNet')
+  const currentAccount = useSelector(currentChainxAccountSelector)
+  const accounts = useSelector(chainxAccountsSelector)
   const [{ currentNode }, setCurrentNode] = useRedux('currentNode', {
     name: '',
     url: '',
@@ -42,6 +46,9 @@ function Header(props) {
     'currentTestDelay',
     0
   )
+
+  const dispatch = useDispatch()
+  const isTestNet = useSelector(networkSelector) === 'testnet' ? true : false
 
   useEffect(() => {
     updateNodeStatus(
@@ -117,8 +124,8 @@ function Header(props) {
   }
 
   function switchNet() {
-    setNetwork(!isTestNet)
-    setIsTestNet({ isTestNet: !isTestNet })
+    console.log('switch network ', isTestNet)
+    dispatch(setNetwork(isTestNet ? CHAINX_MAIN : CHAINX_TEST))
     setShowNodeListArea(false)
     props.history.push('/')
   }
@@ -294,11 +301,19 @@ function Header(props) {
                       }
                       key={item.name}
                       onClick={async () => {
-                        setChainxCurrentAccount(
-                          item.address,
-                          isTestNet
-                        ).then(d => console.log(d))
-                        await setCurrentAccount({ currentAccount: item })
+                        if (isTestNet) {
+                          dispatch(
+                            setCurrentChainXTestNetAccount({
+                              address: item.address
+                            })
+                          )
+                        } else {
+                          dispatch(
+                            setCurrentChainXMainNetAccount({
+                              address: item.address
+                            })
+                          )
+                        }
                         setShowAccountArea(false)
                         props.history.push('/')
                       }}

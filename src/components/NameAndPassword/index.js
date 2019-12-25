@@ -2,15 +2,20 @@ import React, { useState } from 'react'
 import { Account } from 'chainx.js'
 import ErrorMessage from '../ErrorMessage'
 import WarningMessage from '../WarningMessage'
-import { createAccount } from '../../messaging'
 import { useRedux } from '../../shared'
+import { addAccount } from '../../store/reducers/accountSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { networkSelector } from '../../store/reducers/settingSlice'
+import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 
 function NameAndPassword(props) {
   const { secret, onSuccess } = props
   const [obj, setObj] = useState({ name: '', pass: '', repass: '' })
   const [errMsg, setErrMsg] = useState('')
   const [{ accounts }] = useRedux('accounts')
-  const [{ isTestNet }] = useRedux('isTestNet')
+  const isTestNet = useSelector(networkSelector) === 'testnet' ? true : false
+  const dispatch = useDispatch()
+
   Account.setNet(isTestNet ? 'testnet' : 'mainnet')
   const account = Account.from(secret)
   const address = account.address()
@@ -45,13 +50,13 @@ function NameAndPassword(props) {
 
     const keystore = account.encrypt(obj.pass)
 
-    createAccount(obj.name, account.address(), keystore, isTestNet)
-      .then(_ => {
-        onSuccess()
+    dispatch(
+      addAccount({
+        chainId: isTestNet ? CHAINX_TEST : CHAINX_MAIN,
+        account: { name: obj.name, address: account.address(), keystore }
       })
-      .catch(err => {
-        setErrMsg(err.message)
-      })
+    )
+    onSuccess()
   }
 
   return (

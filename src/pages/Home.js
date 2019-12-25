@@ -3,28 +3,20 @@ import { useOutsideClick, useRedux } from '../shared'
 import { useSelector, useDispatch } from 'react-redux'
 import { setHomeLoading } from '../store/reducers/statusSlice'
 import ClipboardJS from 'clipboard'
-import {
-  getAllAccounts,
-  getCurrentChainxAccount,
-  getToSign
-} from '../messaging'
+import { getToSign } from '../messaging'
 import Icon from '../components/Icon'
 import './index.scss'
 import logo from '../assets/extension_logo.svg'
+import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 
 function Home(props) {
   const ref = useRef(null)
   const [showAccountAction, setShowAccountAction] = useState(false)
-  const [{ currentAccount }, setCurrentAccount] = useRedux('currentAccount', {
-    address: '',
-    name: '',
-    keystore: {}
-  })
   const dispatch = useDispatch()
   const homeLoading = useSelector(state => state.status.homeLoading)
-  const [, setAccounts] = useRedux('accounts')
   const [{ isTestNet }] = useRedux('isTestNet')
   const [copySuccess, setCopySuccess] = useState('')
+  const currentAccount = useSelector(currentChainxAccountSelector)
 
   useEffect(() => {
     setCopyEvent()
@@ -48,24 +40,8 @@ function Home(props) {
     } catch (error) {
       console.log('sign request error occurs ', error)
     } finally {
-      await getAccountStatus()
       dispatch(setHomeLoading(false))
     }
-  }
-
-  async function getAccountStatus() {
-    await getCurrentAccount()
-    await getAccounts()
-  }
-
-  async function getCurrentAccount() {
-    const result = await getCurrentChainxAccount(isTestNet)
-    setCurrentAccount({ currentAccount: result })
-  }
-
-  async function getAccounts() {
-    const result = (await getAllAccounts(isTestNet)) || []
-    setAccounts({ accounts: result })
   }
 
   function setCopyEvent() {

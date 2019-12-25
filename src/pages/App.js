@@ -9,14 +9,12 @@ import RequestSign from './RequestSign'
 import ShowPrivateKey from './ShowPrivateKey/index'
 import EnterPassword from './EnterPassword'
 import NodeAction from './NodeAction'
-import { useRedux, setChainx } from '../shared'
-import { useDispatch } from 'react-redux'
-import { getCurrentChainxNode } from '../messaging'
-import { getSettings } from '../messaging/index'
+import { setChainx } from '../shared'
 import spinner from '../assets/loading.gif'
 import './index.scss'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { setInitLoading } from '../store/reducers/statusSlice'
+import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
 
 import {
   handleApiResponse,
@@ -44,18 +42,18 @@ export default function App() {
   let redirectUrl = '/'
 
   const dispatch = useDispatch()
-  const [, setIsTestNet] = useRedux('isTestNet', false)
   const loading = useSelector(state => state.status.loading)
   const initLoading = useSelector(state => state.status.initLoading)
   const homeLoading = useSelector(state => state.status.homeLoading)
+  const currentNode = useSelector(currentChainxNodeSelector)
+
   useEffect(() => {
     getSetting()
     // eslint-disable-next-line
   }, [])
 
   const getSetting = async () => {
-    const settings = { isTestNet: true }
-    setIsTestNet({ isTestNet: settings.isTestNet })
+    console.log(currentNode)
     const node = {
       name: 'testnet.w1.org.cn',
       url: 'wss://testnet.w1.chainx.org.cn/ws'
