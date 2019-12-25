@@ -1,8 +1,8 @@
-import { searchPortStep, startPort } from './constants'
+const { searchPortStep, startPort } = require('./constants')
 
 const net = require('net')
 
-export const isPortAvailable = (port = 0) => {
+const isPortAvailable = (port = 0) => {
   return new Promise(async resolve => {
     const server = net.createServer()
 
@@ -17,10 +17,14 @@ export const isPortAvailable = (port = 0) => {
   })
 }
 
-export const findPort = async () => {
+const findPort = async () => {
   let port = startPort
   while (!(await isPortAvailable(port))) {
     port += searchPortStep
   }
   return port
+}
+
+module.exports = {
+  findPort
 }

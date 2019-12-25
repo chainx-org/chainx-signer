@@ -1,5 +1,4 @@
-import { findPort } from './utils'
-
+const { findPort } = require('./utils')
 const http = require('http')
 const WebSocket = require('ws')
 
@@ -16,8 +15,8 @@ class LowLevelSocketService {
   constructor() {
     this.rekeyPromise = null
     this.openConnections = {}
-    this.websockets = []
-    this.ports = {}
+    this.websocket = null
+    this.port = null
   }
 
   async getNewKey(origin, id) {
@@ -104,10 +103,11 @@ class LowLevelSocketService {
       })
     }
 
-    if (this.websockets.length) return this.websockets
+    if (this.websocket) {
+      return this.websocket
+    }
 
-    await this.findOpenPorts()
-    sendToEmbed({ type: 'ports', ports: this.ports })
+    this.port = await findPort()
 
     const requestHandler = (_, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*')
@@ -118,25 +118,18 @@ class LowLevelSocketService {
       res.end('chainx')
     }
 
-    await Promise.all(
-      Object.keys(this.ports).map(async port => {
-        const server = http.createServer(requestHandler)
-        this.websockets.push(new WebSocket.Server({ server }))
-        server.listen(port)
+    const server = http.createServer(requestHandler)
+    this.websocket = new WebSocket.Server({ server })
+    server.listen(this.port)
 
-        return true
-      })
-    )
-
-    this.websockets.map(ws => ws.on('connection', socketHandler))
-    return this.websockets
+    this.websocket.on('connection', socketHandler)
+    return this.websocket
   }
 
   async close() {
-    this.websockets.map(ws => {
-      if (typeof ws.clients.map === 'function')
-        ws.clients.map(ws => ws.terminate())
-    })
+    if (typeof this.websocket.clients.map === 'function') {
+      this.websocket.clients.map(client => client.terminate())
+    }
 
     return true
   }
@@ -153,12 +146,6 @@ class LowLevelSocketService {
     Object.keys(this.openConnections).map(origin =>
       this.sendEvent(event, payload, origin)
     )
-    return true
-  }
-
-  async findOpenPorts() {
-    const http = await findPort()
-    this.ports = { [http]: true }
     return true
   }
 }

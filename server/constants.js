@@ -1,2 +1,7 @@
-export const startPort = 10013
-export const searchPortStep = 13
+const startPort = 10013
+const searchPortStep = 13
+
+module.exports = {
+  startPort,
+  searchPortStep
+}
