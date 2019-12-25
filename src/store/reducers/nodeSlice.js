@@ -37,7 +37,9 @@ const defaultNodeInitialState = {
   chainxMainNetNodes: mainNetInitNodes,
   currentChainXMainNetNode: mainNetInitNodes[0],
   chainxTestNetNodes: testNetInitNodes,
-  currentChainXTestNetNode: testNetInitNodes[0]
+  currentChainXTestNetNode: testNetInitNodes[0],
+  testnetNodesDelay: {},
+  mainnetNodesDelay: {}
 }
 
 const initialState =
@@ -78,6 +80,14 @@ const nodeSlice = createSlice({
 
       // TODO: 处理存在相同url的情况
     },
+    setNodeDelay(state, { payload: { chainId, url, delay } }) {
+      let nodes = state.testnetNodesDelay
+      if (CHAINX_MAIN === chainId) {
+        nodes = state.mainnetNodesDelay
+      }
+      nodes[url] = delay
+      window.nodeStore.set(NODE_STORE_KEY, state)
+    },
     setCurrentChainXMainNetNode(state, { payload: { url } }) {
       const target = state.chainxMainNetNodes.find(n => n.url === url)
       if (!target) {
@@ -109,7 +119,8 @@ export const {
   addNode,
   removeNode,
   setCurrentChainXMainNetNode,
-  setCurrentChainXTestNetNode
+  setCurrentChainXTestNetNode,
+  setNodeDelay
 } = nodeSlice.actions
 
 export const chainxMainNetNodesSelector = state => state.node.chainxMainNetNodes
@@ -128,6 +139,19 @@ export const chainxNodesSelector = createSelector(
       return testNetNodes
     } else if (network === chainxNetwork.MAIN) {
       return mainNetNodes
+    }
+  }
+)
+
+export const chainxNodesDelaySelector = createSelector(
+  networkSelector,
+  state => state.node.mainnetNodesDelay,
+  state => state.node.testnetNodesDelay,
+  (network, mainnetNodesDelay, testnetNodesDelay) => {
+    if (network === chainxNetwork.TEST) {
+      return testnetNodesDelay
+    } else if (network === chainxNetwork.MAIN) {
+      return mainnetNodesDelay
     }
   }
 )

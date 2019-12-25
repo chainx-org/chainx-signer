@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import ClipboardJS from 'clipboard'
 import ReactTooltip from 'react-tooltip'
-import { useRedux, useOutsideClick, isCurrentNodeInit } from '../../shared'
+import { useOutsideClick, isCurrentNodeInit } from '../../shared'
 import Icon from '../../components/Icon'
 import DotInCenterStr from '../../components/DotInCenterStr'
 import logo from '../../assets/extension_logo.svg'
@@ -12,7 +12,8 @@ import './header.scss'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   isTestNetSelector,
-  setNetwork
+  setNetwork,
+  networkSelector
 } from '../../store/reducers/settingSlice'
 import {
   currentChainxAccountSelector,
@@ -25,8 +26,11 @@ import {
   currentChainxNodeSelector,
   chainxNodesSelector,
   setCurrentChainXMainNetNode,
-  setCurrentChainXTestNetNode
+  setCurrentChainXTestNetNode,
+  setNodeDelay,
+  chainxNodesDelaySelector
 } from '../../store/reducers/nodeSlice'
+import getDelay from '../../shared/updateNodeStatus'
 
 function Header(props) {
   const refNodeList = useRef(null)
@@ -38,29 +42,16 @@ function Header(props) {
   const accounts = useSelector(chainxAccountsSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
   const nodeList = useSelector(chainxNodesSelector)
-  const [{ delayList }, setDelayList] = useRedux('delayList', [])
-  const [{ testDelayList }, setTestDelayList] = useRedux('testDelayList', [])
-  const [{ currentDelay }, setCurrentDelay] = useRedux('currentDelay', 0)
-  const [{ currentTestDelay }, setCurrentTestDelay] = useRedux(
-    'currentTestDelay',
-    0
-  )
-
-  const dispatch = useDispatch()
+  const chainId = useSelector(networkSelector)
   const isTestNet = useSelector(isTestNetSelector)
+  const nodesDelay = useSelector(chainxNodesDelaySelector)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    // updateNodeStatus(
-    //   setCurrentNode,
-    //   isTestNet ? setCurrentTestDelay : setCurrentDelay,
-    //   setNodeList,
-    //   isTestNet ? testDelayList : delayList,
-    //   isTestNet ? setTestDelayList : setDelayList,
-    //   isTestNet
-    // )
     setCopyEvent()
+    getDelay(nodeList, chainId, dispatch, setNodeDelay)
     // eslint-disable-next-line
-  }, [isTestNet])
+  }, [isTestNet, chainId, nodeList])
 
   useOutsideClick(refNodeList, () => {
     setShowNodeListArea(false)
@@ -69,22 +60,6 @@ function Header(props) {
   useOutsideClick(refAccountList, () => {
     setShowAccountArea(false)
   })
-
-  function getCurrentDelay(_isTestNet) {
-    if (_isTestNet) {
-      return currentTestDelay
-    } else {
-      return currentDelay
-    }
-  }
-
-  function getDelayList(_isTestNet) {
-    if (_isTestNet) {
-      return testDelayList
-    } else {
-      return delayList
-    }
-  }
 
   function setCopyEvent() {
     const clipboard = new ClipboardJS('.account-copy')
@@ -157,7 +132,7 @@ function Header(props) {
             >
               <span
                 className={
-                  'dot ' + getDelayClass(getCurrentDelay(isTestNet)) + '-bg'
+                  'dot ' + getDelayClass(nodesDelay[currentNode.url]) + '-bg'
                 }
               />
               <span>{currentNode && currentNode.name}</span>
@@ -221,17 +196,10 @@ function Header(props) {
                       </div>
                       <span
                         className={
-                          'delay ' +
-                          getDelayClass(
-                            getDelayList(isTestNet) &&
-                              getDelayList(isTestNet)[index]
-                          )
+                          'delay ' + getDelayClass(nodesDelay[item.url])
                         }
                       >
-                        {getDelayText(
-                          getDelayList(isTestNet) &&
-                            getDelayList(isTestNet)[index]
-                        )}
+                        {getDelayText(nodesDelay[item.url])}
                       </span>
                     </div>
                   </div>

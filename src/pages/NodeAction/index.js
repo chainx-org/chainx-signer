@@ -1,23 +1,20 @@
 import React, { useState } from 'react'
 import ErrorMessage from '../../components/ErrorMessage'
-import { useRedux, updateNodeStatus } from '../../shared'
 import {
   chainxNodesSelector,
   addNode,
-  removeNode
+  removeNode,
+  setNodeDelay
 } from '../../store/reducers/nodeSlice'
 import { networkSelector } from '../../store/reducers/settingSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import './nodeAction.scss'
+import getDelay from '../../shared/updateNodeStatus'
 
 function AddNode(props) {
   const [name, setName] = useState('')
   const [url, setUrl] = useState('')
   const [errMsg, setErrMsg] = useState('')
-  const [{ delayList }, setDelayList] = useRedux('delayList', [])
-  const [{ testDelayList }, setTestDelayList] = useRedux('testDelayList', [])
-  const [, setCurrentDelay] = useRedux('currentDelay', 0)
-  const [, setCurrentTestDelay] = useRedux('currentTestDelay', 0)
   const nodeList = useSelector(chainxNodesSelector)
   const chainId = useSelector(networkSelector)
   const dispatch = useDispatch()
@@ -50,6 +47,7 @@ function AddNode(props) {
     }
     try {
       dispatch(addNode({ chainId, node: { name, url } }))
+      getDelay(nodeList, chainId, dispatch, setNodeDelay)
       setErrMsg('')
       props.history.push('/')
     } catch (error) {
@@ -64,6 +62,7 @@ function AddNode(props) {
     }
     try {
       dispatch(removeNode({ chainId, url }))
+      getDelay(nodeList, chainId, dispatch, setNodeDelay)
       setErrMsg('')
       props.history.push('/')
     } catch (error) {

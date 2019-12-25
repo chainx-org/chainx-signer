@@ -1,4 +1,3 @@
-import { getCurrentChainxNode, getAllChainxNodes } from '../messaging'
 import fetchFromWs from './fetch'
 
 const TIMEOUT = 7000
@@ -31,26 +30,6 @@ const TESTNET_INIT_NODES = [
     url: 'wss://testnet.w1.chainx.org.cn/ws'
   }
 ]
-export const getNodeList = async (setNodeList, isTestNet) => {
-  // const nodeListResult = await getAllChainxNodes(isTestNet);
-  const nodeListResult = [
-    {
-      name: 'testnet.w1.org.cn',
-      url: 'wss://testnet.w1.chainx.org.cn/ws'
-    }
-  ]
-  setNodeList({ nodeList: nodeListResult })
-  return nodeListResult
-}
-
-export const getCurrentNode = async (setCurrentNode, isTestNet) => {
-  const currentNodeResult = {
-    name: 'testnet.w1.org.cn',
-    url: 'wss://testnet.w1.chainx.org.cn/ws'
-  }
-  setCurrentNode({ currentNode: currentNodeResult })
-  return currentNodeResult
-}
 
 export const isCurrentNodeInit = (node, isTestNet) => {
   let result = false
@@ -62,64 +41,26 @@ export const isCurrentNodeInit = (node, isTestNet) => {
   return result
 }
 
-export const getDelay = async (
-  currentNode,
-  setCurrentDelay,
-  nodeList,
-  delayList,
-  setDelayList,
-  isTestNet
-) => {
-  nodeList.forEach((item, index) => {
+const getDelay = async (nodeList, chainId, dispatch, setNodeDelay) => {
+  nodeList.forEach(item => {
     fetchFromWs({
       url: item.url,
       method: 'chain_getBlock',
       timeOut: TIMEOUT
     })
       .then((result = {}) => {
+        console.log(result)
         if (result.data) {
-          nodeList[index].delay = result.wastTime
+          dispatch(
+            setNodeDelay({ chainId, url: item.url, delay: result.wastTime })
+          )
         }
       })
-      .catch(() => {
-        nodeList[index].delay = 'timeout'
-      })
-      .finally(() => {
-        if (nodeList[index].url === currentNode.url) {
-          if (isTestNet) {
-            setCurrentDelay({ currentTestDelay: nodeList[index].delay })
-          } else {
-            setCurrentDelay({ currentDelay: nodeList[index].delay })
-          }
-        }
-        delayList[index] = nodeList[index].delay
-        if (isTestNet) {
-          setDelayList({ testDelayList: delayList })
-        } else {
-          setDelayList({ delayList: delayList })
-        }
+      .catch(err => {
+        console.log('catched', err)
+        dispatch(setNodeDelay({ chainId, url: item.url, delay: 'timeout' }))
       })
   })
 }
 
-async function updateNodeStatus(
-  setCurrentNode,
-  setCurrentDelay,
-  setNodeList,
-  delayList = [],
-  setDelayList,
-  isTestNet
-) {
-  const currentNode = await getCurrentNode(setCurrentNode, isTestNet)
-  const nodeList = await getNodeList(setNodeList, isTestNet)
-  getDelay(
-    currentNode,
-    setCurrentDelay,
-    nodeList,
-    delayList,
-    setDelayList,
-    isTestNet
-  )
-}
-
-export default updateNodeStatus
+export default getDelay
