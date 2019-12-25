@@ -76,7 +76,11 @@ const accountSlice = createSlice({
       }
 
       targetAccounts.splice(index, 1)
-      state.currentChainXMainNetAccount = targetAccounts[0] || null
+      if (chainId === CHAINX_MAIN) {
+        state.currentChainXMainNetAccount = targetAccounts[0] || null
+      } else if (chainId === CHAINX_TEST) {
+        state.currentChainxTestNetAccount = targetAccounts[0] || null
+      }
 
       window.accountStore.set(ACCOUNT_STORE_KEY, state)
 
