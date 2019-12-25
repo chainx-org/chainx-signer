@@ -3,13 +3,19 @@ import { useState } from 'react'
 import { Account } from 'chainx.js'
 import './enterPassword.scss'
 import ErrorMessage from '../../components/ErrorMessage'
-import { useSelector } from 'react-redux'
-import { isTestNetSelector } from '../../store/reducers/settingSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  isTestNetSelector,
+  networkSelector
+} from '../../store/reducers/settingSlice'
+import { removeAccount } from '../../store/reducers/accountSlice'
 
 function EnterPassword(props) {
   const [pass, setPass] = useState('')
   const [errMsg, setErrMsg] = useState('')
   const isTestNet = useSelector(isTestNetSelector)
+  const dispatch = useDispatch()
+  const chainId = useSelector(networkSelector)
 
   async function exportPk(keystore, password) {
     try {
@@ -23,11 +29,11 @@ function EnterPassword(props) {
     }
   }
 
-  async function removeAccount(address, password, keystore) {
+  async function _removeAccount(address, password, keystore) {
     try {
       Account.setNet(isTestNet ? 'testnet' : 'mainnet')
       Account.fromKeyStore(keystore, password)
-      // await removeChainxAccount(address, isTestNet);
+      dispatch(removeAccount({ address, chainId }))
       props.history.push('/')
     } catch (error) {
       setErrMsg(error.message)
@@ -42,7 +48,7 @@ function EnterPassword(props) {
       if (type === 'export') {
         exportPk(keystore, pass)
       } else if (type === 'remove') {
-        removeAccount(address, pass, keystore)
+        _removeAccount(address, pass, keystore)
       }
     }
   }

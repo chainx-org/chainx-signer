@@ -27,6 +27,10 @@ import {
   setCurrentChainXMainNetAccount
 } from '../../store/reducers/accountSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
+import {
+  currentChainxNodeSelector,
+  chainxNodesSelector
+} from '../../store/reducers/nodeSlice'
 
 function Header(props) {
   const refNodeList = useRef(null)
@@ -36,12 +40,8 @@ function Header(props) {
   const [copyText, setCopyText] = useState('Copy')
   const currentAccount = useSelector(currentChainxAccountSelector)
   const accounts = useSelector(chainxAccountsSelector)
-  const [{ currentNode }, setCurrentNode] = useRedux('currentNode', {
-    name: '',
-    url: '',
-    delay: ''
-  })
-  const [{ nodeList }, setNodeList] = useRedux('nodeList', [])
+  const currentNode = useSelector(currentChainxNodeSelector)
+  const nodeList = useSelector(chainxNodesSelector)
   const [{ delayList }, setDelayList] = useRedux('delayList', [])
   const [{ testDelayList }, setTestDelayList] = useRedux('testDelayList', [])
   const [{ currentDelay }, setCurrentDelay] = useRedux('currentDelay', 0)
@@ -54,14 +54,14 @@ function Header(props) {
   const isTestNet = useSelector(isTestNetSelector)
 
   useEffect(() => {
-    updateNodeStatus(
-      setCurrentNode,
-      isTestNet ? setCurrentTestDelay : setCurrentDelay,
-      setNodeList,
-      isTestNet ? testDelayList : delayList,
-      isTestNet ? setTestDelayList : setDelayList,
-      isTestNet
-    )
+    // updateNodeStatus(
+    //   setCurrentNode,
+    //   isTestNet ? setCurrentTestDelay : setCurrentDelay,
+    //   setNodeList,
+    //   isTestNet ? testDelayList : delayList,
+    //   isTestNet ? setTestDelayList : setDelayList,
+    //   isTestNet
+    // )
     setCopyEvent()
     // eslint-disable-next-line
   }, [isTestNet])
@@ -99,14 +99,14 @@ function Header(props) {
 
   async function setNode(url) {
     await setChainxNode(url, isTestNet)
-    updateNodeStatus(
-      setCurrentNode,
-      isTestNet ? setCurrentTestDelay : setCurrentDelay,
-      setNodeList,
-      isTestNet ? testDelayList : delayList,
-      isTestNet ? setTestDelayList : setDelayList,
-      isTestNet
-    )
+    // updateNodeStatus(
+    //   setCurrentNode,
+    //   isTestNet ? setCurrentTestDelay : setCurrentDelay,
+    //   setNodeList,
+    //   isTestNet ? testDelayList : delayList,
+    //   isTestNet ? setTestDelayList : setDelayList,
+    //   isTestNet
+    // )
     setShowNodeListArea(false)
   }
 
