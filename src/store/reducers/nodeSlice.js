@@ -2,11 +2,41 @@ import { createSlice, createSelector } from '@reduxjs/toolkit'
 import { CHAINX_MAIN, CHAINX_TEST, NODE_STORE_KEY } from './constants'
 import { chainxNetwork, networkSelector } from './settingSlice'
 
+export const mainNetInitNodes = [
+  {
+    name: 'w1.org',
+    url: 'wss://w1.chainx.org/ws'
+  },
+  {
+    name: 'w2.org',
+    url: 'wss://w2.chainx.org/ws'
+  },
+  {
+    name: 'HashQuark',
+    url: 'wss://chainx.hashquark.io'
+  },
+  {
+    name: 'BuildLinks',
+    url: 'wss://chainx.buildlinks.org'
+  },
+  {
+    name: 'w1.cn',
+    url: 'wss://w1.chainx.org.cn/ws'
+  }
+]
+
+export const testNetInitNodes = [
+  {
+    name: 'testnet.w1.org.cn',
+    url: 'wss://testnet.w1.chainx.org.cn/ws'
+  }
+]
+
 const defaultNodeInitialState = {
   version: 0,
-  chainxMainNetNodes: [],
+  chainxMainNetNodes: mainNetInitNodes,
   currentChainXMainNetNode: null,
-  chainxTestNetNodes: [],
+  chainxTestNetNodes: testNetInitNodes,
   currentChainXTestNetNode: null
 }
 
