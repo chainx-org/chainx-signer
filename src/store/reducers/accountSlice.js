@@ -41,10 +41,18 @@ const accountSlice = createSlice({
     ) {
       const targetAccounts = findTargetAccounts(state, chainId)
 
-      if (targetAccounts.findIndex(a => a.address === address) < 0) {
-        targetAccounts.push({ name, address, keystore })
-        window.accountStore.set(ACCOUNT_STORE_KEY, state)
+      if (targetAccounts.findIndex(a => a.address === address) >= 0) {
+        return
       }
+
+      const account = { name, address, keystore }
+      targetAccounts.push(account)
+      if (CHAINX_MAIN === chainId) {
+        state.currentChainXMainNetAccount = account
+      } else if (CHAINX_TEST === chainId) {
+        state.currentChainxTestNetAccount = account
+      }
+      window.accountStore.set(ACCOUNT_STORE_KEY, state)
 
       // TODO: 处理存在相同address的情况
     },
@@ -63,10 +71,14 @@ const accountSlice = createSlice({
       const targetAccounts = findTargetAccounts(state, chainId)
 
       const index = targetAccounts.findIndex(a => a.address === address)
-      if (index >= 0) {
-        targetAccounts.splice(index, 1)
-        window.accountStore.set(ACCOUNT_STORE_KEY, state)
+      if (index < 0) {
+        return
       }
+
+      targetAccounts.splice(index, 1)
+      state.currentChainXMainNetAccount = targetAccounts[0] || null
+
+      window.accountStore.set(ACCOUNT_STORE_KEY, state)
 
       // TODO: 处理不存在address的情况
     },

@@ -47,6 +47,9 @@ export default function App() {
   const homeLoading = useSelector(state => state.status.homeLoading)
   const currentNode = useSelector(currentChainxNodeSelector)
 
+  const state = useSelector(state => state)
+  console.log('state', state)
+
   useEffect(() => {
     getSetting()
     // eslint-disable-next-line
