@@ -30,7 +30,15 @@ const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
-    addAccount(state, { chainId, account: { name, address, keystore } }) {
+    addAccount(
+      state,
+      {
+        payload: {
+          chainId,
+          account: { name, address, keystore }
+        }
+      }
+    ) {
       const targetAccounts = findTargetAccounts(state, chainId)
 
       if (targetAccounts.findIndex(a => a.address === address) < 0) {
@@ -51,7 +59,7 @@ const accountSlice = createSlice({
       state.currentChainXMainNetAccount = target
       // TODO: 账户改变后通知所有连接的客户端
     },
-    removeAccount(state, { chainId, address }) {
+    removeAccount(state, { payload: { chainId, address } }) {
       const targetAccounts = findTargetAccounts(state, chainId)
 
       const index = targetAccounts.findIndex(a => a.address === address)

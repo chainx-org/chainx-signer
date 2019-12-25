@@ -30,7 +30,15 @@ const nodeSlice = createSlice({
   name: 'node',
   initialState,
   reducers: {
-    addNode(state, { chainId, node: { name, url } }) {
+    addNode(
+      state,
+      {
+        payload: {
+          chainId,
+          node: { name, url }
+        }
+      }
+    ) {
       const targetNodes = findTargetNodes(state, chainId)
 
       if (targetNodes.findIndex(n => n.url === url) < 0) {
@@ -47,7 +55,7 @@ const nodeSlice = createSlice({
       }
       state.currentChainXMainNetNode = target
     },
-    removeNode(state, { chainId, url }) {
+    removeNode(state, { payload: { chainId, url } }) {
       const targetNodes = findTargetNodes(state, chainId)
       const index = targetNodes.findIndex(n => n.url === url)
       if (index >= 0) {
