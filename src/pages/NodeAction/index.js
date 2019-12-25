@@ -1,20 +1,26 @@
 import React, { useState } from 'react'
-import { addChainxNode, removeChainxNode } from '../../messaging'
 import ErrorMessage from '../../components/ErrorMessage'
 import { useRedux, updateNodeStatus } from '../../shared'
+import {
+  chainxNodesSelector,
+  addNode,
+  removeNode
+} from '../../store/reducers/nodeSlice'
+import { networkSelector } from '../../store/reducers/settingSlice'
+import { useSelector, useDispatch } from 'react-redux'
 import './nodeAction.scss'
 
 function AddNode(props) {
   const [name, setName] = useState('')
   const [url, setUrl] = useState('')
   const [errMsg, setErrMsg] = useState('')
-  const [, setCurrentNode] = useRedux('currentNode')
-  const [{ isTestNet }] = useRedux('isTestNet')
-  const [{ nodeList }, setNodeList] = useRedux('nodeList', [])
   const [{ delayList }, setDelayList] = useRedux('delayList', [])
   const [{ testDelayList }, setTestDelayList] = useRedux('testDelayList', [])
   const [, setCurrentDelay] = useRedux('currentDelay', 0)
   const [, setCurrentTestDelay] = useRedux('currentTestDelay', 0)
+  const nodeList = useSelector(chainxNodesSelector)
+  const chainId = useSelector(networkSelector)
+  const dispatch = useDispatch()
 
   const {
     location: { query }
@@ -43,16 +49,8 @@ function AddNode(props) {
       return
     }
     try {
-      await addChainxNode(name, url, isTestNet)
+      dispatch(addNode({ chainId, node: { name, url } }))
       setErrMsg('')
-      await updateNodeStatus(
-        setCurrentNode,
-        isTestNet ? setCurrentTestDelay : setCurrentDelay,
-        setNodeList,
-        isTestNet ? testDelayList : delayList,
-        isTestNet ? setTestDelayList : setDelayList,
-        isTestNet
-      )
       props.history.push('/')
     } catch (error) {
       setErrMsg(error.message)
@@ -65,16 +63,8 @@ function AddNode(props) {
       return
     }
     try {
-      await removeChainxNode(name, url, isTestNet)
+      dispatch(removeNode({ chainId, url }))
       setErrMsg('')
-      await updateNodeStatus(
-        setCurrentNode,
-        isTestNet ? setCurrentTestDelay : setCurrentDelay,
-        setNodeList,
-        isTestNet ? testDelayList : delayList,
-        isTestNet ? setTestDelayList : setDelayList,
-        isTestNet
-      )
       props.history.push('/')
     } catch (error) {
       setErrMsg(error.message)

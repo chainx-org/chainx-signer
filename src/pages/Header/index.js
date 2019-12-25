@@ -2,12 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import ClipboardJS from 'clipboard'
 import ReactTooltip from 'react-tooltip'
-import {
-  updateNodeStatus,
-  useRedux,
-  useOutsideClick,
-  isCurrentNodeInit
-} from '../../shared'
+import { useRedux, useOutsideClick, isCurrentNodeInit } from '../../shared'
 import { setChainxNode } from '../../messaging'
 import Icon from '../../components/Icon'
 import DotInCenterStr from '../../components/DotInCenterStr'
