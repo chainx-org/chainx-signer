@@ -1,7 +1,7 @@
+import { findPort } from './utils'
+
 const http = require('http')
 const WebSocket = require('ws')
-const net = require('net')
-const startPort = 10013
 
 let mainWindow
 
@@ -157,29 +157,6 @@ class LowLevelSocketService {
   }
 
   async findOpenPorts() {
-    const isPortAvailable = (port = 0) => {
-      return new Promise(async resolve => {
-        const server = net.createServer()
-
-        server.once('error', err => resolve(err.code !== 'EADDRINUSE'))
-
-        server.once('listening', () => {
-          server.close()
-          resolve(true)
-        })
-
-        server.listen(port)
-      })
-    }
-
-    const findPort = async () => {
-      let port = startPort
-      while (!(await isPortAvailable(port))) {
-        port += 13
-      }
-      return port
-    }
-
     const http = await findPort()
     this.ports = { [http]: true }
     return true
