@@ -20,7 +20,6 @@ function Home(props) {
   const currentAccount = useSelector(currentChainxAccountSelector)
 
   useEffect(() => {
-    setCopyEvent()
     getUnapprovedTxs()
     // eslint-disable-next-line
   }, [isTestNet])
@@ -42,6 +41,7 @@ function Home(props) {
       console.log('sign request error occurs ', error)
     } finally {
       dispatch(setHomeLoading(false))
+      setCopyEvent()
     }
   }
 

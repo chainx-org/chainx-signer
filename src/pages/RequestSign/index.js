@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { rejectSign, signTransaction } from '../../messaging'
-import { getCurrentGas, getSignRequest, useRedux } from '../../shared'
+import { getCurrentGas, getSignRequest } from '../../shared'
 import { parseData } from '../../shared/extensionExtrinsic'
 import ErrorMessage from '../../components/ErrorMessage'
 import './requestSign.scss'
@@ -8,12 +8,14 @@ import { DefaultButton, PrimaryButton, Slider } from '@chainx/ui'
 import { setLoading } from '../../store/reducers/statusSlice'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
 import { fetchFee, fetchTradePairs } from '../../store/reducers/tradeSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Transfer from './Transfer'
 import CommonTx from './CommonTx'
 import Trade from './Trade'
 import AssetsProcess from './AssetsProcess'
 import Staking from './Staking'
+import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
+import { isTestNetSelector } from '../../store/reducers/settingSlice'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -22,11 +24,8 @@ function RequestSign(props) {
   const [currentGas, setCurrentGas] = useState(0)
   const [acceleration, setAcceleration] = useState(1)
   const [txPanel, setTxPanel] = useState(null)
-  const [{ isTestNet }] = useRedux('isTestNet')
-  const [{ currentAccount }] = useRedux('currentAccount', {
-    address: '',
-    name: ''
-  })
+  const isTestNet = useSelector(isTestNetSelector)
+  const currentAccount = useSelector(currentChainxAccountSelector)
 
   const {
     match: {

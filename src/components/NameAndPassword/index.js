@@ -2,17 +2,19 @@ import React, { useState } from 'react'
 import { Account } from 'chainx.js'
 import ErrorMessage from '../ErrorMessage'
 import WarningMessage from '../WarningMessage'
-import { useRedux } from '../../shared'
-import { addAccount } from '../../store/reducers/accountSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
+import {
+  addAccount,
+  chainxAccountsSelector
+} from '../../store/reducers/accountSlice'
 
 function NameAndPassword(props) {
   const { secret, onSuccess } = props
   const [obj, setObj] = useState({ name: '', pass: '', repass: '' })
   const [errMsg, setErrMsg] = useState('')
-  const [{ accounts }] = useRedux('accounts')
+  const accounts = useSelector(chainxAccountsSelector)
   const isTestNet = useSelector(isTestNetSelector)
   const dispatch = useDispatch()
 
