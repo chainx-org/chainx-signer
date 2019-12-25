@@ -81,4 +81,13 @@ export const {
   setCurrentChainXTestNetAccount
 } = accountSlice.actions
 
+export const chainxMainNetAccountsSelector = state =>
+  state.account.chainxMainNetAccounts
+export const chainxTestNetAccountsSelector = state =>
+  state.account.chainxTestNetAccounts
+export const currentChainXMainNetAccountSelector = state =>
+  state.account.currentChainXMainNetAccount
+export const currentChainxTestNetAccountSelector = state =>
+  state.account.currentChainxTestNetAccount
+
 export default accountSlice.reducer

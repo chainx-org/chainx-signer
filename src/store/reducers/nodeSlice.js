@@ -73,4 +73,11 @@ export const {
   setCurrentChainXTestNetNode
 } = nodeSlice.actions
 
+export const chainxMainNetNodesSelector = state => state.node.chainxMainNetNodes
+export const chainxTestNetNodesSelector = state => state.node.chainxTestNetNodes
+export const currentChainXMainNetNodeSelector = state =>
+  state.node.currentChainXMainNetNode
+export const currentChainXTestNetNodeSelector = state =>
+  state.node.currentChainXTestNetNode
+
 export default nodeSlice.reducer

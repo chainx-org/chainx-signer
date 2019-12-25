@@ -26,5 +26,6 @@ const settingSlice = createSlice({
 })
 
 export const { setNetwork } = settingSlice.actions
+export const networkSelector = state => state.setting.network
 
 export default settingSlice.reducer
