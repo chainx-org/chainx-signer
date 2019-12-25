@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { SETTING_STORE_KEY } from './constants'
+import { CHAINX_MAIN, CHAINX_TEST, SETTING_STORE_KEY } from './constants'
 
 export const chainxNetwork = {
-  MAIN: 'mainnet',
-  TEST: 'testnet'
+  MAIN: CHAINX_MAIN,
+  TEST: CHAINX_TEST
 }
 
 const defaultSettingInitialState = {
