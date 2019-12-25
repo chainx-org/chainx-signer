@@ -21,4 +21,6 @@ const txSlice = createSlice({
 
 export const { setToSign, clearToSign } = txSlice.actions
 
+export const toSignSelector = state => state.tx.toSign
+
 export default txSlice.reducer
