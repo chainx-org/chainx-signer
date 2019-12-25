@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createSelector } from '@reduxjs/toolkit'
 import { CHAINX_MAIN, CHAINX_TEST, NODE_STORE_KEY } from './constants'
+import { chainxNetwork, networkSelector } from './settingSlice'
 
 const defaultNodeInitialState = {
   version: 0,
@@ -79,5 +80,31 @@ export const currentChainXMainNetNodeSelector = state =>
   state.node.currentChainXMainNetNode
 export const currentChainXTestNetNodeSelector = state =>
   state.node.currentChainXTestNetNode
+
+export const chainxNodesSelector = createSelector(
+  networkSelector,
+  chainxMainNetNodesSelector,
+  chainxTestNetNodesSelector,
+  (network, mainNetNodes, testNetNodes) => {
+    if (network === chainxNetwork.TEST) {
+      return testNetNodes
+    } else if (network === chainxNetwork.MAIN) {
+      return mainNetNodes
+    }
+  }
+)
+
+export const currentChainxNodeSelector = createSelector(
+  networkSelector,
+  currentChainXMainNetNodeSelector,
+  currentChainXTestNetNodeSelector,
+  (network, mainNetNode, testNetNode) => {
+    if (network === chainxNetwork.TEST) {
+      return testNetNode
+    } else if (network === chainxNetwork.MAIN) {
+      return mainNetNode
+    }
+  }
+)
 
 export default nodeSlice.reducer

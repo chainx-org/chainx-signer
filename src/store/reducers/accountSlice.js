@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createSelector } from '@reduxjs/toolkit'
 import { ACCOUNT_STORE_KEY, CHAINX_MAIN, CHAINX_TEST } from './constants'
+import { chainxNetwork, networkSelector } from './settingSlice'
 
 const defaultAccountInitialState = {
   version: 0,
@@ -89,5 +90,31 @@ export const currentChainXMainNetAccountSelector = state =>
   state.account.currentChainXMainNetAccount
 export const currentChainxTestNetAccountSelector = state =>
   state.account.currentChainxTestNetAccount
+
+export const chainxAccountsSelector = createSelector(
+  networkSelector,
+  chainxMainNetAccountsSelector,
+  chainxTestNetAccountsSelector,
+  (network, mainNetAccounts, testNetAccounts) => {
+    if (network === chainxNetwork.TEST) {
+      return testNetAccounts
+    } else if (network === chainxNetwork.MAIN) {
+      return mainNetAccounts
+    }
+  }
+)
+
+export const currentChainxAccountSelector = createSelector(
+  networkSelector,
+  currentChainXMainNetAccountSelector,
+  currentChainxTestNetAccountSelector,
+  (network, mainNetAccount, testNetAccount) => {
+    if (network === chainxNetwork.TEST) {
+      return testNetAccount
+    } else if (network === chainxNetwork.MAIN) {
+      return mainNetAccount
+    }
+  }
+)
 
 export default accountSlice.reducer

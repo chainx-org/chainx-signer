@@ -20,6 +20,7 @@ const settingSlice = createSlice({
   reducers: {
     setNetwork(state, { payload }) {
       state.network = payload
+      // TODO: save settings
       // TODO: 改变网络后通知连接的dapps
     }
   }
