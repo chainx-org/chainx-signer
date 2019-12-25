@@ -2,13 +2,14 @@ import React from 'react'
 import { useState } from 'react'
 import { Account } from 'chainx.js'
 import './enterPassword.scss'
-import { useRedux } from '../../shared'
 import ErrorMessage from '../../components/ErrorMessage'
+import { useSelector } from 'react-redux'
+import { isTestNetSelector } from '../../store/reducers/settingSlice'
 
 function EnterPassword(props) {
   const [pass, setPass] = useState('')
   const [errMsg, setErrMsg] = useState('')
-  const [{ isTestNet }] = useRedux('isTestNet')
+  const isTestNet = useSelector(isTestNetSelector)
 
   async function exportPk(keystore, password) {
     try {

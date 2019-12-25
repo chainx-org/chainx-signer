@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useOutsideClick, useRedux } from '../shared'
+import { useOutsideClick } from '../shared'
 import { useSelector, useDispatch } from 'react-redux'
 import { setHomeLoading } from '../store/reducers/statusSlice'
 import ClipboardJS from 'clipboard'
@@ -8,13 +8,14 @@ import Icon from '../components/Icon'
 import './index.scss'
 import logo from '../assets/extension_logo.svg'
 import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
+import { isTestNetSelector } from '../store/reducers/settingSlice'
 
 function Home(props) {
   const ref = useRef(null)
   const [showAccountAction, setShowAccountAction] = useState(false)
   const dispatch = useDispatch()
   const homeLoading = useSelector(state => state.status.homeLoading)
-  const [{ isTestNet }] = useRedux('isTestNet')
+  const isTestNet = useSelector(isTestNetSelector)
   const [copySuccess, setCopySuccess] = useState('')
   const currentAccount = useSelector(currentChainxAccountSelector)
 

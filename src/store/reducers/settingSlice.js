@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createSelector } from '@reduxjs/toolkit'
 import { CHAINX_MAIN, CHAINX_TEST, SETTING_STORE_KEY } from './constants'
 
 export const chainxNetwork = {
@@ -28,5 +28,13 @@ const settingSlice = createSlice({
 
 export const { setNetwork } = settingSlice.actions
 export const networkSelector = state => state.setting.network
+
+export const isTestNetSelector = createSelector(networkSelector, network => {
+  if (network === chainxNetwork.TEST) {
+    return true
+  } else if (network === chainxNetwork.MAIN) {
+    return false
+  }
+})
 
 export default settingSlice.reducer

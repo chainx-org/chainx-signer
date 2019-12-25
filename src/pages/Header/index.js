@@ -16,7 +16,10 @@ import testNetImg from '../../assets/testnet.svg'
 import switchImg from '../../assets/switch.svg'
 import './header.scss'
 import { useSelector, useDispatch } from 'react-redux'
-import { networkSelector, setNetwork } from '../../store/reducers/settingSlice'
+import {
+  isTestNetSelector,
+  setNetwork
+} from '../../store/reducers/settingSlice'
 import {
   currentChainxAccountSelector,
   chainxAccountsSelector,
@@ -48,8 +51,7 @@ function Header(props) {
   )
 
   const dispatch = useDispatch()
-  const isTestNet =
-    useSelector(networkSelector) === 'chainx-testnet' ? true : false
+  const isTestNet = useSelector(isTestNetSelector)
 
   useEffect(() => {
     updateNodeStatus(
