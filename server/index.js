@@ -34,7 +34,9 @@ class LowLevelSocketService {
   }
 
   async emitSocket(socket, path, data) {
-    if (!socket) return console.error('No socket found')
+    if (!socket) {
+      return console.error('No socket found')
+    }
     socket.send('42/chainx,' + JSON.stringify([path, data ? data : false]))
   }
 
@@ -67,18 +69,7 @@ class LowLevelSocketService {
         return killRequest()
       }
 
-      let requestOrigin
-      if (request.data.hasOwnProperty('payload')) {
-        request.data.payload.origin = request.data.payload.origin
-          .replace(/\s/g, '')
-          .trim()
-        if (request.data.payload.origin.toLowerCase() === 'chainx') {
-          return killRequest()
-        }
-        requestOrigin = request.data.payload.origin
-      } else {
-        requestOrigin = request.data.origin.replace(/\s/g, '').trim()
-      }
+      let requestOrigin = request.data.origin.replace(/\s/g, '').trim()
 
       if (!origin) {
         origin = requestOrigin

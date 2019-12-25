@@ -13,7 +13,7 @@ export const handleApiResponse = async (request, id) => {
 
   const resp = await ApiService.handler(request.data.payload)
 
-  return service.emit(payload.origin, id, 'api', {
+  return service.emit(request.data.origin, id, 'api', {
     id: payload.id,
     ...resp
   })
