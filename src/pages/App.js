@@ -56,12 +56,7 @@ export default function App() {
   }, [])
 
   const getSetting = async () => {
-    console.log(currentNode)
-    const node = {
-      name: 'testnet.w1.org.cn',
-      url: 'wss://testnet.w1.chainx.org.cn/ws'
-    }
-    await setChainx(node.url)
+    await setChainx(currentNode.url)
     dispatch(setInitLoading(false))
   }
 
