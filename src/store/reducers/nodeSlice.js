@@ -35,9 +35,9 @@ export const testNetInitNodes = [
 const defaultNodeInitialState = {
   version: 0,
   chainxMainNetNodes: mainNetInitNodes,
-  currentChainXMainNetNode: null,
+  currentChainXMainNetNode: mainNetInitNodes[0],
   chainxTestNetNodes: testNetInitNodes,
-  currentChainXTestNetNode: null
+  currentChainXTestNetNode: testNetInitNodes[0]
 }
 
 const initialState =
