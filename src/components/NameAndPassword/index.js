@@ -13,7 +13,8 @@ function NameAndPassword(props) {
   const [obj, setObj] = useState({ name: '', pass: '', repass: '' })
   const [errMsg, setErrMsg] = useState('')
   const [{ accounts }] = useRedux('accounts')
-  const isTestNet = useSelector(networkSelector) === 'testnet' ? true : false
+  const isTestNet =
+    useSelector(networkSelector) === 'chainx-testnet' ? true : false
   const dispatch = useDispatch()
 
   Account.setNet(isTestNet ? 'testnet' : 'mainnet')

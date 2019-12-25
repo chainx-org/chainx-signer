@@ -48,7 +48,8 @@ function Header(props) {
   )
 
   const dispatch = useDispatch()
-  const isTestNet = useSelector(networkSelector) === 'testnet' ? true : false
+  const isTestNet =
+    useSelector(networkSelector) === 'chainx-testnet' ? true : false
 
   useEffect(() => {
     updateNodeStatus(
@@ -124,7 +125,6 @@ function Header(props) {
   }
 
   function switchNet() {
-    console.log('switch network ', isTestNet)
     dispatch(setNetwork(isTestNet ? CHAINX_MAIN : CHAINX_TEST))
     setShowNodeListArea(false)
     props.history.push('/')
