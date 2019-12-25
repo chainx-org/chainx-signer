@@ -92,11 +92,10 @@ class LowLevelSocketService {
 
       switch (type) {
         case 'pair':
-          return sendToEmbed({ type: 'pair', request, id })
+        case 'api':
+          return sendToEmbed({ type, request, id })
         case 'rekeyed':
           return this.rekeyPromise.resolve(request)
-        case 'api':
-          return sendToEmbed({ type: 'api', request, id })
         default:
           console.error(`Unknown type ${type}`)
       }
