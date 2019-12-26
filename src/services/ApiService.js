@@ -14,6 +14,15 @@ function getAccount() {
   }
 }
 
+function getSettings() {
+  const state = store.getState()
+  const settings = state.setting
+
+  return {
+    result: settings
+  }
+}
+
 export default class ApiService {
   static async handler(data) {
     if (!data.method) {
@@ -26,6 +35,8 @@ export default class ApiService {
     }
 
     switch (data.method) {
+      case 'get_settings':
+        return getSettings()
       case 'chainx_account':
         return getAccount()
       case 'chainx_accounts': {
