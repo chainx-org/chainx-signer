@@ -2,33 +2,32 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import ClipboardJS from 'clipboard'
 import ReactTooltip from 'react-tooltip'
-import { useOutsideClick, isCurrentNodeInit } from '../../shared'
+import { isCurrentNodeInit, useOutsideClick } from '../../shared'
 import Icon from '../../components/Icon'
 import DotInCenterStr from '../../components/DotInCenterStr'
 import logo from '../../assets/extension_logo.svg'
 import testNetImg from '../../assets/testnet.svg'
 import switchImg from '../../assets/switch.svg'
 import './header.scss'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   isTestNetSelector,
-  setNetwork,
-  networkSelector
+  networkSelector,
+  setNetwork
 } from '../../store/reducers/settingSlice'
 import {
-  currentChainxAccountSelector,
   chainxAccountsSelector,
-  setCurrentChainXTestNetAccount,
-  setCurrentChainXMainNetAccount
+  currentChainxAccountSelector,
+  setCurrentChainXMainNetAccount,
+  setCurrentChainXTestNetAccount
 } from '../../store/reducers/accountSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
-  currentChainxNodeSelector,
+  chainxNodesDelaySelector,
   chainxNodesSelector,
-  setCurrentChainXMainNetNode,
-  setCurrentChainXTestNetNode,
-  setNodeDelay,
-  chainxNodesDelaySelector
+  currentChainxNodeSelector,
+  setCurrentChainXNode,
+  setNodeDelay
 } from '../../store/reducers/nodeSlice'
 import getDelay from '../../shared/updateNodeStatus'
 
@@ -69,11 +68,7 @@ function Header(props) {
   }
 
   async function setNode(url) {
-    if (isTestNet) {
-      dispatch(setCurrentChainXTestNetNode({ url }))
-    } else {
-      dispatch(setCurrentChainXMainNetNode({ url }))
-    }
+    dispatch(setCurrentChainXNode({ chainId, url }))
     setShowNodeListArea(false)
   }
 

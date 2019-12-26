@@ -165,6 +165,32 @@ const nodeSlice = createSlice({
         from: pre,
         to: target
       })
+    },
+    setCurrentChainXNode(state, { payload: { chainId, url } }) {
+      const targetNodes = findTargetNodes(state, chainId)
+      if (!targetNodes) {
+        return
+      }
+
+      const target = targetNodes.find(n => n.url === url)
+      if (!target) {
+        return
+      }
+
+      let pre
+      if (CHAINX_MAIN === chainId) {
+        pre = state.currentChainXMainNetNode
+        state.currentChainXMainNetNode = target
+      } else if (CHAINX_TEST === chainId) {
+        pre = state.currentChainXTestNetNode
+        state.currentChainXTestNetNode = target
+      }
+
+      window.nodeStore.set(NODE_STORE_KEY, state)
+      window.sockets.broadcastEvent(events.NODE_CHANGE, {
+        from: pre,
+        to: target
+      })
     }
   }
 })
@@ -174,6 +200,7 @@ export const {
   removeNode,
   setCurrentChainXMainNetNode,
   setCurrentChainXTestNetNode,
+  setCurrentChainXNode,
   setNodeDelay
 } = nodeSlice.actions
 
