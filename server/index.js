@@ -116,18 +116,16 @@ class LowLevelSocketService {
     return true
   }
 
-  sendEvent(event, payload, origin) {
-    const sockets = Object.keys(this.openConnections)
-      .filter(x => x.indexOf(origin) === 0)
-      .map(x => this.openConnections[x])
-    sockets.map(x => this.emitSocket(x, 'event', { event, payload }))
-    return true
-  }
-
   broadcastEvent(event, payload) {
-    Object.keys(this.openConnections).map(origin =>
-      this.sendEvent(event, payload, origin)
-    )
+    Object.values(this.openConnections).forEach(async socket => {
+      try {
+        this.emitSocket(socket, 'event', { event, payload })
+      } catch (e) {
+        console.error(`Broadcast event ${event} failed`, e)
+        return false
+      }
+    })
+
     return true
   }
 }

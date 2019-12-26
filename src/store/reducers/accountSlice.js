@@ -1,6 +1,12 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit'
-import { ACCOUNT_STORE_KEY, CHAINX_MAIN, CHAINX_TEST } from './constants'
+import {
+  ACCOUNT_STORE_KEY,
+  CHAINX_MAIN,
+  CHAINX_TEST,
+  events
+} from './constants'
 import { chainxNetwork, networkSelector } from './settingSlice'
+import { extractAccountInfo } from '../utils'
 
 const defaultAccountInitialState = {
   version: 0,
@@ -47,12 +53,21 @@ const accountSlice = createSlice({
 
       const account = { name, address, keystore }
       targetAccounts.push(account)
+
+      let pre
       if (CHAINX_MAIN === chainId) {
+        pre = state.currentChainXMainNetAccount
         state.currentChainXMainNetAccount = account
       } else if (CHAINX_TEST === chainId) {
+        pre = state.currentChainxTestNetAccount
         state.currentChainxTestNetAccount = account
       }
       window.accountStore.set(ACCOUNT_STORE_KEY, state)
+
+      window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
+        from: extractAccountInfo(pre),
+        to: extractAccountInfo(account)
+      })
 
       // TODO: 处理存在相同address的情况
     },
@@ -64,8 +79,12 @@ const accountSlice = createSlice({
         throw new Error(`No ChainX mainnet account with address ${address}`)
       }
 
+      const pre = state.currentChainXMainNetAccount
       state.currentChainXMainNetAccount = target
-      // TODO: 账户改变后通知所有连接的客户端
+      window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
+        from: extractAccountInfo(pre),
+        to: extractAccountInfo(target)
+      })
     },
     removeAccount(state, { payload: { chainId, address } }) {
       const targetAccounts = findTargetAccounts(state, chainId)
@@ -76,13 +95,22 @@ const accountSlice = createSlice({
       }
 
       targetAccounts.splice(index, 1)
+      let pre, current
       if (chainId === CHAINX_MAIN) {
+        pre = state.currentChainXMainNetAccount
         state.currentChainXMainNetAccount = targetAccounts[0] || null
+        current = targetAccounts[0] || null
       } else if (chainId === CHAINX_TEST) {
+        pre = state.currentChainxTestNetAccount
         state.currentChainxTestNetAccount = targetAccounts[0] || null
+        current = targetAccounts[0] || null
       }
 
       window.accountStore.set(ACCOUNT_STORE_KEY, state)
+      window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
+        from: extractAccountInfo(pre),
+        to: extractAccountInfo(current)
+      })
 
       // TODO: 处理不存在address的情况
     },
@@ -94,7 +122,12 @@ const accountSlice = createSlice({
         throw new Error(`No ChainX testnet account with address ${address}`)
       }
 
+      const pre = state.currentChainXMainNetAccount
       state.currentChainxTestNetAccount = target
+      window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
+        from: extractAccountInfo(pre),
+        to: extractAccountInfo(target)
+      })
     }
   }
 })
