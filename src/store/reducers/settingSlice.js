@@ -1,5 +1,10 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit'
-import { CHAINX_MAIN, CHAINX_TEST, SETTING_STORE_KEY } from './constants'
+import {
+  CHAINX_MAIN,
+  CHAINX_TEST,
+  events,
+  SETTING_STORE_KEY
+} from './constants'
 
 export const chainxNetwork = {
   MAIN: CHAINX_MAIN,
@@ -19,9 +24,16 @@ const settingSlice = createSlice({
   initialState,
   reducers: {
     setNetwork(state, { payload }) {
+      const pre = state.network
       state.network = payload
       window.settingStore.set(SETTING_STORE_KEY, state)
-      // TODO: 改变网络后通知连接的dapps
+
+      if (pre !== payload) {
+        window.sockets.broadcastEvent(events.NETWORK_CHANGE, {
+          from: pre,
+          to: payload
+        })
+      }
     }
   }
 })

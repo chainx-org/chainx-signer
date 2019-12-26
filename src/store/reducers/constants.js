@@ -5,5 +5,6 @@ export const NODE_STORE_KEY = 'nodes'
 export const SETTING_STORE_KEY = 'settings'
 export const events = {
   ACCOUNT_CHANGE: 'account-change',
-  NODE_CHANGE: 'node-change'
+  NODE_CHANGE: 'node-change',
+  NETWORK_CHANGE: 'network-change'
 }
