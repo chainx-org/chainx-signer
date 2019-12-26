@@ -30,11 +30,7 @@ export const { setNetwork } = settingSlice.actions
 export const networkSelector = state => state.setting.network
 
 export const isTestNetSelector = createSelector(networkSelector, network => {
-  if (network === chainxNetwork.TEST) {
-    return true
-  } else if (network === chainxNetwork.MAIN) {
-    return false
-  }
+  return network === chainxNetwork.TEST
 })
 
 export default settingSlice.reducer

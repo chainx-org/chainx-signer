@@ -1,5 +1,5 @@
-import { createSlice, createSelector } from '@reduxjs/toolkit'
-import { CHAINX_MAIN, CHAINX_TEST, NODE_STORE_KEY } from './constants'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
+import { CHAINX_MAIN, CHAINX_TEST, events, NODE_STORE_KEY } from './constants'
 import { chainxNetwork, networkSelector } from './settingSlice'
 
 export const mainNetInitNodes = [
@@ -72,13 +72,30 @@ const nodeSlice = createSlice({
       }
     ) {
       const targetNodes = findTargetNodes(state, chainId)
-
-      if (targetNodes.findIndex(n => n.url === url) < 0) {
-        targetNodes.push({ name, url })
-        window.nodeStore.set(NODE_STORE_KEY, state)
+      const target = targetNodes.find(n => n.url === url)
+      if (target) {
+        return
       }
 
-      // TODO: 处理存在相同url的情况
+      const newNode = { name, url }
+      targetNodes.push(newNode)
+      let pre
+      if (CHAINX_MAIN === chainId) {
+        pre = state.currentChainXMainNetNode
+        state.currentChainXMainNetNode = newNode
+      } else if (CHAINX_TEST === chainId) {
+        pre = state.currentChainXTestNetNode
+        state.currentChainXTestNetNode = newNode
+      }
+
+      if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
+        window.sockets.broadcastEvent(events.NODE_CHANGE, {
+          from: pre,
+          to: newNode
+        })
+      }
+
+      window.nodeStore.set(NODE_STORE_KEY, state)
     },
     setNodeDelay(state, { payload: { chainId, url, delay } }) {
       let nodes = state.testnetNodesDelay
@@ -88,29 +105,66 @@ const nodeSlice = createSlice({
       nodes[url] = delay
       window.nodeStore.set(NODE_STORE_KEY, state)
     },
+    removeNode(state, { payload: { chainId, url } }) {
+      const targetNodes = findTargetNodes(state, chainId)
+      if (targetNodes.length <= 1) {
+        return
+      }
+
+      const index = targetNodes.findIndex(n => n.url === url)
+      if (index < 0) {
+        return
+      }
+
+      targetNodes.splice(index, 1)
+
+      let pre = null
+      if (CHAINX_MAIN === chainId) {
+        pre = state.currentChainXMainNetNode
+        state.currentChainXMainNetNode = targetNodes[0] || null
+      } else if (CHAINX_TEST === chainId) {
+        pre = state.currentChainXTestNetNode
+        state.currentChainXTestNetNode = targetNodes[0] || null
+      }
+
+      if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
+        window.sockets.broadcastEvent(events.NODE_CHANGE, {
+          from: pre,
+          to: targetNodes[0] || null
+        })
+      }
+
+      window.nodeStore.set(NODE_STORE_KEY, state)
+
+      // TODO: 处理不存在url的情况
+    },
     setCurrentChainXMainNetNode(state, { payload: { url } }) {
       const target = state.chainxMainNetNodes.find(n => n.url === url)
       if (!target) {
         throw new Error(`No ChainX mainnet node with url ${url}`)
       }
-      state.currentChainXMainNetNode = target
-    },
-    removeNode(state, { payload: { chainId, url } }) {
-      const targetNodes = findTargetNodes(state, chainId)
-      const index = targetNodes.findIndex(n => n.url === url)
-      if (index >= 0) {
-        targetNodes.splice(index, 1)
-        window.nodeStore.set(NODE_STORE_KEY, state)
-      }
 
-      // TODO: 处理不存在url的情况
+      const pre = state.currentChainXTestNetNode
+      state.currentChainXMainNetNode = target
+      window.nodeStore.set(NODE_STORE_KEY, state)
+      window.sockets.broadcastEvent(events.NODE_CHANGE, {
+        from: pre,
+        to: target
+      })
     },
     setCurrentChainXTestNetNode(state, { payload: { url } }) {
       const target = state.chainxTestNetNodes.find(n => n.url === url)
       if (!target) {
         throw new Error(`No ChainX testnet node with url ${url}`)
       }
+
+      const pre = state.currentChainXTestNetNode
       state.currentChainXTestNetNode = target
+      window.nodeStore.set(NODE_STORE_KEY, state)
+      window.sockets.broadcastEvent(events.NODE_CHANGE, {
+        from: pre,
+        to: target
+      })
     }
   }
 })
