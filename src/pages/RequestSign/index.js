@@ -16,6 +16,7 @@ import AssetsProcess from './AssetsProcess'
 import Staking from './Staking'
 import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
+import { clearToSign } from '../../store/reducers/txSlice'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -24,6 +25,9 @@ function RequestSign(props) {
   const [currentGas, setCurrentGas] = useState(0)
   const [acceleration, setAcceleration] = useState(1)
   const [txPanel, setTxPanel] = useState(null)
+  const [newQuery, setNewQuery] = useState(
+    Object.assign({}, props.location.query)
+  )
   const isTestNet = useSelector(isTestNetSelector)
   const currentAccount = useSelector(currentChainxAccountSelector)
 
@@ -48,16 +52,17 @@ function RequestSign(props) {
   }
 
   const fetchRelevantInfo = isTestNet => {
-    if (query.module === 'xStaking') {
+    if (newQuery.module === 'xStaking') {
       dispatch(fetchIntentions(isTestNet))
     }
-    if (query.module === 'xSpot') {
+    if (newQuery.module === 'xSpot') {
       dispatch(fetchTradePairs(isTestNet))
     }
-    if (query.module === 'xAssetsProcess') {
+    if (newQuery.module === 'xAssetsProcess') {
       dispatch(fetchFee(isTestNet))
     }
   }
+
   const parseQuery = isTestNet => {
     // const hex = '0xe90281ff3f53e37c21e24df9cacc2ec69d010d144fe4dace6b2f087f466ade8b6b72278fc116af6b699bdeb55d265d7fa1828111106f1bac0814ab2432765e029b31976e3991300d94d4a5ec8411cd49f5a61fda0cbd9aeed39501cbe1913e51f55b910e0000040803ff7684c16db0c321ee15a297e20bab33279632dd7e288c6d66f16d73e185a4f9fc0c504358010000000000000094756e6973776170313536393733353332303134323832322e36303438363133363738323639'
     if (!query) {
@@ -65,9 +70,9 @@ function RequestSign(props) {
     }
     if (!query.module) {
       const [method, args, argsWithName] = parseData(query.data)
-      query.method = method
-      query.argsWithName = argsWithName
-      query.args = args
+      newQuery.method = method
+      newQuery.argsWithName = argsWithName
+      newQuery.args = args
       let module = ''
       if (
         ['nominate', 'renominate', 'unnominate', 'unfreeze', 'claim'].includes(
@@ -87,26 +92,27 @@ function RequestSign(props) {
       } else {
         module = 'xContracts'
       }
-      query.module = module
+      newQuery.module = module
+      setNewQuery(newQuery)
     }
 
     updateTxPanel()
-    getCurrentGas(currentAccount, query, setErrMsg, setCurrentGas)
+    getCurrentGas(currentAccount, newQuery, setErrMsg, setCurrentGas)
     fetchRelevantInfo(isTestNet)
   }
 
   const updateTxPanel = () => {
     let _txPanel
-    if (query.module === 'xAssets' && query.method === 'transfer') {
-      _txPanel = <Transfer query={query} />
-    } else if (query.module === 'xSpot') {
-      _txPanel = <Trade query={query} />
-    } else if (query.module === 'xAssetsProcess') {
-      _txPanel = <AssetsProcess query={query} />
-    } else if (['xStaking', 'xTokens'].includes(query.module)) {
-      _txPanel = <Staking query={query} />
+    if (newQuery.module === 'xAssets' && newQuery.method === 'transfer') {
+      _txPanel = <Transfer query={newQuery} />
+    } else if (newQuery.module === 'xSpot') {
+      _txPanel = <Trade query={newQuery} />
+    } else if (newQuery.module === 'xAssetsProcess') {
+      _txPanel = <AssetsProcess query={newQuery} />
+    } else if (['xStaking', 'xTokens'].includes(newQuery.module)) {
+      _txPanel = <Staking query={newQuery} />
     } else {
-      _txPanel = <CommonTx query={query} />
+      _txPanel = <CommonTx query={newQuery} />
     }
     setTxPanel(_txPanel)
   }
@@ -129,18 +135,18 @@ function RequestSign(props) {
     try {
       const request = await getSignRequest(
         currentAccount,
-        query,
+        newQuery,
         pass,
         acceleration
       )
       await signTransaction(request)
       setErrMsg('')
       dispatch(setLoading(false))
+      removeCurrentSign()
+      props.history.push('/')
     } catch (e) {
       dispatch(setLoading(false))
       setErrMsg(`Error: ${e.message}`)
-    } finally {
-      props.history.push('/')
     }
   }
 
@@ -150,7 +156,7 @@ function RequestSign(props) {
 
   const removeCurrentSign = async () => {
     try {
-      await rejectSign(id)
+      dispatch(clearToSign())
     } catch (e) {
       console.log(e)
       // window.close()
