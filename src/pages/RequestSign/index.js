@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { rejectSign, signTransaction } from '../../messaging'
+import { signTransaction } from '../../messaging'
 import { getCurrentGas, getSignRequest } from '../../shared'
 import { parseData } from '../../shared/extensionExtrinsic'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -32,9 +32,6 @@ function RequestSign(props) {
   const currentAccount = useSelector(currentChainxAccountSelector)
 
   const {
-    match: {
-      params: { id }
-    },
     location: { query }
   } = props
 
