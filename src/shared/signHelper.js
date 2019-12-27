@@ -2,7 +2,6 @@ import { getChainx } from './chainx'
 
 const getSubmittable = (query, chainx) => {
   const { module, method, args } = query
-  console.log(chainx.api.tx, module, method)
   const call = chainx.api.tx[module][method]
   if (!call) {
     throw new Error('Invalid method')
@@ -19,7 +18,6 @@ export const getSignRequest = async (
   pass,
   acceleration
 ) => {
-  console.log('query sign request', query)
   const chainx = getChainx()
   const submittable = getSubmittable(query, chainx)
   const account = chainx.account.fromKeyStore(currentAccount.keystore, pass)
