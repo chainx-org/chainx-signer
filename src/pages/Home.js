@@ -3,7 +3,6 @@ import { useOutsideClick } from '../shared'
 import { useSelector, useDispatch } from 'react-redux'
 import { setHomeLoading } from '../store/reducers/statusSlice'
 import ClipboardJS from 'clipboard'
-import { getToSign } from '../messaging'
 import Icon from '../components/Icon'
 import './index.scss'
 import logo from '../assets/extension_logo.svg'
@@ -18,6 +17,7 @@ function Home(props) {
   const isTestNet = useSelector(isTestNetSelector)
   const [copySuccess, setCopySuccess] = useState('')
   const currentAccount = useSelector(currentChainxAccountSelector)
+  // const toSign = useSelector(state => state.tx.toSign)
 
   useEffect(() => {
     getUnapprovedTxs()
@@ -28,9 +28,22 @@ function Home(props) {
     setShowAccountAction(false)
   })
 
+  async function getToSign() {
+    const data = {
+      id: 'test',
+      address: '',
+      data:
+        '0xe90281ff3f53e37c21e24df9cacc2ec69d010d144fe4dace6b2f087f466ade8b6b72278fc116af6b699bdeb55d265d7fa1828111106f1bac0814ab2432765e029b31976e3991300d94d4a5ec8411cd49f5a61fda0cbd9aeed39501cbe1913e51f55b910e0000040803ff7684c16db0c321ee15a297e20bab33279632dd7e288c6d66f16d73e185a4f9fc0c504358010000000000000094756e6973776170313536393733353332303134323832322e36303438363133363738323639'
+    }
+    return new Promise(resolve => {
+      resolve(data)
+    })
+  }
+
   async function getUnapprovedTxs() {
     try {
       const toSign = await getToSign()
+      console.log('get to sign', toSign)
       if (toSign) {
         props.history.push({
           pathname: '/requestSign/' + toSign.id,

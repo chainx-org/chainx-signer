@@ -39,11 +39,6 @@ function RequestSign(props) {
     // eslint-disable-next-line
   }, [isTestNet])
 
-  if (!query) {
-    return <></>
-  }
-
-  const { address } = query
   const check = () => {
     if (!pass) {
       setErrMsg('password is required')
@@ -96,7 +91,7 @@ function RequestSign(props) {
     }
 
     updateTxPanel()
-    getCurrentGas(isTestNet, query, setErrMsg, setCurrentGas)
+    getCurrentGas(currentAccount, query, setErrMsg, setCurrentGas)
     fetchRelevantInfo(isTestNet)
   }
 
@@ -125,14 +120,19 @@ function RequestSign(props) {
     if (!check()) {
       return
     }
-    if (currentAccount.address !== address) {
+    if (currentAccount.address !== query.address) {
       setErrMsg('Invalid address')
       return
     }
 
     dispatch(setLoading(true))
     try {
-      const request = await getSignRequest(isTestNet, query, pass, acceleration)
+      const request = await getSignRequest(
+        currentAccount,
+        query,
+        pass,
+        acceleration
+      )
       await signTransaction(request)
       setErrMsg('')
       dispatch(setLoading(false))
@@ -195,6 +195,10 @@ function RequestSign(props) {
       label: '10x'
     }
   ]
+
+  if (!query) {
+    return <></>
+  }
 
   return (
     <div className="container request-sign">

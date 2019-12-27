@@ -1,5 +1,4 @@
-import { getCurrentChainxAccount, getCurrentChainxNode } from '../messaging'
-import { setChainx } from './chainx'
+import { getChainx } from './chainx'
 
 const getSubmittable = (query, chainx) => {
   const { module, method, args } = query
@@ -13,11 +12,13 @@ const getSubmittable = (query, chainx) => {
   return call(...args)
 }
 
-export const getSignRequest = async (isTestNet, query, pass, acceleration) => {
-  const node = await getCurrentChainxNode(isTestNet)
-  const chainx = await setChainx(node.url)
-  const currentAccount = await getCurrentChainxAccount(isTestNet)
-
+export const getSignRequest = async (
+  currentAccount,
+  query,
+  pass,
+  acceleration
+) => {
+  const chainx = getChainx()
   const submittable = getSubmittable(query, chainx)
   const account = chainx.account.fromKeyStore(currentAccount.keystore, pass)
   const nonce = await submittable.getNonce(account.publicKey())
@@ -34,15 +35,12 @@ export const getSignRequest = async (isTestNet, query, pass, acceleration) => {
 }
 
 export const getCurrentGas = async (
-  isTestNet,
+  currentAccount,
   query,
   setErrMsg,
   setCurrentGas
 ) => {
-  const node = await getCurrentChainxNode(isTestNet)
-  const chainx = await setChainx(node.url)
-  await chainx.isRpcReady()
-  const _currentAccount = await getCurrentChainxAccount(isTestNet)
+  const chainx = getChainx()
 
   const { address, module, method, args } = query
 
@@ -53,7 +51,7 @@ export const getCurrentGas = async (
     return
   }
 
-  if (_currentAccount.address !== address) {
+  if (currentAccount.address !== address) {
     setErrMsg('Invalid address')
     return
   }
@@ -63,7 +61,7 @@ export const getCurrentGas = async (
   }
 
   const submittable = call(...args)
-  const _currentGas = submittable.getFeeSync(_currentAccount.address, 1)
+  const _currentGas = submittable.getFeeSync(currentAccount.address, 1)
 
   setCurrentGas(_currentGas)
 }
