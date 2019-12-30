@@ -17,8 +17,8 @@ const txSlice = createSlice({
   name: 'tx',
   initialState,
   reducers: {
-    setToSign(state, { payload: { address, data, isTestNet } }) {
-      state.toSign = { address, data, isTestNet }
+    setToSign(state, { payload: { id, address, data } }) {
+      state.toSign = { id, address, data }
     },
     clearToSign(state) {
       // TODO: 切换网络是清掉toSign

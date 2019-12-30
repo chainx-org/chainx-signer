@@ -12,8 +12,6 @@ const getWindow = () => {
 }
 
 export default class StorageService {
-  constructor() {}
-
   static setAppKey(appkey) {
     getWindow().localStorage.setItem('appkey', appkey)
   }
