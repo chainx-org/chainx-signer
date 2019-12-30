@@ -22,27 +22,22 @@ signer.link().then(async () => {
   })
   console.log('settings', settings)
 
-  // await chainx.isRpcReady()
+  await chainx.isRpcReady()
 
-  // const extrinsic = chainx.api.tx.xAssets.transfer(
-  //   '5Uqv6cLXvfbHr2GNDyofzruGhoY8V7ECyFW3XffAjW5X1osy',
-  //   'PCX',
-  //   1000000000,
-  //   ''
-  // )
-
-  // extrinsic.module
+  const extrinsic = chainx.api.tx.xAssets.transfer(
+    '5GikUJaUwAoSnRHk6nupxEmFdbY2BpPGub3ZVqUQyAVLy1ff',
+    'PCX',
+    1 * 10 ** 8,
+    ''
+  )
 
   // 发送交易
-  // const txresult = await signer.sendApiRequest({
-  //   method: 'chainx_sign',
-  //   params: [
-  //     {
-  //       from: account,
-  //       data: extrinsic.method.toHex()
-  //     }
-  //   ]
-  // })
+  const signResult = await signer.sendApiRequest({
+    method: 'chainx_sign',
+    params: [account.address, extrinsic.toHex()]
+  })
+
+  console.log('signResult', signResult)
 })
 
 function App() {

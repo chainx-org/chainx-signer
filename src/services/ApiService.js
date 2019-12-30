@@ -1,10 +1,11 @@
-import { getChainx } from '../shared/chainx'
 import store from '../store'
 import {
   chainxAccountsSelector,
   currentChainxAccountSelector
 } from '../store/reducers/accountSlice'
 import _ from 'lodash'
+import { codes } from '../error'
+import { setToSign } from '../store/reducers/txSlice'
 
 function getAccount() {
   const state = store.getState()
@@ -43,7 +44,7 @@ export default class ApiService {
         return ApiService.getAccounts()
       }
       case 'chainx_sign': {
-        return ApiService.sign(data.params)
+        return ApiService.sign(data.id, ...data.params)
       }
       default: {
         return {
@@ -64,45 +65,27 @@ export default class ApiService {
     }
   }
 
-  static async sign(params) {
-    const chainx = getChainx()
-    const extrinsic = chainx.api.createExtrinsic(params[0].data)
-
-    return new Promise((resolve, reject) => {
-      const txid = extrinsic.signAndSend(
-        '0xe63efbb29e8111c85d9f75bfbb7ab96d68c7bc32d60662be16f1526a14567a6a',
-        (error, result) => {
-          if (error) {
-            if (typeof error === 'object') {
-              return resolve({
-                error: {
-                  code: -2,
-                  message: error.message || error
-                }
-              })
-            }
-          } else {
-            if (result.result === 'ExtrinsicSuccess') {
-              return resolve({
-                result
-              })
-            } else if (result.result === 'ExtrinsicFailed') {
-              return resolve({
-                error: {
-                  code: -3,
-                  message: 'ExtrinsicFailed'
-                }
-              })
-            }
-          }
+  static async sign(id, from, data) {
+    const state = store.getState()
+    const currentAccount = currentChainxAccountSelector(state)
+    if (!currentAccount || currentAccount.address !== from) {
+      return {
+        error: {
+          code: codes.INVALID_ADDRESS,
+          message: `${from} not found`
         }
-      )
+      }
+    }
 
-      console.log(txid)
-    })
+    if (!from || !data) {
+      return {
+        error: {
+          code: codes.INVALID_SIGN_DATA,
+          message: 'invalid sign params'
+        }
+      }
+    }
 
-    // return {
-    //   result: ['5R8wTkX6wobiF1Ax9M2NRYb7VtJLS3uq3pn61vqjpPP9EDAs']
-    // }
+    store.dispatch(setToSign({ id, address: from, data }))
   }
 }
