@@ -5,7 +5,7 @@ import {
 } from '../store/reducers/accountSlice'
 import _ from 'lodash'
 import { codes } from '../error'
-import { setToSign } from '../store/reducers/txSlice'
+import { setToSign, toSignSelector } from '../store/reducers/txSlice'
 
 function getAccount() {
   const state = store.getState()
@@ -82,6 +82,16 @@ export default class ApiService {
         error: {
           code: codes.INVALID_SIGN_DATA,
           message: 'invalid sign params'
+        }
+      }
+    }
+
+    const currentToSign = toSignSelector(state)
+    if (currentToSign) {
+      return {
+        error: {
+          code: codes.SIGN_BUSY,
+          message: 'sign busy'
         }
       }
     }
