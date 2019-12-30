@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useOutsideClick } from '../shared'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import ClipboardJS from 'clipboard'
 import Icon from '../components/Icon'
 import './index.scss'
