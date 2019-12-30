@@ -44,7 +44,6 @@ export default function App() {
   const dispatch = useDispatch()
   const loading = useSelector(state => state.status.loading)
   const initLoading = useSelector(state => state.status.initLoading)
-  const homeLoading = useSelector(state => state.status.homeLoading)
   const currentNode = useSelector(currentChainxNodeSelector)
 
   const state = useSelector(state => state)
@@ -64,7 +63,7 @@ export default function App() {
     <Router>
       <React.Fragment>
         <Header props />
-        {(loading || initLoading || homeLoading) && (
+        {(loading || initLoading) && (
           <div className="spinner">
             <img src={spinner} alt="spinner" />
           </div>

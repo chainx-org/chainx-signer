@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useOutsideClick } from '../shared'
 import { useSelector, useDispatch } from 'react-redux'
-import { setHomeLoading } from '../store/reducers/statusSlice'
 import ClipboardJS from 'clipboard'
 import Icon from '../components/Icon'
 import './index.scss'
@@ -12,8 +11,6 @@ import { isTestNetSelector } from '../store/reducers/settingSlice'
 function Home(props) {
   const ref = useRef(null)
   const [showAccountAction, setShowAccountAction] = useState(false)
-  const dispatch = useDispatch()
-  const homeLoading = useSelector(state => state.status.homeLoading)
   const isTestNet = useSelector(isTestNetSelector)
   const [copySuccess, setCopySuccess] = useState('')
   const currentAccount = useSelector(currentChainxAccountSelector)
@@ -39,7 +36,6 @@ function Home(props) {
     } catch (error) {
       console.log('sign request error occurs ', error)
     } finally {
-      dispatch(setHomeLoading(false))
       setCopyEvent()
     }
   }
@@ -66,10 +62,6 @@ function Home(props) {
       })
     }
     setShowAccountAction(false)
-  }
-
-  if (homeLoading) {
-    return <></>
   }
 
   return (
