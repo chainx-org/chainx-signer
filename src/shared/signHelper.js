@@ -1,4 +1,5 @@
 import { getChainx } from './chainx'
+import { compactAddLength } from '@chainx/util'
 
 const getSubmittable = (query, chainx) => {
   const { module, method, args } = query
@@ -7,7 +8,8 @@ const getSubmittable = (query, chainx) => {
     throw new Error('Invalid method')
   }
   if (method === 'putCode') {
-    args[1] = Uint8Array.from(Object.values(args[1]))
+    args[0] = args[0].toString()
+    args[1] = compactAddLength(args[1])
   }
   return call(...args)
 }
