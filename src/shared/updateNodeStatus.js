@@ -49,7 +49,6 @@ const getDelay = async (nodeList, chainId, dispatch, setNodeDelay) => {
       timeOut: TIMEOUT
     })
       .then((result = {}) => {
-        console.log(result)
         if (result.data) {
           dispatch(
             setNodeDelay({ chainId, url: item.url, delay: result.wastTime })
