@@ -120,6 +120,14 @@ export default class ApiService {
       })
     }
 
-    store.dispatch(setToSign({ id, address: from, data }))
+    store.dispatch(
+      setToSign({
+        origin: this.request.data.origin,
+        id: this.id,
+        dataId: id,
+        address: from,
+        data
+      })
+    )
   }
 }

@@ -1,6 +1,6 @@
 import ApiService from './ApiService'
 
-let service
+export let service
 
 // 就是LowLevelSocketService
 export function setService(s) {
