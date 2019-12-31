@@ -54,9 +54,20 @@ export default function App() {
     // eslint-disable-next-line
   }, [])
 
+  const sleep = time => {
+    return new Promise(resolve => {
+      setTimeout(resolve, time)
+    })
+  }
+
   const getSetting = async () => {
-    await setChainx(currentNode.url)
-    dispatch(setInitLoading(false))
+    Promise.race([setChainx(currentNode.url), sleep(3000)])
+      .catch(e => {
+        console.log(`set Chainx catch error: ${e}`)
+      })
+      .finally(() => {
+        dispatch(setInitLoading(false))
+      })
   }
 
   return (
