@@ -27,6 +27,20 @@ function createWindow() {
   mainWindow.on('closed', () => (mainWindow = null))
 }
 
+const restoreInstance = () => {
+  mainWindow.show()
+  if (mainWindow.isMinimized()) mainWindow.restore()
+}
+
+const activateInstance = e => {
+  if (e) e.preventDefault()
+  if (!mainWindow) {
+    createWindow()
+    return
+  }
+  restoreInstance()
+}
+
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
@@ -35,8 +49,4 @@ app.on('window-all-closed', () => {
   }
 })
 
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
+app.on('activate', activateInstance)
