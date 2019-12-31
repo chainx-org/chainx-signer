@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { signTransaction } from '../../messaging'
 import { getCurrentGas, getSignRequest } from '../../shared'
 import { parseData } from '../../shared/extensionExtrinsic'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -135,7 +134,7 @@ function RequestSign(props) {
         pass,
         acceleration
       )
-      await signTransaction(request)
+      console.log('sign result ', request)
       setErrMsg('')
       dispatch(setLoading(false))
       removeCurrentSign()
