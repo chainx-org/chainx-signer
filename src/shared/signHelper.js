@@ -1,5 +1,6 @@
 import { getChainx } from './chainx'
 import { compactAddLength } from '@chainx/util'
+import { service } from '../services/socketService'
 
 const getSubmittable = (query, chainx) => {
   const { module, method, args } = query
@@ -28,12 +29,19 @@ export const getSignRequest = async (
     nonce: nonce.toNumber(),
     acceleration: acceleration
   })
+
+  const { origin, id, dataId } = query
+  service.emit(origin, id, 'api', {
+    id: dataId,
+    result: {
+      hash: submittable.hash.toString()
+    }
+  })
   const hex = submittable.toHex()
-  const request = {
+  return {
     id: query.id,
     hex: hex
   }
-  return request
 }
 
 export const getCurrentGas = async (
