@@ -164,24 +164,23 @@ export default class SocketService {
       id: random()
     }
 
-    return new Promise((resolve, reject) => {
-      this.pair().then(() => {
-        if (!this.paired)
-          return reject({
-            code: 'not_paired',
-            message:
-              'The user did not allow this app to connect to their chainx'
-          })
+    return new Promise(async (resolve, reject) => {
+      await this.pair()
+      if (!this.paired) {
+        return reject({
+          code: 'not_paired',
+          message: 'The user did not allow this app to connect to their chainx'
+        })
+      }
 
-        const data = {
-          appkey: this.appkey, // Set Application Key
-          payload: normalizedPayload,
-          origin: this.getOrigin()
-        }
-        this.openRequests.push(Object.assign(data, { resolve, reject }))
+      const data = {
+        appkey: this.appkey, // Set Application Key
+        payload: normalizedPayload,
+        origin: this.getOrigin()
+      }
+      this.openRequests.push(Object.assign(data, { resolve, reject }))
 
-        this.send('api', { data, plugin: this.plugin })
-      })
+      this.send('api', { data, plugin: this.plugin })
     })
   }
 
