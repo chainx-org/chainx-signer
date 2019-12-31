@@ -173,20 +173,11 @@ export default class SocketService {
               'The user did not allow this app to connect to their chainx'
           })
 
-        const data = {}
-
-        // Set Application Key
-        data.appkey = this.appkey
-        // Nonce used to authenticate this request
-        data.nonce = StorageService.getNonce() || 0
-        // Next nonce used to authenticate the next request
-        const nextNonce = random()
-        data.nextNonce = sha256(nextNonce)
-        StorageService.setNonce(nextNonce)
-
-        data.payload = normalizedPayload
-        data.origin = this.getOrigin()
-
+        const data = {
+          appkey: this.appkey, // Set Application Key
+          payload: normalizedPayload,
+          origin: this.getOrigin()
+        }
         this.openRequests.push(Object.assign(data, { resolve, reject }))
 
         this.send('api', { data, plugin: this.plugin })
