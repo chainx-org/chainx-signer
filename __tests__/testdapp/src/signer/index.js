@@ -93,8 +93,6 @@ export default class SocketService {
   }
 
   onMsgEvent({ event, payload }) {
-    console.log('event', event)
-    console.log('payload', payload)
     if (Object.keys(this.eventHandlers).length) {
       Object.keys(this.eventHandlers).map(key =>
         this.eventHandlers[key](event, payload)

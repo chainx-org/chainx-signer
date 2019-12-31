@@ -9,14 +9,7 @@ export function setService(s) {
 
 export const handleApiResponse = async (request, id) => {
   // @todo 校验 appkey。校验 nonce
-  const payload = request.data.payload
-
-  const resp = await ApiService.handler(request.data.payload)
-
-  return service.emit(request.data.origin, id, 'api', {
-    id: payload.id,
-    ...resp
-  })
+  await new ApiService(service, request, id).handle(request, id)
 }
 
 export const handlePairedResponse = async (request, id) => {
