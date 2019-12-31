@@ -1,6 +1,5 @@
-import { getCurrentChainxNode } from '../../messaging'
 import { createSlice } from '@reduxjs/toolkit'
-import { setChainx } from '../../shared/chainx'
+import { getChainx } from '../../shared/chainx'
 
 const intentionSlice = createSlice({
   name: 'intentions',
@@ -19,9 +18,7 @@ const intentionSlice = createSlice({
 export const { setIntentions } = intentionSlice.actions
 
 async function getStake(isTestNet) {
-  const node = await getCurrentChainxNode(isTestNet)
-  const chainx = await setChainx(node.url)
-  await chainx.isRpcReady()
+  const chainx = getChainx()
   const { stake } = chainx
 
   return stake

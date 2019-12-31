@@ -1,6 +1,5 @@
-import { getCurrentChainxNode } from '../../messaging'
 import { createSlice } from '@reduxjs/toolkit'
-import { setChainx } from '../../shared/chainx'
+import { getChainx } from '../../shared/chainx'
 
 const tradeSlice = createSlice({
   name: 'trade',
@@ -21,9 +20,7 @@ const tradeSlice = createSlice({
 export const { setPairs, setFee } = tradeSlice.actions
 
 export const fetchTradePairs = isTestNet => async dispatch => {
-  const node = await getCurrentChainxNode(isTestNet)
-  const chainx = await setChainx(node.url)
-  await chainx.isRpcReady()
+  const chainx = getChainx()
 
   const { trade } = chainx
 
@@ -36,9 +33,7 @@ export const fetchTradePairs = isTestNet => async dispatch => {
 }
 
 export const fetchFee = isTestNet => async dispatch => {
-  const node = await getCurrentChainxNode(isTestNet)
-  const chainx = await setChainx(node.url)
-  await chainx.isRpcReady()
+  const chainx = getChainx()
 
   const { asset } = chainx
 
