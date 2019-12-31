@@ -27,14 +27,16 @@ signer.link().then(async () => {
   const extrinsic = chainx.api.tx.xAssets.transfer(
     '5GikUJaUwAoSnRHk6nupxEmFdbY2BpPGub3ZVqUQyAVLy1ff',
     'PCX',
-    1 * 10 ** 8,
+    10 ** 8,
     ''
   )
+
+  const hex = extrinsic.toHex()
 
   // 发送交易
   const signResult = await signer.sendApiRequest({
     method: 'chainx_sign',
-    params: [account.address, extrinsic.toHex()]
+    params: [account.address, hex]
   })
 
   console.log('signResult', signResult)
