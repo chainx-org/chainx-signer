@@ -3,9 +3,18 @@ import Chainx from 'chainx.js'
 
 import './App.css'
 import Signer from './signer'
+import { events } from './signer/constants'
 
 const chainx = new Chainx('wss://w1.chainx.org/ws')
 const signer = new Signer('dapp')
+
+function logPayload(payload) {
+  console.log('change', payload)
+}
+
+signer.addEventHandler(events.NETWORK_CHANGE, logPayload)
+signer.addEventHandler(events.NODE_CHANGE, logPayload)
+signer.addEventHandler(events.ACCOUNT_CHANGE, logPayload)
 
 async function link() {
   try {

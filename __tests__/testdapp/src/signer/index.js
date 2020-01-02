@@ -29,9 +29,12 @@ export default class SocketService {
     if (!this.appkey) this.appkey = 'appkey:' + random()
   }
 
-  addEventHandler(handler, key) {
-    if (!key) key = 'app'
-    this.eventHandlers[key] = handler
+  addEventHandler(event, handler) {
+    if (!this.eventHandlers[event]) {
+      this.eventHandlers[event] = [handler]
+    } else {
+      this.eventHandlers[event].push(handler)
+    }
   }
 
   removeEventHandler(key) {
@@ -93,10 +96,13 @@ export default class SocketService {
   }
 
   onMsgEvent({ event, payload }) {
-    if (Object.keys(this.eventHandlers).length) {
-      Object.keys(this.eventHandlers).map(key =>
-        this.eventHandlers[key](event, payload)
-      )
+    if (!this.eventHandlers[event]) {
+      return
+    }
+
+    const handlers = this.eventHandlers[event]
+    for (let handler of handlers) {
+      handler(payload)
     }
   }
 
