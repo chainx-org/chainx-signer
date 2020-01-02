@@ -22,15 +22,7 @@ const getSubmittable = (query, chainx) => {
 
 export const getSignRequest = async (pass, acceleration) => {
   const state = store.getState()
-  const { needBroadcast } = toSignSelector(state)
-  if (!needBroadcast) {
-    return await signTx(pass, acceleration)
-  }
-}
-
-async function signTx(pass, acceleration) {
-  const state = store.getState()
-  const { origin, id, data, dataId } = toSignSelector(state)
+  const { origin, id, data, dataId, needBroadcast } = toSignSelector(state)
   const currentAccount = currentChainxAccountSelector(state)
 
   const chainx = getChainx()
@@ -63,6 +55,10 @@ async function signTx(pass, acceleration) {
       hex: signedExtrinsic.toHex()
     }
   })
+
+  if (needBroadcast) {
+    // TODO: 广播交易，并且返回给dapp交易的status
+  }
 }
 
 export const getCurrentGas = async (
