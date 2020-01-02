@@ -1,6 +1,11 @@
 import { getChainx } from './chainx'
 import { compactAddLength } from '@chainx/util'
 import { service } from '../services/socketService'
+import { Extrinsic } from '@chainx/types'
+import store from '../store'
+import { toSignSelector } from '../store/reducers/txSlice'
+import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
+import { codes } from '../error'
 
 const getSubmittable = (query, chainx) => {
   const { module, method, args } = query
@@ -15,33 +20,49 @@ const getSubmittable = (query, chainx) => {
   return call(...args)
 }
 
-export const getSignRequest = async (
-  currentAccount,
-  query,
-  pass,
-  acceleration
-) => {
-  const chainx = getChainx()
-  const submittable = getSubmittable(query, chainx)
-  const account = chainx.account.fromKeyStore(currentAccount.keystore, pass)
-  const nonce = await submittable.getNonce(account.publicKey())
-  submittable.sign(account, {
-    nonce: nonce.toNumber(),
-    acceleration: acceleration
-  })
+export const getSignRequest = async (pass, acceleration) => {
+  const state = store.getState()
+  const { needBroadcast } = toSignSelector(state)
+  if (!needBroadcast) {
+    return await signTx(pass, acceleration)
+  }
+}
 
-  const { origin, id, dataId } = query
+async function signTx(pass, acceleration) {
+  const state = store.getState()
+  const { origin, id, data, dataId } = toSignSelector(state)
+  const currentAccount = currentChainxAccountSelector(state)
+
+  const chainx = getChainx()
+  const api = chainx.api
+  let extrinsic
+  try {
+    extrinsic = new Extrinsic(data)
+  } catch (e) {
+    service.emit(origin, id, 'api', {
+      id: dataId,
+      error: {
+        code: codes.INVALID_SIGN_DATA,
+        message: 'invalid sign data'
+      }
+    })
+  }
+  const account = chainx.account.fromKeyStore(currentAccount.keystore, pass)
+  const nonce = await api.query.system.accountNonce(account.publicKey())
+  const signedExtrinsic = extrinsic.sign(
+    account,
+    nonce.toNumber(),
+    acceleration,
+    api.genesisHash
+  )
+
   service.emit(origin, id, 'api', {
     id: dataId,
     result: {
-      hash: submittable.hash.toString()
+      hash: signedExtrinsic.hash.toHex(),
+      hex: signedExtrinsic.toHex()
     }
   })
-  const hex = submittable.toHex()
-  return {
-    id: query.id,
-    hex: hex
-  }
 }
 
 export const getCurrentGas = async (

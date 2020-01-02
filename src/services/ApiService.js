@@ -121,7 +121,7 @@ export default class ApiService {
       return this.emit({
         error: {
           code: codes.INVALID_SIGN_DATA,
-          message: 'invalid sign params'
+          message: 'invalid sign data'
         }
       })
     }

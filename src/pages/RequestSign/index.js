@@ -129,13 +129,7 @@ function RequestSign(props) {
 
     dispatch(setLoading(true))
     try {
-      const request = await getSignRequest(
-        currentAccount,
-        newQuery,
-        pass,
-        acceleration
-      )
-      console.log('sign result ', request)
+      await getSignRequest(pass, acceleration)
       setErrMsg('')
       dispatch(setLoading(false))
       removeCurrentSign()
