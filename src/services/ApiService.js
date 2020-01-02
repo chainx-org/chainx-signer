@@ -40,11 +40,11 @@ export default class ApiService {
     this.id = id
   }
 
-  async handle(request, id) {
-    const data = request.data.payload
+  async handle() {
+    const data = this.request.data.payload
 
     if (!data.method) {
-      return this.sockets.emit(request.data.origin, id, type, {
+      return this.sockets.emit(this.request.data.origin, this.id, type, {
         id: data.id,
         error: {
           code: -1,
@@ -119,6 +119,8 @@ export default class ApiService {
         }
       })
     }
+
+    // TODO: 构造extrinsic来检验交易的合法性
 
     store.dispatch(
       setToSign({

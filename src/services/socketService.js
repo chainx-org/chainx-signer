@@ -9,7 +9,7 @@ export function setService(s) {
 
 export const handleApiResponse = async (request, id) => {
   // @todo 校验 appkey。校验 nonce
-  await new ApiService(service, request, id).handle(request, id)
+  await new ApiService(service, request, id).handle()
 }
 
 export const handlePairedResponse = async (request, id) => {
