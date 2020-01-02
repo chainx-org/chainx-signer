@@ -52,7 +52,7 @@ async function getSettings() {
   console.log('settings', settings)
 }
 
-async function testTransfer() {
+async function testTransfer(needBroadcast = false) {
   if (!signer.connected) {
     console.error('not connected')
     return
@@ -76,7 +76,7 @@ async function testTransfer() {
 
   // 发送交易
   const signResult = await signer.sendApiRequest({
-    method: 'chainx_sign',
+    method: needBroadcast ? 'chainx_sign_send' : 'chainx_sign',
     params: [account.address, hex]
   })
 
@@ -90,7 +90,10 @@ function App() {
         <button onClick={link}>连接 chainx</button>
         <button onClick={getAccount}>获取account</button>
         <button onClick={getSettings}>获取settings</button>
-        <button onClick={testTransfer}>test transfer</button>
+        <button onClick={() => testTransfer(false)}>sign transfer</button>
+        <button onClick={() => testTransfer(true)}>
+          sign and send transfer
+        </button>
       </header>
     </div>
   )

@@ -7,20 +7,13 @@ import _ from 'lodash'
 import { codes } from '../error'
 import { setToSign, toSignSelector } from '../store/reducers/txSlice'
 import { Extrinsic } from '@chainx/types'
+import { methods } from '../constants'
 
 function getAccount() {
   const state = store.getState()
   const account = currentChainxAccountSelector(state)
   return {
     result: _.pick(account, ['name', 'address'])
-  }
-}
-
-function getAccounts() {
-  const state = store.getState()
-  const accounts = chainxAccountsSelector(state)
-  return {
-    result: accounts
   }
 }
 
@@ -55,14 +48,15 @@ export default class ApiService {
     }
 
     switch (data.method) {
-      case 'get_settings':
+      case methods.getSettings:
         return this.emit(getSettings())
-      case 'chainx_account':
+      case methods.getAccount:
         return this.emit(getAccount())
-      case 'chainx_accounts':
-        return this.emit(getAccounts())
-      case 'chainx_sign': {
-        return this.sign(data.id, ...data.params)
+      case methods.signAndSendChainXExtrinsic: {
+        return this.sign(data.id, ...data.params, true)
+      }
+      case methods.signChainxExtrinsic: {
+        return this.sign(data.id, ...data.params, false)
       }
       default: {
         return {
@@ -90,7 +84,7 @@ export default class ApiService {
     }
   }
 
-  async sign(id, from, data) {
+  async sign(id, from, data, needBroadcast) {
     const state = store.getState()
     const currentAccount = currentChainxAccountSelector(state)
     if (!currentAccount || currentAccount.address !== from) {
@@ -138,7 +132,8 @@ export default class ApiService {
         id: this.id,
         dataId: id,
         address: from,
-        data
+        data,
+        needBroadcast: !!needBroadcast
       })
     )
 
