@@ -6,6 +6,7 @@ import store from '../store'
 import { toSignSelector } from '../store/reducers/txSlice'
 import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 import { codes } from '../error'
+import { events as socketsEvents } from '../store/reducers/constants'
 
 const getSubmittable = (query, chainx) => {
   const { module, method, args } = query
@@ -48,17 +49,99 @@ export const getSignRequest = async (pass, acceleration) => {
     api.genesisHash
   )
 
+  const hash = signedExtrinsic.hash.toHex()
   service.emit(origin, id, 'api', {
     id: dataId,
     result: {
-      hash: signedExtrinsic.hash.toHex(),
+      hash,
       hex: signedExtrinsic.toHex()
     }
   })
 
-  if (needBroadcast) {
-    // TODO: 广播交易，并且返回给dapp交易的status
+  if (!needBroadcast) {
+    return
   }
+
+  // TODO: 广播交易，并且返回给dapp交易的status
+  chainx.api.rpc.author.submitAndWatchExtrinsic(
+    signedExtrinsic,
+    async (err, status) => {
+      if (err) {
+        // TODO: 只需要推送给触发这笔交易的dapp
+        return service.broadcastEvent(socketsEvents.TX_STATUS, {
+          id: dataId,
+          err,
+          status: null
+        })
+      }
+
+      async function checkStatus() {
+        let events = null
+        let result = null
+        let index = null
+        let blockHash = null
+        let broadcast = null
+        if (status.type === 'Broadcast') {
+          broadcast = status.value && status.value.toJSON()
+        }
+
+        if (status.type === 'Finalized') {
+          blockHash = status.value
+          const {
+            block: { extrinsics }
+          } = await chainx.api.rpc.chain.getBlock(blockHash)
+          const allEvents = await chainx.api.query.system.events.at(blockHash)
+          index = extrinsics.map(ext => ext.hash.toHex()).indexOf(hash)
+          if (index !== -1) {
+            events = allEvents.filter(
+              ({ phase }) =>
+                phase.type === 'ApplyExtrinsic' && phase.value.eqn(index)
+            )
+
+            result = ''
+            if (events.length) {
+              result = events[events.length - 1].event.data.method
+            }
+          }
+        }
+
+        const stat = {
+          result,
+          index,
+          events:
+            events &&
+            // @ts-ignore
+            events.map(event => {
+              const o = event.toJSON()
+              o.method = event.event.data.method
+              return o
+            }),
+          txHash: hash,
+          // @ts-ignore
+          blockHash: blockHash && blockHash.toJSON(),
+          broadcast: broadcast,
+          status: status.type
+        }
+
+        // TODO: 只需要推送给触发这笔交易的dapp
+        service.broadcastEvent(socketsEvents.TX_STATUS, {
+          id: dataId,
+          err: null,
+          status: stat
+        })
+      }
+
+      try {
+        checkStatus()
+      } catch (e) {
+        return service.broadcastEvent(socketsEvents.TX_STATUS, {
+          id: dataId,
+          err: e,
+          status: null
+        })
+      }
+    }
+  )
 }
 
 export const getCurrentGas = async (
