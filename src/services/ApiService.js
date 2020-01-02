@@ -6,6 +6,7 @@ import {
 import _ from 'lodash'
 import { codes } from '../error'
 import { setToSign, toSignSelector } from '../store/reducers/txSlice'
+import { Extrinsic } from '@chainx/types'
 
 function getAccount() {
   const state = store.getState()
@@ -120,7 +121,16 @@ export default class ApiService {
       })
     }
 
-    // TODO: 构造extrinsic来检验交易的合法性
+    try {
+      new Extrinsic(data)
+    } catch (e) {
+      return this.emit({
+        error: {
+          code: codes.INVALID_SIGN_DATA,
+          message: 'invalid sign params'
+        }
+      })
+    }
 
     store.dispatch(
       setToSign({
