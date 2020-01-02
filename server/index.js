@@ -130,6 +130,11 @@ class LowLevelSocketService {
 
     return true
   }
+
+  activateWindow() {
+    mainWindow.show()
+    if (mainWindow.isMinimized()) mainWindow.restore()
+  }
 }
 
 let sockets = new LowLevelSocketService()

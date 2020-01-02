@@ -131,5 +131,7 @@ export default class ApiService {
         data
       })
     )
+
+    this.sockets.activateWindow()
   }
 }
