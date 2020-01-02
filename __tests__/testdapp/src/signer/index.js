@@ -139,6 +139,8 @@ export default class SocketService {
         this.socket.onmessage = this.socketMsgHandler.bind(this)
         this.pairingPromise = null
         this.pair(true).then(() => resolve(true))
+      } else {
+        resolve(false)
       }
     })
   }

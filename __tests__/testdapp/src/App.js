@@ -7,22 +7,54 @@ import Signer from './signer'
 const chainx = new Chainx('wss://w1.chainx.org/ws')
 const signer = new Signer('dapp')
 
-signer.link().then(async () => {
-  // 获取账户
+async function link() {
+  try {
+    const linked = await signer.link()
+    console.log(linked ? `connect successfully` : `failed to connect`)
+  } catch (e) {
+    console.log('failed to connect', e)
+  }
+}
+
+async function getAccount() {
+  if (!signer.connected) {
+    console.error('not connected')
+    return
+  }
+
   const account = await signer.sendApiRequest({
     method: 'chainx_account',
     params: []
   })
 
   console.log('account', account)
+}
+
+async function getSettings() {
+  if (!signer.connected) {
+    console.error('not connected')
+    return
+  }
 
   const settings = await signer.sendApiRequest({
     method: 'get_settings',
     params: []
   })
   console.log('settings', settings)
+}
+
+async function testTransfer() {
+  if (!signer.connected) {
+    console.error('not connected')
+    return
+  }
 
   await chainx.isRpcReady()
+
+  const account = await signer.sendApiRequest({
+    method: 'chainx_account',
+    params: []
+  })
 
   const extrinsic = chainx.api.tx.xAssets.transfer(
     '5GikUJaUwAoSnRHk6nupxEmFdbY2BpPGub3ZVqUQyAVLy1ff',
@@ -40,14 +72,16 @@ signer.link().then(async () => {
   })
 
   console.log('signResult', signResult)
-})
+}
 
 function App() {
-  console.log(signer)
   return (
     <div className="App">
       <header className="App-header">
-        <button>连接 chainx</button>
+        <button onClick={link}>连接 chainx</button>
+        <button onClick={getAccount}>获取account</button>
+        <button onClick={getSettings}>获取settings</button>
+        <button onClick={testTransfer}>test transfer</button>
       </header>
     </div>
   )
