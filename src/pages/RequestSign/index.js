@@ -16,6 +16,7 @@ import Staking from './Staking'
 import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
 import { clearToSign } from '../../store/reducers/txSlice'
+import { service } from '../../services/socketService'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -149,7 +150,18 @@ function RequestSign(props) {
     removeCurrentSign()
   }
 
-  const removeCurrentSign = async () => {
+  const cancel = () => {
+    removeCurrentSign()
+
+    // 通知dapp拒绝签名
+    const { origin, id, dataId } = query
+    service.emit(origin, id, 'api', {
+      id: dataId,
+      result: { reject: true }
+    })
+  }
+
+  const removeCurrentSign = () => {
     try {
       dispatch(clearToSign())
     } catch (e) {
@@ -242,7 +254,7 @@ function RequestSign(props) {
         />
         <ErrorMessage msg={errMsg} />
         <div className="button-area margin-top-40">
-          <DefaultButton size="large" onClick={() => removeCurrentSign()}>
+          <DefaultButton size="large" onClick={cancel}>
             Cancel
           </DefaultButton>
           <PrimaryButton size="large" onClick={() => sign()}>
