@@ -6,7 +6,7 @@ import Signer from './signer'
 import { events } from './signer/constants'
 
 const chainx = new Chainx('wss://w1.chainx.org/ws')
-const signer = new Signer('dapp')
+const signer = new Signer('dapp', true)
 
 function logPayload(payload) {
   console.log('change', payload)

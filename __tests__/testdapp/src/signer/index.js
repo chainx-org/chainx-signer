@@ -16,8 +16,10 @@ const random = () => {
 }
 
 export default class SocketService {
-  constructor(name) {
+  constructor(name, autoReConnect = false) {
     this.plugin = name
+    this.autoReConnect = autoReConnect
+    this.manualDisconnet = false
 
     this.socket = null
     this.connected = false
@@ -155,6 +157,23 @@ export default class SocketService {
     })
   }
 
+  onSocketClose = event => {
+    this.connected = false
+    if (this.autoReConnect && !this.manualDisconnet) {
+      setTimeout(() => {
+        this.link().then(success =>
+          console.log(
+            `${
+              success
+                ? 'auto reconnect successfully'
+                : 'failed to auto reconnect'
+            }`
+          )
+        )
+      }, 1000)
+    }
+  }
+
   isConnected() {
     return this.connected
   }
@@ -164,7 +183,11 @@ export default class SocketService {
   }
 
   disconnect() {
-    if (this.socket) this.socket.close()
+    this.manualDisconnet = true
+    if (this.socket) {
+      this.socket.close()
+      this.connected = false
+    }
     return true
   }
 
