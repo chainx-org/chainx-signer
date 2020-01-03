@@ -1,5 +1,4 @@
 import { getChainx } from './chainx'
-import { compactAddLength } from '@chainx/util'
 import { service } from '../services/socketService'
 import { Extrinsic } from '@chainx/types'
 import store from '../store'
@@ -7,19 +6,6 @@ import { toSignSelector } from '../store/reducers/txSlice'
 import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 import { codes } from '../error'
 import { events as socketsEvents } from '../store/reducers/constants'
-
-const getSubmittable = (query, chainx) => {
-  const { module, method, args } = query
-  const call = chainx.api.tx[module][method]
-  if (!call) {
-    throw new Error('Invalid method')
-  }
-  if (method === 'putCode') {
-    args[0] = args[0].toString()
-    args[1] = compactAddLength(args[1])
-  }
-  return call(...args)
-}
 
 export const getSignRequest = async (pass, acceleration) => {
   const state = store.getState()
@@ -62,16 +48,17 @@ export const getSignRequest = async (pass, acceleration) => {
     return
   }
 
-  // TODO: 广播交易，并且返回给dapp交易的status
   chainx.api.rpc.author.submitAndWatchExtrinsic(
     signedExtrinsic,
     async (err, status) => {
       if (err) {
-        // TODO: 只需要推送给触发这笔交易的dapp
-        return service.broadcastEvent(socketsEvents.TX_STATUS, {
-          id: dataId,
-          err,
-          status: null
+        return service.emit(origin, id, 'event', {
+          event: socketsEvents.TX_STATUS,
+          payload: {
+            id: dataId,
+            err,
+            status: null
+          }
         })
       }
 
@@ -121,21 +108,26 @@ export const getSignRequest = async (pass, acceleration) => {
           status: status.type
         }
 
-        // TODO: 只需要推送给触发这笔交易的dapp
-        service.broadcastEvent(socketsEvents.TX_STATUS, {
-          id: dataId,
-          err: null,
-          status: stat
+        service.emit(origin, id, 'event', {
+          event: socketsEvents.TX_STATUS,
+          payload: {
+            id: dataId,
+            err: null,
+            status: stat
+          }
         })
       }
 
       try {
         await checkStatus()
       } catch (e) {
-        return service.broadcastEvent(socketsEvents.TX_STATUS, {
-          id: dataId,
-          err: e,
-          status: null
+        return service.emit(origin, id, 'event', {
+          event: socketsEvents.TX_STATUS,
+          payload: {
+            id: dataId,
+            err: e,
+            status: null
+          }
         })
       }
     }
