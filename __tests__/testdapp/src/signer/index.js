@@ -2,6 +2,7 @@ import StorageService from './StorageService'
 import getRandomValues from 'get-random-values'
 import createHash from 'create-hash'
 import { findTargetPort, trySocket } from './utils'
+import { events } from './constants'
 
 const sha256 = data =>
   createHash('sha256')
@@ -37,9 +38,12 @@ export default class SocketService {
     }
   }
 
-  removeEventHandler(key) {
-    if (!key) key = 'app'
-    delete this.eventHandlers[key]
+  removeEventHandler(event) {
+    if (!event) {
+      return
+    }
+
+    delete this.eventHandlers[event]
   }
 
   onMsgPaired(result) {
@@ -164,7 +168,7 @@ export default class SocketService {
     return true
   }
 
-  sendApiRequest(payload = {}) {
+  sendApiRequest(payload = {}, callback = null) {
     const normalizedPayload = {
       ...payload,
       id: random()
@@ -185,6 +189,23 @@ export default class SocketService {
         origin: this.getOrigin()
       }
       this.openRequests.push(Object.assign(data, { resolve, reject }))
+
+      if (
+        ['chainx_sign_send', 'chainx_sign'].includes(data.payload.method) &&
+        typeof callback === 'function'
+      ) {
+        this.addEventHandler(events.TX_STATUS, ({ id, err, status }) => {
+          if (data.payload.id !== id) {
+            return
+          }
+
+          callback(err, status)
+
+          if (status.status === 'Finalized') {
+            this.removeEventHandler(events.TX_STATUS)
+          }
+        })
+      }
 
       this.send('api', { data, plugin: this.plugin })
     })

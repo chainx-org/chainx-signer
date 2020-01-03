@@ -75,10 +75,17 @@ async function testTransfer(needBroadcast = false) {
   const hex = extrinsic.toHex()
 
   // 发送交易
-  const signResult = await signer.sendApiRequest({
-    method: needBroadcast ? 'chainx_sign_send' : 'chainx_sign',
-    params: [account.address, hex]
-  })
+  const signResult = await signer.sendApiRequest(
+    {
+      method: needBroadcast ? 'chainx_sign_send' : 'chainx_sign',
+      params: [account.address, hex]
+    },
+    needBroadcast
+      ? (err, status) => {
+          console.log('err', err, 'status', status)
+        }
+      : null
+  )
 
   console.log('signResult', signResult)
 }

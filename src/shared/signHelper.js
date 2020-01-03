@@ -110,14 +110,12 @@ export const getSignRequest = async (pass, acceleration) => {
           index,
           events:
             events &&
-            // @ts-ignore
             events.map(event => {
               const o = event.toJSON()
               o.method = event.event.data.method
               return o
             }),
           txHash: hash,
-          // @ts-ignore
           blockHash: blockHash && blockHash.toJSON(),
           broadcast: broadcast,
           status: status.type
@@ -132,7 +130,7 @@ export const getSignRequest = async (pass, acceleration) => {
       }
 
       try {
-        checkStatus()
+        await checkStatus()
       } catch (e) {
         return service.broadcastEvent(socketsEvents.TX_STATUS, {
           id: dataId,
