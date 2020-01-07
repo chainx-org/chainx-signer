@@ -29,12 +29,6 @@
     "ws": "^7.2.0"
   },
   "scripts": {
-    "start": "PORT=3001 react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3001 && electron .\"",
-    "build-dist": "yarn build && rimraf dist && electron-builder",
     "dist": "rimraf dist && electron-builder"
   },
   "eslintConfig": {
@@ -76,6 +70,11 @@
       "package.json",
       "resources"
     ],
+    "publish": {
+      "provider": "github",
+      "repo": "chainx-signer",
+      "owner": "chainx-org"
+    },
     "dmg": {
       "contents": [
         {
@@ -88,6 +87,22 @@
           "type": "link",
           "path": "/Applications"
         }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
       ]
     },
     "directories": {
