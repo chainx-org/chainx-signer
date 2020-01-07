@@ -34,7 +34,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3001 && electron .\"",
-    "dist": "yarn build && rimraf dist && electron-builder"
+    "build-dist": "yarn build && rimraf dist && electron-builder",
+    "dist": "rimraf dist && electron-builder"
   },
   "eslintConfig": {
     "extends": "react-app"
