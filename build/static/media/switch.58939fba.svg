@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="14px" viewBox="0 0 18 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>swap_horiz-24px</title>
+    <desc>Created with Sketch.</desc>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="钱包插件" transform="translate(-516.000000, -1627.000000)">
+            <g id="分组" transform="translate(499.000000, 1390.000000)">
+                <g id="swap_horiz-24px" transform="translate(16.000000, 234.000000)">
+                    <polygon id="路径" points="0 0 20 0 20 20 0 20"></polygon>
+                    <path d="M4.14,9.86 L1.36,12.65 C1.17,12.85 1.17,13.16 1.36,13.36 L4.14,16.15 C4.45,16.47 4.99,16.24 4.99,15.8 L4.99,14 L11,14 C11.55,14 12,13.55 12,13 C12,12.45 11.55,12 11,12 L4.99,12 L4.99,10.21 C4.99,9.76 4.45,9.54 4.14,9.86 Z M18.65,6.65 L15.87,3.86 C15.56,3.54 15.02,3.77 15.02,4.21 L15.02,6 L9,6 C8.45,6 8,6.45 8,7 C8,7.55 8.45,8 9,8 L15.01,8 L15.01,9.79 C15.01,10.24 15.55,10.46 15.86,10.14 L18.64,7.35 C18.84,7.16 18.84,6.84 18.65,6.65 Z" id="形状" fill="#F6C94A" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
