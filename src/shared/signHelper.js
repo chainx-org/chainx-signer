@@ -1,11 +1,11 @@
 import { getChainx } from './chainx'
 import { service } from '../services/socketService'
-import { Extrinsic } from '@chainx/types'
 import store from '../store'
 import { toSignSelector } from '../store/reducers/txSlice'
 import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 import { codes } from '../error'
 import { events as socketsEvents } from '../store/reducers/constants'
+import { SubmittableExtrinsic } from 'chainx.js'
 
 export const getSignRequest = async (pass, acceleration) => {
   const state = store.getState()
@@ -16,7 +16,7 @@ export const getSignRequest = async (pass, acceleration) => {
   const api = chainx.api
   let extrinsic
   try {
-    extrinsic = new Extrinsic(data)
+    extrinsic = new SubmittableExtrinsic(chainx.api, data)
   } catch (e) {
     service.emit(origin, id, 'api', {
       id: dataId,
@@ -28,12 +28,11 @@ export const getSignRequest = async (pass, acceleration) => {
   }
   const account = chainx.account.fromKeyStore(currentAccount.keystore, pass)
   const nonce = await api.query.system.accountNonce(account.publicKey())
-  const signedExtrinsic = extrinsic.sign(
-    account,
-    nonce.toNumber(),
+  const signedExtrinsic = extrinsic.sign(account, {
+    nonce: nonce.toNumber(),
     acceleration,
-    api.genesisHash
-  )
+    blockHash: api.genesisHash
+  })
 
   const hash = signedExtrinsic.hash.toHex()
   service.emit(origin, id, 'api', {
@@ -48,90 +47,24 @@ export const getSignRequest = async (pass, acceleration) => {
     return
   }
 
-  chainx.api.rpc.author.submitAndWatchExtrinsic(
-    signedExtrinsic,
-    async (err, status) => {
-      if (err) {
-        return service.emit(origin, id, 'event', {
-          event: socketsEvents.TX_STATUS,
-          payload: {
-            id: dataId,
-            err,
-            status: null
-          }
-        })
+  function emitInfo(err, status) {
+    return service.emit(origin, id, 'event', {
+      event: socketsEvents.TX_STATUS,
+      payload: {
+        id: dataId,
+        err: err || null,
+        status: status || null
       }
+    })
+  }
 
-      async function checkStatus() {
-        let events = null
-        let result = null
-        let index = null
-        let blockHash = null
-        let broadcast = null
-        if (status.type === 'Broadcast') {
-          broadcast = status.value && status.value.toJSON()
-        }
+  try {
+    await signedExtrinsic.send(emitInfo)
+  } catch (e) {
+    return emitInfo(e)
+  }
 
-        if (status.type === 'Finalized') {
-          blockHash = status.value
-          const {
-            block: { extrinsics }
-          } = await chainx.api.rpc.chain.getBlock(blockHash)
-          const allEvents = await chainx.api.query.system.events.at(blockHash)
-          index = extrinsics.map(ext => ext.hash.toHex()).indexOf(hash)
-          if (index !== -1) {
-            events = allEvents.filter(
-              ({ phase }) =>
-                phase.type === 'ApplyExtrinsic' && phase.value.eqn(index)
-            )
-
-            result = ''
-            if (events.length) {
-              result = events[events.length - 1].event.data.method
-            }
-          }
-        }
-
-        const stat = {
-          result,
-          index,
-          events:
-            events &&
-            events.map(event => {
-              const o = event.toJSON()
-              o.method = event.event.data.method
-              return o
-            }),
-          txHash: hash,
-          blockHash: blockHash && blockHash.toJSON(),
-          broadcast: broadcast,
-          status: status.type
-        }
-
-        service.emit(origin, id, 'event', {
-          event: socketsEvents.TX_STATUS,
-          payload: {
-            id: dataId,
-            err: null,
-            status: stat
-          }
-        })
-      }
-
-      try {
-        await checkStatus()
-      } catch (e) {
-        return service.emit(origin, id, 'event', {
-          event: socketsEvents.TX_STATUS,
-          payload: {
-            id: dataId,
-            err: e,
-            status: null
-          }
-        })
-      }
-    }
-  )
+  console.log('returned')
 }
 
 export const getCurrentGas = async (

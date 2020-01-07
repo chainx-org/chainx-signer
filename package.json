@@ -9,7 +9,7 @@
     "@chainx/util": "^2.22.2",
     "@reduxjs/toolkit": "^1.0.4",
     "bignumber.js": "^9.0.0",
-    "chainx.js": "^2.22.28",
+    "chainx.js": "^2.22.30",
     "clipboard": "^2.0.4",
     "electron-is-dev": "^1.1.0",
     "electron-store": "^5.1.0",
