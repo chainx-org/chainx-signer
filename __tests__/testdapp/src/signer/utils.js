@@ -8,7 +8,7 @@ export const getHostname = port => {
 
 export async function findTargetPort() {
   const startingPort = 10013
-  const iterStep = 13
+  const iterStep = 133
   const maxPort = 65535
 
   let iterPort = startingPort

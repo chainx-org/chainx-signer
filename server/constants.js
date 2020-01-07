@@ -1,5 +1,5 @@
 const startPort = 10013
-const searchPortStep = 13
+const searchPortStep = 133
 const events = {
   ACCOUNT_CHANGE: 'account-change'
 }
