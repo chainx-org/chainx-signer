@@ -4,12 +4,12 @@
   "private": true,
   "main": "electron.js",
   "dependencies": {
-    "@chainx/types": "^2.22.25",
+    "@chainx/types": "^2.22.31",
     "@chainx/ui": "^0.0.33",
-    "@chainx/util": "^2.22.2",
+    "@chainx/util": "^2.22.31",
     "@reduxjs/toolkit": "^1.0.4",
     "bignumber.js": "^9.0.0",
-    "chainx.js": "^2.22.30",
+    "chainx.js": "^2.22.31",
     "clipboard": "^2.0.4",
     "electron-is-dev": "^1.1.0",
     "electron-store": "^5.1.0",
@@ -25,7 +25,6 @@
     "react-scripts": "3.2.0",
     "react-tooltip": "^3.11.1",
     "redux": "^4.0.4",
-    "redux-starter-kit": "^0.9.1",
     "ws": "^7.2.0"
   },
   "scripts": {
