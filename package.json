@@ -4,12 +4,12 @@
   "private": true,
   "main": "electron.js",
   "dependencies": {
-    "@chainx/types": "^2.22.25",
+    "@chainx/types": "^2.22.31",
     "@chainx/ui": "^0.0.33",
-    "@chainx/util": "^2.22.2",
+    "@chainx/util": "^2.22.31",
     "@reduxjs/toolkit": "^1.0.4",
     "bignumber.js": "^9.0.0",
-    "chainx.js": "^2.22.30",
+    "chainx.js": "^2.22.31",
     "clipboard": "^2.0.4",
     "electron-is-dev": "^1.1.0",
     "electron-store": "^5.1.0",
@@ -25,10 +25,15 @@
     "react-scripts": "3.2.0",
     "react-tooltip": "^3.11.1",
     "redux": "^4.0.4",
-    "redux-starter-kit": "^0.9.1",
     "ws": "^7.2.0"
   },
   "scripts": {
+    "start": "PORT=3001 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3001 && electron .\"",
+    "build-dist": "yarn build && rimraf dist && electron-builder",
     "dist": "rimraf dist && electron-builder"
   },
   "eslintConfig": {
@@ -70,11 +75,6 @@
       "package.json",
       "resources"
     ],
-    "publish": {
-      "provider": "github",
-      "repo": "chainx-signer",
-      "owner": "chainx-org"
-    },
     "dmg": {
       "contents": [
         {
@@ -87,22 +87,6 @@
           "type": "link",
           "path": "/Applications"
         }
-      ]
-    },
-    "win": {
-      "target": [
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage"
       ]
     },
     "directories": {
