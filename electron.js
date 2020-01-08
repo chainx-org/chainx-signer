@@ -1,11 +1,68 @@
 const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
+const semver = require('semver')
 
 const path = require('path')
 const isDev = require('electron-is-dev')
+const https = require('https')
+const { dialog, shell } = electron
+
+const updateJsonLink =
+  'https://chainx-signer-release.oss-cn-hangzhou.aliyuncs.com/update.json'
 
 let mainWindow
+
+async function updateIfNewVersion() {
+  const currentVersion = app.getVersion()
+  const latestInfo = await new Promise((resolve, reject) => {
+    https
+      .get(updateJsonLink, res => {
+        let body = ''
+        res.on('data', d => {
+          body += d
+        })
+        res.on('end', function() {
+          try {
+            const parsed = JSON.parse(body)
+            resolve(parsed)
+          } catch (err) {
+            reject(err)
+          }
+        })
+      })
+      .on('error', e => {
+        reject(e)
+      })
+  })
+
+  if (semver.lte(latestInfo.version, currentVersion)) {
+    return
+  }
+
+  if (latestInfo.forceUpdate) {
+    dialog.showMessageBoxSync({
+      title: 'New Version',
+      message: `Please update to version ${latestInfo.version}`,
+      buttons: ['OK'],
+      defaultId: 0
+    })
+
+    await shell.openExternal(latestInfo.path)
+    app.quit()
+  } else {
+    const buttonIndex = await dialog.showMessageBoxSync({
+      title: 'New Version',
+      message: `New version detected. Check the OK button to update.`,
+      buttons: ['OK', 'Cancel'],
+      defaultId: 0
+    })
+
+    if (buttonIndex === 0) {
+      await shell.openExternal(latestInfo.path)
+    }
+  }
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -41,7 +98,12 @@ const activateInstance = e => {
   restoreInstance()
 }
 
-app.on('ready', createWindow)
+app.on('ready', async () => {
+  createWindow()
+  if (!isDev) {
+    await updateIfNewVersion()
+  }
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
