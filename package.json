@@ -51,6 +51,11 @@
       "package.json",
       "resources"
     ],
+    "publish": {
+      "provider": "github",
+      "repo": "chainx-signer",
+      "owner": "chainx-org"
+    },
     "dmg": {
       "contents": [
         {
@@ -63,6 +68,22 @@
           "type": "link",
           "path": "/Applications"
         }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
       ]
     },
     "directories": {
