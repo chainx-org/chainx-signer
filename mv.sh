@@ -1,1 +1,1 @@
-cp -rf electron.js package.json preload.js build server resources yarn.lock ../chainx-org/chainx-signer
+cp -rf electron.js preload.js build server resources ../chainx-org/chainx-signer
