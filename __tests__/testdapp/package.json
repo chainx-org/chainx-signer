@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@chainx/signer-connector": "^1.0.0",
+    "@chainx/signer-connector": "^1.0.2",
     "chainx.js": "^2.22.28",
     "create-hash": "^1.2.0",
     "get-random-values": "^1.2.0",
