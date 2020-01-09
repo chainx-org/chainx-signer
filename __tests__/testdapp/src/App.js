@@ -2,7 +2,7 @@ import React from 'react'
 import Chainx from 'chainx.js'
 
 import './App.css'
-import Signer from './signer'
+import Signer from '@chainx/signer-connector'
 import { events } from './signer/constants'
 
 const chainx = new Chainx('wss://w1.chainx.org/ws')
