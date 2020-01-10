@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import ClipboardJS from 'clipboard'
 import ReactTooltip from 'react-tooltip'
-import { isCurrentNodeInit, useOutsideClick } from '../../shared'
+import {
+  isCurrentNodeInit,
+  useOutsideClick,
+  sleep,
+  setChainx
+} from '../../shared'
 import Icon from '../../components/Icon'
 import DotInCenterStr from '../../components/DotInCenterStr'
 import logo from '../../assets/extension_logo.svg'
@@ -21,6 +26,7 @@ import {
   setCurrentChainXMainNetAccount,
   setCurrentChainXTestNetAccount
 } from '../../store/reducers/accountSlice'
+import { setInitLoading } from '../../store/reducers/statusSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
   chainxNodesDelaySelector,
@@ -68,8 +74,24 @@ function Header(props) {
   }
 
   async function setNode(url) {
+    dispatch(setInitLoading(true))
     dispatch(setCurrentChainXNode({ chainId, url }))
     setShowNodeListArea(false)
+    Promise.race([setChainx(url), sleep(5000)])
+      .then(chainx => {
+        if (!chainx) {
+          props.history.push('/nodeError')
+        } else {
+          props.history.push('/redirect')
+        }
+      })
+      .catch(e => {
+        console.log('switch node error ', e)
+        props.history.push('/nodeError')
+      })
+      .finally(() => {
+        dispatch(setInitLoading(false))
+      })
   }
 
   function getDelayClass(delay) {

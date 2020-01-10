@@ -9,7 +9,8 @@ import RequestSign from './RequestSign'
 import ShowPrivateKey from './ShowPrivateKey/index'
 import EnterPassword from './EnterPassword'
 import NodeAction from './NodeAction'
-import { setChainx } from '../shared'
+import NodeError from './NodeAction/NodeError'
+import { setChainx, sleep } from '../shared'
 import spinner from '../assets/loading.gif'
 import './index.scss'
 import { useSelector, useDispatch } from 'react-redux'
@@ -54,12 +55,6 @@ export default function App() {
     // eslint-disable-next-line
   }, [])
 
-  const sleep = time => {
-    return new Promise(resolve => {
-      setTimeout(resolve, time)
-    })
-  }
-
   const getSetting = async () => {
     Promise.race([setChainx(currentNode.url), sleep(3000)])
       .catch(e => {
@@ -89,6 +84,7 @@ export default function App() {
               <Route path="/showPrivateKey" component={ShowPrivateKey} />
               <Route path="/enterPassword" component={EnterPassword} />
               <Route path="/addNode" component={NodeAction} />
+              <Route path="/nodeError" component={NodeError} />
               <Redirect to={redirectUrl} />
             </Switch>
           </div>

@@ -22,3 +22,15 @@
     color: #000;
   }
 }
+
+.node-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  .msg {
+    color: red;
+    margin-top: 16px;
+    font-size: 14px;
+  }
+}

@@ -65,36 +65,62 @@ function RequestSign(props) {
       return
     }
     if (!query.module) {
-      const [method, args, argsWithName] = parseData(query.data)
-      newQuery.method = method
-      newQuery.argsWithName = argsWithName
-      newQuery.args = args
-      let module = ''
-      if (
-        ['nominate', 'renominate', 'unnominate', 'unfreeze', 'claim'].includes(
-          method
-        )
-      ) {
-        module = 'xStaking'
-        if (args.length === 1 && args[0].length < 6) {
-          module = 'xTokens'
+      try {
+        const [method, args, argsWithName] = parseData(query.data)
+        newQuery.method = method
+        newQuery.argsWithName = argsWithName
+        newQuery.args = args
+        let module = ''
+        const contractMethods = [
+          'putCode',
+          'call',
+          'instantiate',
+          'claimSurcharge',
+          'convertToErc20',
+          'convertToAsset',
+          'setTokenErc20',
+          'setErc20Selector',
+          'removeTokenErc20',
+          'forceIssueErc20',
+          'setGasPrice',
+          'setPrintln'
+        ]
+        if (
+          [
+            'nominate',
+            'renominate',
+            'unnominate',
+            'unfreeze',
+            'claim',
+            'register'
+          ].includes(method)
+        ) {
+          module = 'xStaking'
+          if (args.length === 1 && args[0].length < 6) {
+            module = 'xTokens'
+          }
+        } else if (['withdraw', 'revokeWithdraw'].includes(method)) {
+          module = 'xAssetsProcess'
+        } else if (['putOrder', 'cancelOrder'].includes(method)) {
+          module = 'xSpot'
+        } else if (['transfer'].includes(method)) {
+          module = 'xAssets'
+        } else if (contractMethods.includes(method)) {
+          module = 'xContracts'
+        } else {
+          module = ''
         }
-      } else if (['withdraw', 'revokeWithdraw'].includes(method)) {
-        module = 'xAssetsProcess'
-      } else if (['putOrder', 'cancelOrder'].includes(method)) {
-        module = 'xSpot'
-      } else if (['transfer'].includes(method)) {
-        module = 'xAssets'
-      } else {
-        module = 'xContracts'
-      }
-      newQuery.module = module
-      setNewQuery(newQuery)
-    }
+        newQuery.module = module
+        setNewQuery(newQuery)
 
-    updateTxPanel()
-    getCurrentGas(currentAccount, newQuery, setErrMsg, setCurrentGas)
-    fetchRelevantInfo(isTestNet)
+        updateTxPanel()
+        getCurrentGas(currentAccount, newQuery, setErrMsg, setCurrentGas)
+        fetchRelevantInfo(isTestNet)
+      } catch (error) {
+        console.log('parse error ', error)
+        props.history.push('/nodeError')
+      }
+    }
   }
 
   const updateTxPanel = () => {

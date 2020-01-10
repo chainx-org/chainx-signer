@@ -53,19 +53,28 @@ export default function(props) {
               <span>{replaceBTC(query.args[0])}</span>
             </div>
           )}
-          {query.module === 'xStaking' && (
+          {query.method === 'register' ? (
             <div className="detail-item">
-              <span>Node</span>
-              <span>
-                {intentions && intentions[getPublicKey(query.args[0])]}
-              </span>
+              <span>Name</span>
+              <span>{query.args[0]}</span>
             </div>
-          )}
-          {query.method === 'unfreeze' && (
-            <div className="detail-item">
-              <span>Id</span>
-              <span>{query.args[1]}</span>
-            </div>
+          ) : (
+            <>
+              {query.module === 'xStaking' && (
+                <div className="detail-item">
+                  <span>Node</span>
+                  <span>
+                    {intentions && intentions[getPublicKey(query.args[0])]}
+                  </span>
+                </div>
+              )}
+              {query.method === 'unfreeze' && (
+                <div className="detail-item">
+                  <span>Id</span>
+                  <span>{query.args[1]}</span>
+                </div>
+              )}
+            </>
           )}
         </>
       )}

@@ -15,3 +15,9 @@ export const getChainx = () => {
 export const replaceBTC = token => {
   return token === 'BTC' ? 'X-BTC' : token
 }
+
+export const sleep = time => {
+  return new Promise(resolve => {
+    setTimeout(resolve, time)
+  })
+}
