@@ -52,6 +52,20 @@ async function getSettings() {
   console.log('settings', settings)
 }
 
+async function getNode() {
+  if (!signer.connected) {
+    console.error('not connected')
+    return
+  }
+
+  const node = await signer.sendApiRequest({
+    method: 'chainx_get_node',
+    params: []
+  })
+
+  console.log('node', node)
+}
+
 async function testTransfer(needBroadcast = false) {
   if (!signer.connected) {
     console.error('not connected')
@@ -97,6 +111,7 @@ function App() {
         <button onClick={link}>连接 chainx</button>
         <button onClick={getAccount}>获取account</button>
         <button onClick={getSettings}>获取settings</button>
+        <button onClick={getNode}>获取node</button>
         <button onClick={() => testTransfer(false)}>sign transfer</button>
         <button onClick={() => testTransfer(true)}>
           sign and send transfer

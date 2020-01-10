@@ -8,12 +8,21 @@ import { codes } from '../error'
 import { setToSign, toSignSelector } from '../store/reducers/txSlice'
 import { Extrinsic } from '@chainx/types'
 import { methods } from '../constants'
+import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
 
 function getAccount() {
   const state = store.getState()
   const account = currentChainxAccountSelector(state)
   return {
     result: _.pick(account, ['name', 'address'])
+  }
+}
+
+function getNode() {
+  const state = store.getState()
+  const node = currentChainxNodeSelector(state)
+  return {
+    result: node
   }
 }
 
@@ -52,6 +61,8 @@ export default class ApiService {
         return this.emit(getSettings())
       case methods.getAccount:
         return this.emit(getAccount())
+      case methods.getNode:
+        return this.emit(getNode())
       case methods.signAndSendChainXExtrinsic: {
         return this.sign(data.id, ...data.params, true)
       }
