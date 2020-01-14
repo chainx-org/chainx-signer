@@ -31,10 +31,7 @@ async function getAccount() {
     return
   }
 
-  const account = await signer.sendApiRequest({
-    method: 'chainx_account',
-    params: []
-  })
+  const account = await signer.getCurrentAccount()
 
   console.log('account', account)
 }
@@ -45,10 +42,7 @@ async function getSettings() {
     return
   }
 
-  const settings = await signer.sendApiRequest({
-    method: 'get_settings',
-    params: []
-  })
+  const settings = await signer.getSettings()
   console.log('settings', settings)
 }
 
@@ -58,10 +52,7 @@ async function getNode() {
     return
   }
 
-  const node = await signer.sendApiRequest({
-    method: 'chainx_get_node',
-    params: []
-  })
+  const node = await signer.getCurrentNode()
 
   console.log('node', node)
 }
@@ -88,20 +79,20 @@ async function testTransfer(needBroadcast = false) {
 
   const hex = extrinsic.toHex()
 
-  // 发送交易
-  const signResult = await signer.sendApiRequest(
-    {
-      method: needBroadcast ? 'chainx_sign_send' : 'chainx_sign',
-      params: [account.address, hex]
-    },
-    needBroadcast
-      ? (err, status) => {
-          console.log('err', err, 'status', status)
-        }
-      : null
-  )
+  if (needBroadcast) {
+    const result = await signer.signAndSendExtrinsic(
+      account.address,
+      hex,
+      (err, status) => {
+        console.log('err', err, 'status', status)
+      }
+    )
+    console.log('result', result)
+  } else {
+    const result = await signer.signExtrinsic(account.address, hex)
 
-  console.log('signResult', signResult)
+    console.log('result', result)
+  }
 }
 
 function App() {
