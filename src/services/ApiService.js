@@ -1,8 +1,5 @@
 import store from '../store'
-import {
-  chainxAccountsSelector,
-  currentChainxAccountSelector
-} from '../store/reducers/accountSlice'
+import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 import _ from 'lodash'
 import { codes } from '../error'
 import { setToSign, toSignSelector } from '../store/reducers/txSlice'
@@ -14,7 +11,7 @@ function getAccount() {
   const state = store.getState()
   const account = currentChainxAccountSelector(state)
   return {
-    result: _.pick(account, ['name', 'address'])
+    result: account ? _.pick(account, ['name', 'address']) : account
   }
 }
 
@@ -85,14 +82,6 @@ export default class ApiService {
       id: this.request.data.payload.id,
       ...data
     })
-  }
-
-  static getAccounts() {
-    const state = store.getState()
-    const accounts = chainxAccountsSelector(state)
-    return {
-      result: accounts
-    }
   }
 
   async sign(id, from, data, needBroadcast) {
