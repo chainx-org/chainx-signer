@@ -117,8 +117,6 @@ class LowLevelSocketService {
   }
 
   broadcastEvent(event, payload) {
-    console.log('event', event)
-    console.log('payload', payload)
     Object.values(this.openConnections).forEach(async socket => {
       try {
         this.emitSocket(socket, 'event', { event, payload })

@@ -63,8 +63,6 @@ export const getSignRequest = async (pass, acceleration) => {
   } catch (e) {
     return emitInfo(e)
   }
-
-  console.log('returned')
 }
 
 export const getCurrentGas = async (
