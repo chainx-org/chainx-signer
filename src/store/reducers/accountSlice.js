@@ -84,6 +84,7 @@ const accountSlice = createSlice({
 
       const pre = state.currentChainXMainNetAccount
       state.currentChainXMainNetAccount = target
+      window.accountStore.set(ACCOUNT_STORE_KEY, state)
       window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
         from: extractAccountInfo(pre),
         to: extractAccountInfo(target)
@@ -127,6 +128,7 @@ const accountSlice = createSlice({
 
       const pre = state.currentChainXMainNetAccount
       state.currentChainxTestNetAccount = target
+      window.accountStore.set(ACCOUNT_STORE_KEY, state)
       window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
         from: extractAccountInfo(pre),
         to: extractAccountInfo(target)
