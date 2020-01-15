@@ -76,6 +76,7 @@ function NameAndPassword(props) {
     <div className="flex-column">
       {inputList.map((item, i) => (
         <TextInput
+          showClear={false}
           key={i}
           className="fixed-width"
           type={item.type}

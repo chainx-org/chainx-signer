@@ -58,6 +58,7 @@ function EnterPassword(props) {
     <div className="enter-password">
       <span className="title">Input password</span>
       <TextInput
+        showClear={false}
         className="fixed-width"
         type="password"
         value={pass}
