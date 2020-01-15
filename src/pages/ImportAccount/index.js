@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './importAccount.scss'
 import ErrorMessage from '../../components/ErrorMessage'
 import NameAndPassword from '../../components/NameAndPassword'
+import { TextInput } from '@chainx/ui'
 
 function ImportAccount(props) {
   const [currentStep, setCurrentStep] = useState(0)
@@ -75,17 +76,17 @@ function ImportAccount(props) {
                 ))}
               </div>
             ) : (
-              <div className="import-private-key">
-                <textarea
-                  value={pk}
-                  onChange={e => setPk(e.target.value)}
-                  onKeyPress={event => {
-                    if (event.key === 'Enter') {
-                      checkStep1()
-                    }
-                  }}
-                />
-              </div>
+              <TextInput
+                value={pk}
+                onChange={value => setPk(value)}
+                multiline={true}
+                rows={4}
+                onKeyPress={event => {
+                  if (event.key === 'Enter') {
+                    checkStep1()
+                  }
+                }}
+              />
             )
           ) : null}
           {currentStep === 1 && (

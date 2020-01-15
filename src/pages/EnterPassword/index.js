@@ -9,6 +9,7 @@ import {
   networkSelector
 } from '../../store/reducers/settingSlice'
 import { removeAccount } from '../../store/reducers/accountSlice'
+import { TextInput } from '@chainx/ui'
 
 function EnterPassword(props) {
   const [pass, setPass] = useState('')
@@ -56,11 +57,11 @@ function EnterPassword(props) {
   return (
     <div className="enter-password">
       <span className="title">Input password</span>
-      <input
-        className="input"
+      <TextInput
+        className="fixed-width"
         type="password"
         value={pass}
-        onChange={e => setPass(e.target.value)}
+        onChange={setPass}
         onKeyPress={event => {
           if (event.key === 'Enter') {
             enter()

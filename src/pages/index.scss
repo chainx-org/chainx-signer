@@ -22,6 +22,11 @@ body {
   background: #DCE0E2;
 }
 
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   width: 318px;
   display: flex;
@@ -202,6 +207,11 @@ body {
   ::placeholder {
     color: $placeholderColor;
   }
+}
+
+.fixed-width {
+  width: 320px;
+  margin-top: 16px;
 }
 
 .button {

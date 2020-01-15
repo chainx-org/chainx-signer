@@ -10,6 +10,7 @@ import { networkSelector } from '../../store/reducers/settingSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import './nodeAction.scss'
 import getDelay from '../../shared/updateNodeStatus'
+import { TextInput } from '@chainx/ui'
 
 function AddNode(props) {
   const [name, setName] = useState('')
@@ -75,19 +76,17 @@ function AddNode(props) {
       <span className="title">{title}</span>
       {action !== 'remove' ? (
         <>
-          <input
-            className="input"
-            type="text"
+          <TextInput
+            className="fixed-width"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={setName}
             placeholder="Name(12 characters max)"
           />
           <span className="node-url">Node address</span>
-          <input
-            className="input"
-            type="text"
+          <TextInput
+            className="fixed-width"
             value={url}
-            onChange={e => setUrl(e.target.value)}
+            onChange={setUrl}
             onKeyPress={event => {
               if (event.key === 'Enter') {
                 enter()

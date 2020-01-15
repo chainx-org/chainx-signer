@@ -9,6 +9,7 @@ import {
   addAccount,
   chainxAccountsSelector
 } from '../../store/reducers/accountSlice'
+import { TextInput } from '@chainx/ui'
 
 function NameAndPassword(props) {
   const { secret, onSuccess } = props
@@ -42,6 +43,10 @@ function NameAndPassword(props) {
       setErrMsg('password is not match')
       return false
     }
+    if ((accounts || []).find(a => a.name === obj.name)) {
+      setErrMsg('name already exist')
+      return false
+    }
     return true
   }
 
@@ -61,35 +66,29 @@ function NameAndPassword(props) {
     onSuccess()
   }
 
+  const inputList = [
+    { name: 'name', type: 'text', placeholder: 'Name(12 characters max)' },
+    { name: 'pass', type: 'password', placeholder: 'Password' },
+    { name: 'repass', type: 'password', placeholder: 'Password confirmation' }
+  ]
+
   return (
-    <>
-      <input
-        className="input"
-        type="text"
-        required
-        value={obj.name}
-        onChange={e => setObj({ ...obj, name: e.target.value })}
-        placeholder="Name(12 characters max)"
-      />
-      <input
-        className="input"
-        type="password"
-        value={obj.pass}
-        onChange={e => setObj({ ...obj, pass: e.target.value })}
-        placeholder="Password"
-      />
-      <input
-        className="input"
-        type="password"
-        value={obj.repass}
-        onChange={e => setObj({ ...obj, repass: e.target.value })}
-        onKeyPress={event => {
-          if (event.key === 'Enter') {
-            create()
-          }
-        }}
-        placeholder="Password confirmation"
-      />
+    <div className="flex-column">
+      {inputList.map((item, i) => (
+        <TextInput
+          key={i}
+          className="fixed-width"
+          type={item.type}
+          value={obj[item.name]}
+          onChange={value => setObj({ ...obj, [item.name]: value })}
+          placeholder={item.placeholder}
+          onKeyPress={event => {
+            if (event.key === 'Enter' && i === 2) {
+              create()
+            }
+          }}
+        />
+      ))}
       <button
         className="button button-yellow margin-top-40"
         onClick={() => {
@@ -104,7 +103,7 @@ function NameAndPassword(props) {
           msg={`Account ${sameAccount.name} has same address, and it will be overwritten by this account.`}
         />
       )}
-    </>
+    </div>
   )
 }
 
