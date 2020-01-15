@@ -47,12 +47,17 @@ const accountSlice = createSlice({
     ) {
       const targetAccounts = findTargetAccounts(state, chainId)
 
-      if (targetAccounts.findIndex(a => a.address === address) >= 0) {
+      if (targetAccounts.findIndex(a => a.name === name) >= 0) {
         return
       }
 
       const account = { name, address, keystore }
-      targetAccounts.push(account)
+      const index = targetAccounts.findIndex(a => a.address === address)
+      if (index >= 0) {
+        targetAccounts.splice(index, 1, account)
+      } else {
+        targetAccounts.push(account)
+      }
 
       let pre
       if (CHAINX_MAIN === chainId) {
@@ -68,8 +73,6 @@ const accountSlice = createSlice({
         from: extractAccountInfo(pre),
         to: extractAccountInfo(account)
       })
-
-      // TODO: 处理存在相同address的情况
     },
     setCurrentChainXMainNetAccount(state, { payload: { address } }) {
       const target = state.chainxMainNetAccounts.find(
