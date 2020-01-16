@@ -76,12 +76,12 @@ function RequestSign(props) {
           'call',
           'instantiate',
           'claimSurcharge',
-          'convertToErc20',
+          'convertToXrc20',
           'convertToAsset',
-          'setTokenErc20',
-          'setErc20Selector',
-          'removeTokenErc20',
-          'forceIssueErc20',
+          'setTokenXrc20',
+          'setXrc20Selector',
+          'removeTokenXrc20',
+          'forceIssueXrc20',
           'setGasPrice',
           'setPrintln'
         ]
