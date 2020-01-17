@@ -17,6 +17,7 @@ import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
 import { clearToSign, toSignSelector } from '../../store/reducers/txSlice'
 import { service } from '../../services/socketService'
 import { getGas } from '../../shared/signHelper'
+import toPrecision from '../../shared/toPrecision'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -39,6 +40,12 @@ function RequestSign(props) {
     parseQuery()
     // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if (toSign && toSign.data) {
+      setCurrentGas(getGas(toSign.data, acceleration))
+    }
+  }, [acceleration, toSign])
 
   const check = () => {
     if (!pass) {
@@ -114,7 +121,6 @@ function RequestSign(props) {
         setNewQuery(newQuery)
 
         updateTxPanel()
-        setCurrentGas(getGas(toSign.data, acceleration))
         fetchRelevantInfo()
       } catch (error) {
         console.log('parse error ', error)
@@ -192,10 +198,6 @@ function RequestSign(props) {
     }
   }
 
-  const getCurrentGasText = () => {
-    return (acceleration * currentGas) / 10 ** 8 + ' PCX'
-  }
-
   // xStaking
   // 投票，切换投票，赎回，解冻，提息
   // nominate, renominate, unnominate, unfreeze, claim
@@ -240,7 +242,7 @@ function RequestSign(props) {
         <div className="adjust-gas-desc">
           <div>
             <span>Fee</span>
-            <span className="yellow">{getCurrentGasText()}</span>
+            <span className="yellow">{toPrecision(currentGas, 8)} PCX</span>
           </div>
           <span>More fee, faster speed</span>
         </div>
