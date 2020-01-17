@@ -6,10 +6,6 @@ export default function(props) {
   return (
     <div className="detail">
       <div className="detail-item">
-        <span>Module</span>
-        <span>{query.module.toLowerCase()}</span>
-      </div>
-      <div className="detail-item">
         <span>Method</span>
         <span>{query.method.replace(/([A-Z])/g, '_$1').toLowerCase()}</span>
       </div>

@@ -65,34 +65,9 @@ export const getSignRequest = async (pass, acceleration) => {
   }
 }
 
-export const getCurrentGas = async (
-  currentAccount,
-  query,
-  setErrMsg,
-  setCurrentGas
-) => {
+export const getGas = (hex, acceleration) => {
   const chainx = getChainx()
 
-  const { address, module, method, args } = query
-
-  const call = chainx.api.tx[module][method]
-
-  if (!call) {
-    setErrMsg('Invalid method')
-    return
-  }
-
-  if (currentAccount.address !== address) {
-    setErrMsg('Invalid address')
-    return
-  }
-
-  if (method === 'putCode') {
-    args[1] = Uint8Array.from(Object.values(args[1]))
-  }
-
-  const submittable = call(...args)
-  const _currentGas = submittable.getFeeSync(currentAccount.address, 1)
-
-  setCurrentGas(_currentGas)
+  const submittable = new SubmittableExtrinsic(chainx.api, hex)
+  return submittable.getFeeSync({ acceleration })
 }

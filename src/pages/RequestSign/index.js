@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getCurrentGas, getSignRequest } from '../../shared'
+import { getSignRequest } from '../../shared'
 import { parseData } from '../../shared/extensionExtrinsic'
 import ErrorMessage from '../../components/ErrorMessage'
 import './requestSign.scss'
@@ -14,8 +14,9 @@ import Trade from './Trade'
 import AssetsProcess from './AssetsProcess'
 import Staking from './Staking'
 import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
-import { clearToSign } from '../../store/reducers/txSlice'
+import { clearToSign, toSignSelector } from '../../store/reducers/txSlice'
 import { service } from '../../services/socketService'
+import { getGas } from '../../shared/signHelper'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -28,6 +29,7 @@ function RequestSign(props) {
     Object.assign({}, props.location.query)
   )
   const currentAccount = useSelector(currentChainxAccountSelector)
+  const toSign = useSelector(toSignSelector)
 
   const {
     location: { query }
@@ -90,8 +92,7 @@ function RequestSign(props) {
             'unnominate',
             'unfreeze',
             'claim',
-            'register', // 注册节点
-            'refresh' //更新节点
+            'register' // 注册节点
           ].includes(method)
         ) {
           module = 'xStaking'
@@ -113,7 +114,7 @@ function RequestSign(props) {
         setNewQuery(newQuery)
 
         updateTxPanel()
-        getCurrentGas(currentAccount, newQuery, setErrMsg, setCurrentGas)
+        setCurrentGas(getGas(toSign.data, acceleration))
         fetchRelevantInfo()
       } catch (error) {
         console.log('parse error ', error)
