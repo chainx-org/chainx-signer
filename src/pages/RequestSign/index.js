@@ -14,7 +14,6 @@ import Trade from './Trade'
 import AssetsProcess from './AssetsProcess'
 import Staking from './Staking'
 import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
-import { isTestNetSelector } from '../../store/reducers/settingSlice'
 import { clearToSign } from '../../store/reducers/txSlice'
 import { service } from '../../services/socketService'
 
@@ -28,7 +27,6 @@ function RequestSign(props) {
   const [newQuery, setNewQuery] = useState(
     Object.assign({}, props.location.query)
   )
-  const isTestNet = useSelector(isTestNetSelector)
   const currentAccount = useSelector(currentChainxAccountSelector)
 
   const {
@@ -36,9 +34,9 @@ function RequestSign(props) {
   } = props
 
   useEffect(() => {
-    parseQuery(isTestNet)
+    parseQuery()
     // eslint-disable-next-line
-  }, [isTestNet])
+  }, [])
 
   const check = () => {
     if (!pass) {
@@ -48,19 +46,19 @@ function RequestSign(props) {
     return true
   }
 
-  const fetchRelevantInfo = isTestNet => {
+  const fetchRelevantInfo = () => {
     if (newQuery.module === 'xStaking') {
-      dispatch(fetchIntentions(isTestNet))
+      dispatch(fetchIntentions())
     }
     if (newQuery.module === 'xSpot') {
-      dispatch(fetchTradePairs(isTestNet))
+      dispatch(fetchTradePairs())
     }
     if (newQuery.module === 'xAssetsProcess') {
-      dispatch(fetchFee(isTestNet))
+      dispatch(fetchFee())
     }
   }
 
-  const parseQuery = isTestNet => {
+  const parseQuery = () => {
     if (!query) {
       return
     }
@@ -115,7 +113,7 @@ function RequestSign(props) {
 
         updateTxPanel()
         getCurrentGas(currentAccount, newQuery, setErrMsg, setCurrentGas)
-        fetchRelevantInfo(isTestNet)
+        fetchRelevantInfo()
       } catch (error) {
         console.log('parse error ', error)
         props.history.push('/nodeError')

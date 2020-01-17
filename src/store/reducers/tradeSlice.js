@@ -19,7 +19,7 @@ const tradeSlice = createSlice({
 
 export const { setPairs, setFee } = tradeSlice.actions
 
-export const fetchTradePairs = isTestNet => async dispatch => {
+export const fetchTradePairs = () => async dispatch => {
   const chainx = getChainx()
 
   const { trade } = chainx
@@ -32,7 +32,7 @@ export const fetchTradePairs = isTestNet => async dispatch => {
   dispatch(setPairs(result))
 }
 
-export const fetchFee = isTestNet => async dispatch => {
+export const fetchFee = () => async dispatch => {
   const chainx = getChainx()
 
   const { asset } = chainx

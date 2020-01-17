@@ -1,17 +1,16 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { intentionsSelector } from '../../store/reducers/intentionSlice'
+import { intentionAccountNameMapSelector } from '../../store/reducers/intentionSlice'
 import toPrecision from '../../shared/toPrecision'
 import { pcxPrecision } from '../../shared/constants'
 import { getChainx, replaceBTC } from '../../shared/chainx'
 
 export default function(props) {
   const { query } = props
-  const intentions = useSelector(intentionsSelector)
+  const intentionAccountNameMap = useSelector(intentionAccountNameMapSelector)
+  const chainx = getChainx()
 
   const getPublicKey = address => {
-    console.log(address, typeof address)
-    const chainx = getChainx()
     return chainx.account.decodeAddress(address)
   }
 
@@ -29,15 +28,18 @@ export default function(props) {
             <div className="detail-item">
               <span>From node</span>
               <span>
-                {intentions && intentions[getPublicKey(query.args[0])]}
+                {intentionAccountNameMap[getPublicKey(query.args[0])]}
               </span>
             </div>
           )}
           <div className="detail-item">
             <span>Dest node</span>
             <span>
-              {intentions &&
-                intentions[getPublicKey(query.args.slice(-3, -2)[0])]}
+              {
+                intentionAccountNameMap[
+                  getPublicKey(query.args.slice(-3, -2)[0])
+                ]
+              }
             </span>
           </div>
           <div className="detail-item">
@@ -64,7 +66,7 @@ export default function(props) {
                 <div className="detail-item">
                   <span>Node</span>
                   <span>
-                    {intentions && intentions[getPublicKey(query.args[0])]}
+                    {intentionAccountNameMap[getPublicKey(query.args[0])]}
                   </span>
                 </div>
               )}
