@@ -1,3 +1,5 @@
+install: travis_wait mvn install
+
 matrix:
   include:
     - os: osx
