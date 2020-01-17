@@ -30,7 +30,9 @@ export default function(props) {
   }, [dispatch])
 
   const getPublicKey = address => {
-    return chainx.account.decodeAddress(address)
+    if (methodName && args && address) {
+      return chainx.account.decodeAddress(address)
+    }
   }
 
   return (
@@ -56,7 +58,7 @@ export default function(props) {
       ) : (
         <>
           {methodName === 'register' ? (
-            <DetailItem label="Name" value={query.args[0]} />
+            <DetailItem label="Name" value={args[0]} />
           ) : (
             <>
               <DetailItem

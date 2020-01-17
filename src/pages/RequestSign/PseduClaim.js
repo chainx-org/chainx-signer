@@ -7,5 +7,9 @@ import React from 'react'
 export default function() {
   const args = useSelector(toSignArgsSelector)
 
-  return <DetailItem label="Token" value={replaceBTC(args[0])} />
+  return (
+    <div className="detail">
+      <DetailItem label="Token" value={replaceBTC(args[0])} />
+    </div>
+  )
 }

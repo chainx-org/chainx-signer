@@ -97,24 +97,9 @@ function RequestSign(props) {
           'setGasPrice',
           'setPrintln'
         ]
-        if (
-          [
-            'nominate',
-            'renominate',
-            'unnominate',
-            'unfreeze',
-            'claim',
-            'register' // 注册节点
-          ].includes(method)
-        ) {
-          module = 'xStaking'
-          if (args.length === 1 && args[0].length < 6) {
-            module = 'xTokens'
-          }
-        } else if (['putOrder', 'cancelOrder'].includes(method)) {
+
+        if (['putOrder', 'cancelOrder'].includes(method)) {
           module = 'xSpot'
-        } else if (['transfer'].includes(method)) {
-          module = 'xAssets'
         } else if (contractMethods.includes(method)) {
           module = 'xContracts'
         } else {
@@ -152,8 +137,6 @@ function RequestSign(props) {
     let _txPanel
     if (newQuery.module === 'xSpot') {
       _txPanel = <Trade query={newQuery} />
-    } else if (['xStaking', 'xTokens'].includes(newQuery.module)) {
-      _txPanel = <Staking query={newQuery} />
     } else {
       _txPanel = <CommonTx query={newQuery} />
     }

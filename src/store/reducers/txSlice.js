@@ -57,26 +57,24 @@ export const toSignArgsSelector = createSelector(
 )
 
 export const isPseduClaimSelector = createSelector(
-  toSignMethodNameSelector,
-  toSignArgsSelector,
-  (name, args) => {
-    if (name !== 'claim' || args.length !== 1) {
+  toSignExtrinsicSelector,
+  ex => {
+    if (!ex || ex.methodName !== 'claim' || ex.argsArr.length !== 1) {
       return false
     }
 
-    return args[0] instanceof Token
+    return ex.argsArr[0].value instanceof Token
   }
 )
 
 export const isStakingClaimSelector = createSelector(
-  toSignMethodNameSelector,
-  toSignArgsSelector,
-  (name, args) => {
-    if (name !== 'claim' || args.length !== 1) {
+  toSignExtrinsicSelector,
+  ex => {
+    if (!ex || ex.methodName !== 'claim' || ex.argsArr.length !== 1) {
       return false
     }
 
-    return args[0] instanceof Address
+    return ex.argsArr[0].value instanceof Address
   }
 )
 
