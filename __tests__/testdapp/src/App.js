@@ -89,7 +89,9 @@ async function testTransfer(needBroadcast = false) {
     )
     console.log('result', result)
   } else {
-    const result = await signer.signExtrinsic(account.address, hex)
+    const result = await signer.signExtrinsic(account.address, hex).catch(e => {
+      console.log('error', e)
+    })
 
     console.log('result', result)
   }
