@@ -1,43 +1,54 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import toPrecision from '../../shared/toPrecision'
 import { pcxPrecision } from '../../shared/constants'
-import { useSelector } from 'react-redux'
-import { feeSelector } from '../../store/reducers/tradeSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { feeSelector, fetchFee } from '../../store/reducers/tradeSlice'
+import {
+  toSignArgsSelector,
+  toSignMethodNameSelector
+} from '../../store/reducers/txSlice'
 
-export default function(props) {
-  const { query } = props
+export default function() {
   const fee = useSelector(feeSelector)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchFee())
+  }, [dispatch])
+
+  const methodName = useSelector(toSignMethodNameSelector)
+  const args = useSelector(toSignArgsSelector)
 
   return (
     <div className="detail">
-      {query.method === 'withdraw' && (
+      {methodName === 'withdraw' && (
         <>
           <div className="detail-amount">
             <span>Amount</span>
             <span>
-              {toPrecision(query.args[1], pcxPrecision)} {query.args[0]}
+              {toPrecision(args[1], pcxPrecision)} {args[0]}
             </span>
           </div>
           <div className="detail-item">
             <span>Fee</span>
             <span>
-              {toPrecision(fee, pcxPrecision)} {query.args[0]}
+              {toPrecision(fee, pcxPrecision)} {args[0]}
             </span>
           </div>
           <div className="detail-item">
             <span>Dest</span>
-            <span>{query.args[2]}</span>
+            <span>{args[2]}</span>
           </div>
           <div className="detail-item">
             <span>Memo</span>
-            <span>{query.args[3]}</span>
+            <span>{args[3]}</span>
           </div>
         </>
       )}
-      {query.method === 'revokeWithdraw' && (
+      {methodName === 'revokeWithdraw' && (
         <div className="detail-item">
           <span>Id</span>
-          <span>{query.args[0]}</span>
+          <span>{args[0]}</span>
         </div>
       )}
     </div>

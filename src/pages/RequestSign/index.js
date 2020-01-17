@@ -14,10 +14,15 @@ import Trade from './Trade'
 import AssetsProcess from './AssetsProcess'
 import Staking from './Staking'
 import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
-import { clearToSign, toSignSelector } from '../../store/reducers/txSlice'
+import {
+  clearToSign,
+  toSignMethodNameSelector,
+  toSignSelector
+} from '../../store/reducers/txSlice'
 import { service } from '../../services/socketService'
 import { getGas } from '../../shared/signHelper'
 import toPrecision from '../../shared/toPrecision'
+import { xAssetsProcessCalls } from './constants'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -31,6 +36,8 @@ function RequestSign(props) {
   )
   const currentAccount = useSelector(currentChainxAccountSelector)
   const toSign = useSelector(toSignSelector)
+
+  const toSignMethodName = useSelector(toSignMethodNameSelector)
 
   const {
     location: { query }
@@ -130,13 +137,17 @@ function RequestSign(props) {
   }
 
   const updateTxPanel = () => {
+    if (toSignMethodName === 'transfer') {
+      return setTxPanel(<Transfer />)
+    }
+
+    if (xAssetsProcessCalls.includes(toSignMethodName)) {
+      return setTxPanel(<AssetsProcess />)
+    }
+
     let _txPanel
-    if (newQuery.module === 'xAssets' && newQuery.method === 'transfer') {
-      _txPanel = <Transfer query={newQuery} />
-    } else if (newQuery.module === 'xSpot') {
+    if (newQuery.module === 'xSpot') {
       _txPanel = <Trade query={newQuery} />
-    } else if (newQuery.module === 'xAssetsProcess') {
-      _txPanel = <AssetsProcess query={newQuery} />
     } else if (['xStaking', 'xTokens'].includes(newQuery.module)) {
       _txPanel = <Staking query={newQuery} />
     } else {
