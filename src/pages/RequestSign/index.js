@@ -90,7 +90,8 @@ function RequestSign(props) {
             'unnominate',
             'unfreeze',
             'claim',
-            'register'
+            'register', // 注册节点
+            'refresh' //更新节点
           ].includes(method)
         ) {
           module = 'xStaking'
