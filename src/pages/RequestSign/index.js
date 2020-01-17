@@ -5,8 +5,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import './requestSign.scss'
 import { DefaultButton, PrimaryButton, Slider, TextInput } from '@chainx/ui'
 import { setLoading } from '../../store/reducers/statusSlice'
-import { fetchIntentions } from '../../store/reducers/intentionSlice'
-import { fetchFee, fetchTradePairs } from '../../store/reducers/tradeSlice'
+import { fetchTradePairs } from '../../store/reducers/tradeSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import Transfer from './Transfer'
 import CommonTx from './CommonTx'
@@ -63,14 +62,8 @@ function RequestSign(props) {
   }
 
   const fetchRelevantInfo = () => {
-    if (newQuery.module === 'xStaking') {
-      dispatch(fetchIntentions())
-    }
     if (newQuery.module === 'xSpot') {
       dispatch(fetchTradePairs())
-    }
-    if (newQuery.module === 'xAssetsProcess') {
-      dispatch(fetchFee())
     }
   }
 
@@ -113,8 +106,6 @@ function RequestSign(props) {
           if (args.length === 1 && args[0].length < 6) {
             module = 'xTokens'
           }
-        } else if (['withdraw', 'revokeWithdraw'].includes(method)) {
-          module = 'xAssetsProcess'
         } else if (['putOrder', 'cancelOrder'].includes(method)) {
           module = 'xSpot'
         } else if (['transfer'].includes(method)) {
