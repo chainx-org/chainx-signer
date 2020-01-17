@@ -36,6 +36,7 @@ import {
   setNodeDelay
 } from '../../store/reducers/nodeSlice'
 import getDelay from '../../shared/updateNodeStatus'
+import { fetchIntentions } from '../../store/reducers/intentionSlice'
 
 function Header(props) {
   const refNodeList = useRef(null)
@@ -112,6 +113,7 @@ function Header(props) {
 
   function switchNet() {
     dispatch(setNetwork(isTestNet ? CHAINX_MAIN : CHAINX_TEST))
+    dispatch(fetchIntentions())
     setShowNodeListArea(false)
     props.history.push('/')
   }

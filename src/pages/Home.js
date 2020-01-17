@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useOutsideClick } from '../shared'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ClipboardJS from 'clipboard'
 import Icon from '../components/Icon'
 import './index.scss'
 import logo from '../assets/extension_logo.svg'
 import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 import { isTestNetSelector } from '../store/reducers/settingSlice'
+import { fetchIntentions } from '../store/reducers/intentionSlice'
 
 function Home(props) {
   const ref = useRef(null)
@@ -15,9 +16,11 @@ function Home(props) {
   const [copySuccess, setCopySuccess] = useState('')
   const currentAccount = useSelector(currentChainxAccountSelector)
   const toSign = useSelector(state => state.tx.toSign)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     getUnapprovedTxs()
+    dispatch(fetchIntentions())
     // eslint-disable-next-line
   }, [isTestNet, toSign])
 
@@ -25,7 +28,7 @@ function Home(props) {
     setShowAccountAction(false)
   })
 
-  async function getUnapprovedTxs() {
+  function getUnapprovedTxs() {
     try {
       if (toSign) {
         props.history.push({
