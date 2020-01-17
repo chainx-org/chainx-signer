@@ -1,6 +1,7 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { Extrinsic } from '../../shared/extensionExtrinsic'
 import { stringCamelCase } from '@chainx/util'
+import { Token, Address } from '@chainx/types'
 
 const initialState = {
   version: 0,
@@ -52,6 +53,30 @@ export const toSignArgsSelector = createSelector(
     return extrinsic.argsArr.map(item =>
       extrinsic.methodName === 'put_code' ? item.value : item.value.toString()
     )
+  }
+)
+
+export const isPseduClaimSelector = createSelector(
+  toSignMethodNameSelector,
+  toSignArgsSelector,
+  (name, args) => {
+    if (name !== 'claim' || args.length !== 1) {
+      return false
+    }
+
+    return args[0] instanceof Token
+  }
+)
+
+export const isStakingClaimSelector = createSelector(
+  toSignMethodNameSelector,
+  toSignArgsSelector,
+  (name, args) => {
+    if (name !== 'claim' || args.length !== 1) {
+      return false
+    }
+
+    return args[0] instanceof Address
   }
 )
 

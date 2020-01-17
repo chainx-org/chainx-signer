@@ -6,7 +6,7 @@ import {
 } from '../../store/reducers/intentionSlice'
 import toPrecision from '../../shared/toPrecision'
 import { pcxPrecision } from '../../shared/constants'
-import { getChainx, replaceBTC } from '../../shared/chainx'
+import { getChainx } from '../../shared/chainx'
 import {
   toSignArgsSelector,
   toSignMethodNameSelector
@@ -55,19 +55,14 @@ export default function(props) {
         </>
       ) : (
         <>
-          {query.module === 'xTokens' && (
-            <DetailItem label="Token" value={replaceBTC(args[0])} />
-          )}
           {methodName === 'register' ? (
             <DetailItem label="Name" value={query.args[0]} />
           ) : (
             <>
-              {query.module === 'xStaking' && (
-                <DetailItem
-                  label="Node"
-                  value={intentionAccountNameMap[getPublicKey(query.args[0])]}
-                />
-              )}
+              <DetailItem
+                label="Node"
+                value={intentionAccountNameMap[getPublicKey(query.args[0])]}
+              />
               {methodName === 'unfreeze' && (
                 <DetailItem label="Id" value={query.args[1]} />
               )}

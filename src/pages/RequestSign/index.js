@@ -15,13 +15,16 @@ import Staking from './Staking'
 import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
 import {
   clearToSign,
+  isPseduClaimSelector,
+  isStakingClaimSelector,
   toSignMethodNameSelector,
   toSignSelector
 } from '../../store/reducers/txSlice'
 import { service } from '../../services/socketService'
 import { getGas } from '../../shared/signHelper'
 import toPrecision from '../../shared/toPrecision'
-import { xAssetsProcessCalls } from './constants'
+import { xAssetsProcessCalls, stakingMethodNames } from './constants'
+import PseduClaim from './PseduClaim'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -37,6 +40,8 @@ function RequestSign(props) {
   const toSign = useSelector(toSignSelector)
 
   const toSignMethodName = useSelector(toSignMethodNameSelector)
+  const isStakingClaim = useSelector(isStakingClaimSelector)
+  const isPseduClaim = useSelector(isPseduClaimSelector)
 
   const {
     location: { query }
@@ -134,6 +139,14 @@ function RequestSign(props) {
 
     if (xAssetsProcessCalls.includes(toSignMethodName)) {
       return setTxPanel(<AssetsProcess />)
+    }
+
+    if (stakingMethodNames.includes(toSignMethodName) || isStakingClaim) {
+      return setTxPanel(<Staking query={newQuery} />)
+    }
+
+    if (isPseduClaim) {
+      return setTxPanel(<PseduClaim />)
     }
 
     let _txPanel
