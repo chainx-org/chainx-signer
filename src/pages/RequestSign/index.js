@@ -118,8 +118,6 @@ function RequestSign(props) {
   }
 
   const updateTxPanel = () => {
-    console.log('toSignMethodName', toSignMethodName)
-
     if (toSignMethodName === 'transfer') {
       return setTxPanel(<Transfer />)
     }
