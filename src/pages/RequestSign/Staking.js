@@ -15,8 +15,7 @@ import { nominateMethodNames } from './constants'
 import DetailItem from './components/DetailItem'
 import DetailAmount from './components/DetailAmount'
 
-export default function(props) {
-  const { query } = props
+export default function() {
   const intentionAccountNameMap = useSelector(intentionAccountNameMapSelector)
   const chainx = getChainx()
   const dispatch = useDispatch()
@@ -35,43 +34,54 @@ export default function(props) {
     }
   }
 
-  return (
-    <div className="detail">
-      {isNominateMethod ? (
-        <>
-          <DetailAmount
-            value={toPrecision(args.slice(-2, -1), pcxPrecision)}
-            token="PCX"
-          />
-          {methodName === 'renominate' && (
-            <DetailItem
-              label="From node"
-              value={intentionAccountNameMap[getPublicKey(args[0])]}
-            />
-          )}
-          <DetailItem
-            label="Dest node"
-            value={intentionAccountNameMap[getPublicKey(args.slice(-3, -2)[0])]}
-          />
-          <DetailItem label="Memo" value={args.slice(-1)} />
-        </>
-      ) : (
-        <>
-          {methodName === 'register' ? (
-            <DetailItem label="Name" value={args[0]} />
-          ) : (
-            <>
-              <DetailItem
-                label="Node"
-                value={intentionAccountNameMap[getPublicKey(query.args[0])]}
-              />
-              {methodName === 'unfreeze' && (
-                <DetailItem label="Id" value={query.args[1]} />
-              )}
-            </>
-          )}
-        </>
+  const nominateMethodElement = (
+    <>
+      <DetailAmount
+        value={toPrecision(args.slice(-2, -1), pcxPrecision)}
+        token="PCX"
+      />
+      {methodName === 'renominate' && (
+        <DetailItem
+          label="From node"
+          value={intentionAccountNameMap[getPublicKey(args[0])]}
+        />
       )}
-    </div>
+      <DetailItem
+        label="Dest node"
+        value={intentionAccountNameMap[getPublicKey(args.slice(-3, -2)[0])]}
+      />
+      <DetailItem label="Memo" value={args.slice(-1)} />
+    </>
   )
+
+  const registerElement = <DetailItem label="Name" value={args[0]} />
+
+  const unfreezeElement = (
+    <>
+      <DetailItem
+        label="Node"
+        value={intentionAccountNameMap[getPublicKey(args[0])]}
+      />
+      <DetailItem label="Id" value={args[1]} />
+    </>
+  )
+
+  let element = (
+    <>
+      <DetailItem
+        label="Node"
+        value={intentionAccountNameMap[getPublicKey(args[0])]}
+      />
+    </>
+  )
+
+  if (isNominateMethod) {
+    element = nominateMethodElement
+  } else if (methodName === 'register') {
+    element = registerElement
+  } else if (methodName === 'unfreeze') {
+    element = unfreezeElement
+  }
+
+  return <div className="detail">{element}</div>
 }

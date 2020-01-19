@@ -118,6 +118,8 @@ function RequestSign(props) {
   }
 
   const updateTxPanel = () => {
+    console.log('toSignMethodName', toSignMethodName)
+
     if (toSignMethodName === 'transfer') {
       return setTxPanel(<Transfer />)
     }
@@ -127,7 +129,7 @@ function RequestSign(props) {
     }
 
     if (stakingMethodNames.includes(toSignMethodName) || isStakingClaim) {
-      return setTxPanel(<Staking query={newQuery} />)
+      return setTxPanel(<Staking />)
     }
 
     if (isPseduClaim) {
