@@ -229,7 +229,7 @@ function RequestSign(props) {
     }
   ]
 
-  if (!query) {
+  if (!query || !toSign) {
     return <></>
   }
 
