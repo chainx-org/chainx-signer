@@ -66,6 +66,7 @@ export default function() {
     </>
   )
 
+  // default ui. 现在claim在用这个
   let element = (
     <>
       <DetailItem
