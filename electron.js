@@ -70,7 +70,7 @@ function isWin() {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: isWin() ? 370 : 358,
+    width: isWin() ? 380 : 358,
     height: isWin() ? 665 : 600,
     webPreferences: { preload: path.join(__dirname, 'preload.js') }
   })
