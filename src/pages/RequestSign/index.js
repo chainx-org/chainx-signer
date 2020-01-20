@@ -54,7 +54,11 @@ function RequestSign(props) {
 
   useEffect(() => {
     if (toSign && toSign.data) {
-      setCurrentGas(getGas(toSign.data, acceleration))
+      try {
+        setCurrentGas(getGas(toSign.data, acceleration))
+      } catch (e) {
+        setErrMsg('Failed to get transaction fee')
+      }
     }
   }, [acceleration, toSign])
 
@@ -278,7 +282,7 @@ function RequestSign(props) {
           <DefaultButton size="large" onClick={cancel}>
             Cancel
           </DefaultButton>
-          <PrimaryButton size="large" onClick={() => sign()}>
+          <PrimaryButton disabled={errMsg} size="large" onClick={() => sign()}>
             Sign
           </PrimaryButton>
         </div>

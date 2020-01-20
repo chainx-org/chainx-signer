@@ -28,6 +28,8 @@ export const getSignRequest = async (pass, acceleration) => {
   }
   const account = chainx.account.fromKeyStore(currentAccount.keystore, pass)
   const nonce = await api.query.system.accountNonce(account.publicKey())
+  console.log('nonce origin:', nonce)
+  console.log('nonce', nonce.toNumber())
   const signedExtrinsic = extrinsic.sign(account, {
     nonce: nonce.toNumber(),
     acceleration,
