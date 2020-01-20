@@ -63,7 +63,7 @@ export const getSignRequest = async (pass, acceleration) => {
   try {
     await signedExtrinsic.send(emitInfo)
   } catch (e) {
-    return emitInfo(e)
+    emitInfo(e)
     throw e
   }
 }
