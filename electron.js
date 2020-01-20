@@ -89,8 +89,8 @@ function createWindow() {
 }
 
 const restoreInstance = () => {
-  mainWindow.show()
   if (mainWindow.isMinimized()) mainWindow.restore()
+  mainWindow.show()
 }
 
 const activateInstance = e => {
