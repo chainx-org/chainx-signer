@@ -64,10 +64,14 @@ async function updateIfNewVersion() {
   }
 }
 
+function isWin() {
+  return process.platform === 'win32'
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 358,
-    height: 600,
+    width: isWin() ? 363 : 358,
+    height: isWin() ? 665 : 600,
     webPreferences: { preload: path.join(__dirname, 'preload.js') }
   })
   mainWindow.loadURL(
