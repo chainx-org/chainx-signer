@@ -83,6 +83,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3001 && electron .\"",
+    "electron": "electron .",
     "dist": "yarn build && rimraf dist && electron-builder"
   },
   "eslintConfig": {
