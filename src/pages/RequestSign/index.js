@@ -282,7 +282,11 @@ function RequestSign(props) {
           <DefaultButton size="large" onClick={cancel}>
             Cancel
           </DefaultButton>
-          <PrimaryButton disabled={errMsg} size="large" onClick={() => sign()}>
+          <PrimaryButton
+            disabled={!!errMsg}
+            size="large"
+            onClick={() => sign()}
+          >
             Sign
           </PrimaryButton>
         </div>
