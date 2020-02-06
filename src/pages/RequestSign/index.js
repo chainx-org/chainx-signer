@@ -267,7 +267,10 @@ function RequestSign(props) {
         <TextInput
           showClear={false}
           value={pass}
-          onChange={setPass}
+          onChange={value => {
+            setErrMsg('')
+            setPass(value)
+          }}
           onKeyPress={event => {
             if (event.key === 'Enter') {
               sign()
