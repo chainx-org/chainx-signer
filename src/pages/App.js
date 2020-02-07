@@ -46,6 +46,11 @@ export default function App() {
   const loading = useSelector(state => state.status.loading)
   const initLoading = useSelector(state => state.status.initLoading)
   const currentNode = useSelector(currentChainxNodeSelector)
+  const state = useSelector(state => state)
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('state', state)
+  }
 
   useEffect(() => {
     getSetting()

@@ -28,8 +28,20 @@ export const getSignRequest = async (pass, acceleration) => {
 
     throw new Error('Invalid sign data')
   }
+
   const account = chainx.account.fromKeyStore(currentAccount.keystore, pass)
-  const nonce = await api.query.system.accountNonce(account.publicKey())
+  let nonce
+  try {
+    nonce = await api.query.system.accountNonce(account.publicKey())
+  } catch (e) {
+    console.error('Failed to get nonce')
+    service.emit(origin, id, 'api', {
+      id: dataId,
+      error: e
+    })
+    throw e
+  }
+
   const signedExtrinsic = extrinsic.sign(account, {
     nonce: nonce.toNumber(),
     acceleration,
@@ -50,6 +62,9 @@ export const getSignRequest = async (pass, acceleration) => {
   }
 
   function emitInfo(err, status) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('emit info', err, status)
+    }
     return service.emit(origin, id, 'event', {
       event: socketsEvents.TX_STATUS,
       payload: {
@@ -63,6 +78,10 @@ export const getSignRequest = async (pass, acceleration) => {
   try {
     await signedExtrinsic.send(emitInfo)
   } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('catch send', e)
+    }
+
     emitInfo(e)
     throw e
   }
