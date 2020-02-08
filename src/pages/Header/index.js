@@ -31,7 +31,9 @@ import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
   chainxNodesDelaySelector,
   chainxNodesSelector,
+  currentChainXMainNetNodeSelector,
   currentChainxNodeSelector,
+  currentChainXTestNetNodeSelector,
   setCurrentChainXNode,
   setNodeDelay
 } from '../../store/reducers/nodeSlice'
@@ -51,6 +53,8 @@ function Header(props) {
   const chainId = useSelector(networkSelector)
   const isTestNet = useSelector(isTestNetSelector)
   const nodesDelay = useSelector(chainxNodesDelaySelector)
+  const currentMainNetNode = useSelector(currentChainXMainNetNodeSelector)
+  const currentTestNetNode = useSelector(currentChainXTestNetNodeSelector)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -111,8 +115,16 @@ function Header(props) {
     return delay ? (delay === 'timeout' ? 'timeout' : delay + ' ms') : ''
   }
 
-  function switchNet() {
+  async function switchNet() {
     dispatch(setNetwork(isTestNet ? CHAINX_MAIN : CHAINX_TEST))
+
+    const node = isTestNet ? currentMainNetNode : currentTestNetNode
+    await setNode(node.url)
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('node', node)
+    }
+
     dispatch(fetchIntentions())
     setShowNodeListArea(false)
     props.history.push('/')

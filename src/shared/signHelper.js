@@ -14,6 +14,11 @@ export const getSignRequest = async (pass, acceleration) => {
 
   const chainx = getChainx()
   const api = chainx.api
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('currentAccount', currentAccount)
+    console.log('api', api)
+  }
   let extrinsic
   try {
     extrinsic = new SubmittableExtrinsic(chainx.api, data)
@@ -63,11 +68,11 @@ export const getSignRequest = async (pass, acceleration) => {
 
   function emitInfo(err, status) {
     if (process.env.NODE_ENV === 'development') {
-      console.log('emit info', err, status)
-    }
+      if (err) {
+        console.error('send error', err)
+      }
 
-    if (err) {
-      throw err
+      console.log('send status', status)
     }
 
     service.emit(origin, id, 'event', {
