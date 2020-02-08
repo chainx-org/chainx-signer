@@ -65,7 +65,12 @@ export const getSignRequest = async (pass, acceleration) => {
     if (process.env.NODE_ENV === 'development') {
       console.log('emit info', err, status)
     }
-    return service.emit(origin, id, 'event', {
+
+    if (err) {
+      throw err
+    }
+
+    service.emit(origin, id, 'event', {
       event: socketsEvents.TX_STATUS,
       payload: {
         id: dataId,
@@ -75,16 +80,7 @@ export const getSignRequest = async (pass, acceleration) => {
     })
   }
 
-  try {
-    await signedExtrinsic.send(emitInfo)
-  } catch (e) {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('catch send', e)
-    }
-
-    emitInfo(e)
-    throw e
-  }
+  await signedExtrinsic.send(emitInfo)
 }
 
 export const getGas = (hex, acceleration) => {
