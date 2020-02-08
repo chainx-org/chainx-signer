@@ -71,7 +71,7 @@ function isWin() {
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: isWin() ? 380 : 358,
-    height: isWin() ? 665 : 600,
+    height: isWin() ? 665 : 610,
     webPreferences: { preload: path.join(__dirname, 'preload.js') }
   })
   mainWindow.loadURL(
