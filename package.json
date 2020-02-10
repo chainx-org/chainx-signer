@@ -5,6 +5,7 @@
   "main": "electron.js",
   "dependencies": {
     "@babel/core": "7.6.0",
+    "@babel/plugin-proposal-do-expressions": "^7.8.3",
     "@chainx/types": "^2.22.31",
     "@chainx/ui": "^0.0.33",
     "@chainx/util": "^2.22.31",
@@ -205,6 +206,9 @@
   "babel": {
     "presets": [
       "react-app"
+    ],
+    "plugins": [
+      "@babel/proposal-do-expressions"
     ]
   }
 }

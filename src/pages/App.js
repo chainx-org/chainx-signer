@@ -71,26 +71,29 @@ export default function App() {
     <Router>
       <React.Fragment>
         <Header props />
-        {(loading || initLoading) && (
-          <div className="spinner">
-            <img src={spinner} alt="spinner" />
-          </div>
-        )}
-        {!initLoading && (
-          <div className="content">
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/createAccount" component={CreateAccount} />
-              <Route path="/importAccount" component={ImportAccount} />
-              <Route path="/requestSign/:id?" component={RequestSign} />
-              <Route path="/showPrivateKey" component={ShowPrivateKey} />
-              <Route path="/enterPassword" component={EnterPassword} />
-              <Route path="/addNode" component={NodeAction} />
-              <Route path="/nodeError" component={NodeError} />
-              <Redirect to={redirectUrl} />
-            </Switch>
-          </div>
-        )}
+        {do {
+          if (loading || initLoading) {
+            // eslint-disable-next-line no-unused-expressions
+            ;<div className="spinner">
+              <img src={spinner} alt="spinner" />
+            </div>
+          } else if (!initLoading) {
+            // eslint-disable-next-line no-unused-expressions
+            ;<div className="content">
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <Route path="/createAccount" component={CreateAccount} />
+                <Route path="/importAccount" component={ImportAccount} />
+                <Route path="/requestSign/:id?" component={RequestSign} />
+                <Route path="/showPrivateKey" component={ShowPrivateKey} />
+                <Route path="/enterPassword" component={EnterPassword} />
+                <Route path="/addNode" component={NodeAction} />
+                <Route path="/nodeError" component={NodeError} />
+                <Redirect to={redirectUrl} />
+              </Switch>
+            </div>
+          }
+        }}
       </React.Fragment>
     </Router>
   )
