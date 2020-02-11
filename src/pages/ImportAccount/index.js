@@ -27,7 +27,7 @@ function ImportAccount(props) {
         mnemonicList.some(item => item === '') ||
         !Account.isMnemonicValid(mnemonicList.join(' '))
       ) {
-        setErrMsg('Mnemonic is not correct')
+        setErrMsg('Invalid mnemonic')
         return
       }
     } else if (currentTabIndex === 1) {

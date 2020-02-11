@@ -25,6 +25,7 @@ import { getGas } from '../../shared/signHelper'
 import toPrecision from '../../shared/toPrecision'
 import { xAssetsProcessCalls, stakingMethodNames } from './constants'
 import PseduClaim from './PseduClaim'
+import { getChainx } from '../../shared/chainx'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -65,6 +66,14 @@ function RequestSign(props) {
   const check = () => {
     if (!pass) {
       setErrMsg('password is required')
+      return false
+    }
+
+    const chainx = getChainx()
+    try {
+      chainx.account.fromKeyStore(currentAccount.keystore, pass)
+    } catch (e) {
+      setErrMsg('Invalid password')
       return false
     }
     return true
