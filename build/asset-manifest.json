@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "./static/css/main.30b7793d.chunk.css",
-    "main.js": "./static/js/main.78c7feba.chunk.js",
-    "main.js.map": "./static/js/main.78c7feba.chunk.js.map",
+    "main.js": "./static/js/main.d352768f.chunk.js",
+    "main.js.map": "./static/js/main.d352768f.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.21b78345.js",
     "runtime-main.js.map": "./static/js/runtime-main.21b78345.js.map",
     "static/js/2.ec239195.chunk.js": "./static/js/2.ec239195.chunk.js",
     "static/js/2.ec239195.chunk.js.map": "./static/js/2.ec239195.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.ec25ac03acc06a948a9f6a920f9c7bd0.js": "./precache-manifest.ec25ac03acc06a948a9f6a920f9c7bd0.js",
+    "precache-manifest.44ea20e5642f2e151e5c054be9e59569.js": "./precache-manifest.44ea20e5642f2e151e5c054be9e59569.js",
     "service-worker.js": "./service-worker.js",
     "static/css/main.30b7793d.chunk.css.map": "./static/css/main.30b7793d.chunk.css.map",
     "static/media/index.scss": "./static/media/iconfont.b80c0833.woff"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.21b78345.js",
     "static/js/2.ec239195.chunk.js",
     "static/css/main.30b7793d.chunk.css",
-    "static/js/main.78c7feba.chunk.js"
+    "static/js/main.d352768f.chunk.js"
   ]
 }
