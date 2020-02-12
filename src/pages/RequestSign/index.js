@@ -23,7 +23,11 @@ import {
 import { service } from '../../services/socketService'
 import { getGas } from '../../shared/signHelper'
 import toPrecision from '../../shared/toPrecision'
-import { xAssetsProcessCalls, stakingMethodNames } from './constants'
+import {
+  xAssetsProcessCalls,
+  stakingMethodNames,
+  contractMethods
+} from './constants'
 import PseduClaim from './PseduClaim'
 import { getChainx } from '../../shared/chainx'
 
@@ -96,20 +100,6 @@ function RequestSign(props) {
         newQuery.argsWithName = argsWithName
         newQuery.args = args
         let module = ''
-        const contractMethods = [
-          'putCode',
-          'call',
-          'instantiate',
-          'claimSurcharge',
-          'convertToXrc20',
-          'convertToAsset',
-          'setTokenXrc20',
-          'setXrc20Selector',
-          'removeTokenXrc20',
-          'forceIssueXrc20',
-          'setGasPrice',
-          'setPrintln'
-        ]
 
         if (['putOrder', 'cancelOrder'].includes(method)) {
           module = 'xSpot'

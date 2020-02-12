@@ -8,3 +8,18 @@ export const stakingMethodNames = [
   'unfreeze',
   'register'
 ]
+
+export const contractMethods = [
+  'putCode',
+  'call',
+  'instantiate',
+  'claimSurcharge',
+  'convertToXrc20',
+  'convertToAsset',
+  'setTokenXrc20',
+  'setXrc20Selector',
+  'removeTokenXrc20',
+  'forceIssueXrc20',
+  'setGasPrice',
+  'setPrintln'
+]

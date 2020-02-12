@@ -7,10 +7,8 @@ const intentionSlice = createSlice({
     intentions: []
   },
   reducers: {
-    setIntentions: {
-      reducer(state, action) {
-        state.intentions = action.payload
-      }
+    setIntentions(state, action) {
+      state.intentions = action.payload
     }
   }
 })
