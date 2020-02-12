@@ -34,18 +34,12 @@ function AddNode(props) {
     title = 'Delete node'
   }
 
-  const check = () => {
+  const enter = async () => {
     if (!name || !url) {
       setErrMsg('name and url are required')
-      return false
-    }
-    return true
-  }
-
-  const enter = async () => {
-    if (!check()) {
       return
     }
+
     try {
       dispatch(addNode({ chainId, node: { name, url } }))
       getDelay(nodeList, chainId, dispatch, setNodeDelay)
