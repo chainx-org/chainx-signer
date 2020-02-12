@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { getSignRequest } from '../../shared'
-import { parseData } from '../../shared/extensionExtrinsic'
 import ErrorMessage from '../../components/ErrorMessage'
 import './requestSign.scss'
 import { DefaultButton, PrimaryButton, Slider, TextInput } from '@chainx/ui'
@@ -24,9 +23,9 @@ import { service } from '../../services/socketService'
 import { getGas } from '../../shared/signHelper'
 import toPrecision from '../../shared/toPrecision'
 import {
-  xAssetsProcessCalls,
   stakingMethodNames,
-  contractMethods
+  tradeMethodNames,
+  xAssetsProcessCalls
 } from './constants'
 import PseduClaim from './PseduClaim'
 import { getChainx } from '../../shared/chainx'
@@ -38,24 +37,15 @@ function RequestSign(props) {
   const [currentGas, setCurrentGas] = useState(0)
   const [acceleration, setAcceleration] = useState(1)
   const [txPanel, setTxPanel] = useState(null)
-  const [newQuery, setNewQuery] = useState(
-    Object.assign({}, props.location.query)
-  )
   const currentAccount = useSelector(currentChainxAccountSelector)
   const toSign = useSelector(toSignSelector)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('toSign', toSign)
+  }
 
   const toSignMethodName = useSelector(toSignMethodNameSelector)
   const isStakingClaim = useSelector(isStakingClaimSelector)
   const isPseduClaim = useSelector(isPseduClaimSelector)
-
-  const {
-    location: { query }
-  } = props
-
-  useEffect(() => {
-    parseQuery()
-    // eslint-disable-next-line
-  }, [])
 
   useEffect(() => {
     if (toSign && toSign.data) {
@@ -83,68 +73,44 @@ function RequestSign(props) {
     return true
   }
 
-  const fetchRelevantInfo = () => {
-    if (newQuery.module === 'xSpot') {
+  const updatePanel = useCallback(() => {
+    if (tradeMethodNames.includes(toSignMethodName)) {
       dispatch(fetchTradePairs())
     }
-  }
 
-  const parseQuery = () => {
-    if (!query) {
-      return
-    }
-    if (!query.module) {
-      try {
-        const [method, args, argsWithName] = parseData(query.data)
-        newQuery.method = method
-        newQuery.argsWithName = argsWithName
-        newQuery.args = args
-        let module = ''
-
-        if (['putOrder', 'cancelOrder'].includes(method)) {
-          module = 'xSpot'
-        } else if (contractMethods.includes(method)) {
-          module = 'xContracts'
+    setTxPanel(
+      do {
+        if (toSignMethodName === 'transfer') {
+          // eslint-disable-next-line no-unused-expressions
+          ;<Transfer />
+        } else if (xAssetsProcessCalls.includes(toSignMethodName)) {
+          // eslint-disable-next-line no-unused-expressions
+          ;<AssetsProcess />
+        } else if (
+          stakingMethodNames.includes(toSignMethodName) ||
+          isStakingClaim
+        ) {
+          // eslint-disable-next-line no-unused-expressions
+          ;<Staking />
+        } else if (isPseduClaim) {
+          // eslint-disable-next-line no-unused-expressions
+          ;<PseduClaim />
+        } else if (tradeMethodNames.includes(toSignMethodName)) {
+          // eslint-disable-next-line no-unused-expressions
+          ;<Trade />
         } else {
-          module = ''
+          // eslint-disable-next-line no-unused-expressions
+          ;<CommonTx />
         }
-        newQuery.module = module
-        setNewQuery(newQuery)
-
-        updateTxPanel()
-        fetchRelevantInfo()
-      } catch (error) {
-        console.log('parse error ', error)
-        props.history.push('/nodeError')
       }
-    }
-  }
+    )
+  }, [toSignMethodName, dispatch, isPseduClaim, isStakingClaim])
 
-  const updateTxPanel = () => {
-    if (toSignMethodName === 'transfer') {
-      return setTxPanel(<Transfer />)
+  useEffect(() => {
+    if (toSign && toSign.data) {
+      updatePanel()
     }
-
-    if (xAssetsProcessCalls.includes(toSignMethodName)) {
-      return setTxPanel(<AssetsProcess />)
-    }
-
-    if (stakingMethodNames.includes(toSignMethodName) || isStakingClaim) {
-      return setTxPanel(<Staking />)
-    }
-
-    if (isPseduClaim) {
-      return setTxPanel(<PseduClaim />)
-    }
-
-    let _txPanel
-    if (newQuery.module === 'xSpot') {
-      _txPanel = <Trade query={newQuery} />
-    } else {
-      _txPanel = <CommonTx query={newQuery} />
-    }
-    setTxPanel(_txPanel)
-  }
+  }, [toSign, updatePanel])
 
   const sign = async () => {
     setErrMsg('')
@@ -155,7 +121,7 @@ function RequestSign(props) {
     if (!check()) {
       return
     }
-    if (currentAccount.address !== query.address) {
+    if (currentAccount.address !== toSign.address) {
       setErrMsg('Invalid address')
       return
     }
@@ -181,7 +147,7 @@ function RequestSign(props) {
     removeCurrentSign()
 
     // 通知dapp拒绝签名
-    const { origin, id, dataId } = query
+    const { origin, id, dataId } = toSign
     service.emit(origin, id, 'api', {
       id: dataId,
       result: { reject: true }
@@ -199,28 +165,6 @@ function RequestSign(props) {
     }
   }
 
-  // xStaking
-  // 投票，切换投票，赎回，解冻，提息
-  // nominate, renominate, unnominate, unfreeze, claim
-  // 切换投票页面不一样
-  // this.api.tx.xStaking.nominate(target, value, memo);
-  // this.api.tx.xStaking.renominate(from, to, value, memo);
-  // this.api.tx.xStaking.unnominate(target, value, memo);
-  // this.api.tx.xStaking.unfreeze(target, revocationIndex);
-  // this.api.tx.xStaking.claim(target);
-
-  // xAssetsProcess(Asset.js)
-  // 提现，取消提现
-  // withdraw, revokeWithdraw
-  // this.api.tx.xAssetsProcess.withdraw(token, value, addr, ext);
-  // this.api.tx.xAssetsProcess.revokeWithdraw(id);
-
-  // xSpot(Trade.js)
-  // 挂单，撤单
-  // putOrder, cancelOrder
-  // this.api.tx.xSpot.putOrder(pairid, ordertype, direction, amount, price);
-  // this.api.tx.xSpot.cancelOrder(pairid, index);
-
   const marks = [
     {
       value: 1,
@@ -232,7 +176,7 @@ function RequestSign(props) {
     }
   ]
 
-  if (!query || !toSign) {
+  if (!toSign) {
     return <></>
   }
 

@@ -4,10 +4,15 @@ import { pairsSelector } from '../../store/reducers/tradeSlice'
 import toPrecision from '../../shared/toPrecision'
 import { pcxPrecision } from '../../shared/constants'
 import { replaceBTC } from '../../shared/chainx'
+import {
+  toSignArgsSelector,
+  toSignMethodNameSelector
+} from '../../store/reducers/txSlice'
 
-export default function(props) {
-  const { query } = props
+export default function() {
   const pairs = useSelector(pairsSelector)
+  const args = useSelector(toSignArgsSelector)
+  const toSignMethodName = useSelector(toSignMethodNameSelector)
 
   const getPrecision = (id, type) => {
     if (id === 0 && type === 'amount') {
@@ -28,43 +33,37 @@ export default function(props) {
 
   return (
     <div className="detail">
-      {query.method === 'putOrder' && (
+      {toSignMethodName === 'putOrder' && (
         <>
           <div className="detail-amount">
             <span>Amount</span>
             <span>
-              {query.args[2]}{' '}
-              {toPrecision(
-                query.args[3],
-                ...getPrecision(query.args[0], 'amount')
-              )}{' '}
-              {pairs[query.args[0]] && pairs[query.args[0]].assets}
+              {args[2]}{' '}
+              {toPrecision(args[3], ...getPrecision(args[0], 'amount'))}{' '}
+              {pairs[args[0]] && pairs[args[0]].assets}
             </span>
           </div>
           <div className="detail-item">
             <span>Price</span>
             <span>
-              {toPrecision(
-                query.args[4],
-                ...getPrecision(query.args[0], 'price')
-              )}
+              {toPrecision(args[4], ...getPrecision(args[0], 'price'))}
             </span>
           </div>
         </>
       )}
-      {query.method === 'cancelOrder' && (
+      {toSignMethodName === 'cancelOrder' && (
         <div className="detail-item">
           <span>Id</span>
-          <span>{query.args[1]}</span>
+          <span>{args[1]}</span>
         </div>
       )}
       <div className="detail-item">
         <span>Trade pair</span>
         <span>
-          {pairs[query.args[0]] &&
-            replaceBTC(pairs[query.args[0]].assets) +
+          {pairs[args[0]] &&
+            replaceBTC(pairs[args[0]].assets) +
               '/' +
-              replaceBTC(pairs[query.args[0]].currency)}
+              replaceBTC(pairs[args[0]].currency)}
         </span>
       </div>
     </div>

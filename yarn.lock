@@ -1117,10 +1117,10 @@
     bitcoinjs-lib "^4.0.2"
     bn.js "^4.11.8"
 
-"@chainx/ui@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@chainx/ui/-/ui-0.0.33.tgz#9ed3125d56edc70c9e1d987d2ce7029ba69aa8fc"
-  integrity sha512-0wQRfBbTTXzowaNKXWaOZNJvXqmPJD516CrK5YORVsMDv5fm8L6FzEXmy3W3Q9rW++s/w8w4UXcIIHZ7uYgodw==
+"@chainx/ui@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@chainx/ui/-/ui-0.1.0.tgz#9e41513d919291b72be88b96d4fc0bad48fe901e"
+  integrity sha512-wNUzspI6snoB8RVhoghTaTiy28qzDmueVGEwuOiXj035jY84/pC3dxPbOZ4dtqQbB68hHgpGOToLKYQh04euRw==
   dependencies:
     "@chainx/keyring" "^2.22.2"
     "@chainx/util" "^2.22.2"

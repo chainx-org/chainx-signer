@@ -23,3 +23,5 @@ export const contractMethods = [
   'setGasPrice',
   'setPrintln'
 ]
+
+export const tradeMethodNames = ['putOrder', 'cancelOrder']
