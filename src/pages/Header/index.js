@@ -39,6 +39,7 @@ import {
 } from '../../store/reducers/nodeSlice'
 import getDelay from '../../shared/updateNodeStatus'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
+import { clearToSign } from '../../store/reducers/txSlice'
 
 function Header(props) {
   const refNodeList = useRef(null)
@@ -117,6 +118,7 @@ function Header(props) {
 
   async function switchNet() {
     dispatch(setNetwork(isTestNet ? CHAINX_MAIN : CHAINX_TEST))
+    dispatch(clearToSign())
 
     const node = isTestNet ? currentMainNetNode : currentTestNetNode
     await setNode(node.url)

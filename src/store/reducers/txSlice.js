@@ -16,7 +16,6 @@ const txSlice = createSlice({
       state.toSign = payload
     },
     clearToSign(state) {
-      // TODO: 切换网络是清掉toSign
       state.toSign = null
     }
   }
