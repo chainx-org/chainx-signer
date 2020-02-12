@@ -32,8 +32,7 @@ function Home(props) {
     try {
       if (toSign) {
         props.history.push({
-          pathname: '/requestSign/' + toSign.id,
-          query: toSign
+          pathname: '/requestSign'
         })
       }
     } catch (error) {

@@ -84,7 +84,7 @@ export default function App() {
                 <Route exact path="/" component={Home} />
                 <Route path="/createAccount" component={CreateAccount} />
                 <Route path="/importAccount" component={ImportAccount} />
-                <Route path="/requestSign/:id?" component={RequestSign} />
+                <Route path="/requestSign" component={RequestSign} />
                 <Route path="/showPrivateKey" component={ShowPrivateKey} />
                 <Route path="/enterPassword" component={EnterPassword} />
                 <Route path="/addNode" component={NodeAction} />
