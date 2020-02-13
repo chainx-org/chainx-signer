@@ -9,6 +9,7 @@ import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 import { isTestNetSelector } from '../store/reducers/settingSlice'
 import { fetchIntentions } from '../store/reducers/intentionSlice'
 import { fetchAssetsInfo } from '../store/reducers/assetSlice'
+import { fetchTradePairs } from '../store/reducers/tradeSlice'
 
 function Home(props) {
   const ref = useRef(null)
@@ -23,6 +24,7 @@ function Home(props) {
     getUnapprovedTxs()
     dispatch(fetchIntentions())
     dispatch(fetchAssetsInfo())
+    dispatch(fetchTradePairs())
     // eslint-disable-next-line
   }, [isTestNet, toSign])
 
