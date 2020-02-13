@@ -7,7 +7,7 @@ import { codes } from '../error'
 import { events as socketsEvents } from '../store/reducers/constants'
 import { SubmittableExtrinsic } from 'chainx.js'
 
-export const getSignRequest = async (pass, acceleration) => {
+export const signAndSend = async (pass, acceleration) => {
   const state = store.getState()
   const { origin, id, data, dataId, needBroadcast } = toSignSelector(state)
   const currentAccount = currentChainxAccountSelector(state)

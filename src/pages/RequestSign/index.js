@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { getSignRequest } from '../../shared'
+import { getGas, signAndSend } from '../../shared/signHelper'
 import ErrorMessage from '../../components/ErrorMessage'
 import './requestSign.scss'
 import { DefaultButton, PrimaryButton, Slider, TextInput } from '@chainx/ui'
@@ -20,7 +20,6 @@ import {
   toSignSelector
 } from '../../store/reducers/txSlice'
 import { service } from '../../services/socketService'
-import { getGas } from '../../shared/signHelper'
 import toPrecision from '../../shared/toPrecision'
 import {
   stakingMethodNames,
@@ -128,11 +127,10 @@ function RequestSign(props) {
 
     dispatch(setLoading(true))
     try {
-      await getSignRequest(pass, acceleration)
+      await signAndSend(pass, acceleration)
       setErrMsg('')
       dispatch(setLoading(false))
       removeCurrentSign()
-      props.history.push('/')
     } catch (e) {
       dispatch(setLoading(false))
       setErrMsg(`Error: ${e.message}`)
