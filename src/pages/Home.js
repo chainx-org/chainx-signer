@@ -8,6 +8,7 @@ import logo from '../assets/extension_logo.svg'
 import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 import { isTestNetSelector } from '../store/reducers/settingSlice'
 import { fetchIntentions } from '../store/reducers/intentionSlice'
+import { fetchAssetsInfo } from '../store/reducers/assetSlice'
 
 function Home(props) {
   const ref = useRef(null)
@@ -21,6 +22,7 @@ function Home(props) {
   useEffect(() => {
     getUnapprovedTxs()
     dispatch(fetchIntentions())
+    dispatch(fetchAssetsInfo())
     // eslint-disable-next-line
   }, [isTestNet, toSign])
 

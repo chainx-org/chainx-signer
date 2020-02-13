@@ -6,8 +6,10 @@ import tx from './txSlice'
 import statusReducer from './statusSlice'
 import intentionSlice from './intentionSlice'
 import tradeSlice from './tradeSlice'
+import assetReducer from './assetSlice'
 
 export default {
+  assets: assetReducer,
   test: testReducer,
   status: statusReducer,
   intentions: intentionSlice,

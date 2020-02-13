@@ -2,70 +2,48 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { pairsSelector } from '../../store/reducers/tradeSlice'
 import toPrecision from '../../shared/toPrecision'
-import { pcxPrecision } from '../../shared/constants'
 import { replaceBTC } from '../../shared/chainx'
 import {
   toSignArgsSelector,
   toSignMethodNameSelector
 } from '../../store/reducers/txSlice'
+import { assetsInfoSelector } from '../../store/reducers/assetSlice'
+import DetailItem from './components/DetailItem'
+import DetailAmount from './components/DetailAmount'
 
 export default function() {
   const pairs = useSelector(pairsSelector)
   const args = useSelector(toSignArgsSelector)
   const toSignMethodName = useSelector(toSignMethodNameSelector)
 
-  const getPrecision = (id, type) => {
-    if (id === 0 && type === 'amount') {
-      return [pcxPrecision, pcxPrecision]
-    }
-    if (id === 0 && type === 'price') {
-      return [9, 7]
-    }
-    if (id === 1 && type === 'amount') {
-      return [3, 3]
-    }
-    if (id === 1 && type === 'price') {
-      return [4, 8]
-    } else {
-      return [pcxPrecision, pcxPrecision]
-    }
-  }
+  const assetsInfo = useSelector(assetsInfoSelector)
+
+  const [pairIndex] = args
+  const pair = pairs[pairIndex]
+  const { assets, currency, precision, unitPrecision } = pair || {}
+  const { precision: assetsPrecision } =
+    assetsInfo.find(info => info.name === assets) || {}
+
+  const pairInfo = `${replaceBTC(assets)}/${replaceBTC(currency)}`
 
   return (
     <div className="detail">
       {toSignMethodName === 'putOrder' && (
         <>
-          <div className="detail-amount">
-            <span>Amount</span>
-            <span>
-              {args[2]}{' '}
-              {toPrecision(args[3], ...getPrecision(args[0], 'amount'))}{' '}
-              {pairs[args[0]] && pairs[args[0]].assets}
-            </span>
-          </div>
-          <div className="detail-item">
-            <span>Price</span>
-            <span>
-              {toPrecision(args[4], ...getPrecision(args[0], 'price'))}
-            </span>
-          </div>
+          <DetailAmount
+            value={`${args[2]} ${toPrecision(args[3], assetsPrecision)}`}
+            token={assets}
+          />
+          <DetailItem
+            label="Price"
+            value={toPrecision(args[4], precision, precision - unitPrecision)}
+          />
         </>
       )}
       {toSignMethodName === 'cancelOrder' && (
-        <div className="detail-item">
-          <span>Id</span>
-          <span>{args[1]}</span>
-        </div>
+        <DetailItem label="Id" value={args[1]} />
       )}
-      <div className="detail-item">
-        <span>Trade pair</span>
-        <span>
-          {pairs[args[0]] &&
-            replaceBTC(pairs[args[0]].assets) +
-              '/' +
-              replaceBTC(pairs[args[0]].currency)}
-        </span>
-      </div>
+      <DetailItem label="Trade pair" value={pairInfo} />
     </div>
   )
 }
