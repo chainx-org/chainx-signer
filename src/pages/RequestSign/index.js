@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { getGas, signAndSend } from '../../shared/signHelper'
 import ErrorMessage from '../../components/ErrorMessage'
 import './requestSign.scss'
-import { DefaultButton, PrimaryButton, Slider, TextInput } from '@chainx/ui'
+import { DefaultButton, PasswordInput, PrimaryButton, Slider } from '@chainx/ui'
 import { setLoading } from '../../store/reducers/statusSlice'
 import { fetchTradePairs } from '../../store/reducers/tradeSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -205,8 +205,7 @@ function RequestSign(props) {
         <div className="title">
           <span>Input password</span>
         </div>
-        <TextInput
-          showClear={false}
+        <PasswordInput
           value={pass}
           onChange={value => {
             setErrMsg('')
@@ -218,7 +217,6 @@ function RequestSign(props) {
             }
           }}
           className="fixed-width"
-          type="password"
           placeholder="Password"
         />
         <ErrorMessage msg={errMsg} />
