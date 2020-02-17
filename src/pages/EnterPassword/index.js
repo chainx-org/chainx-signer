@@ -1,15 +1,14 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Account } from 'chainx.js'
 import './enterPassword.scss'
 import ErrorMessage from '../../components/ErrorMessage'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   isTestNetSelector,
   networkSelector
 } from '../../store/reducers/settingSlice'
 import { removeAccount } from '../../store/reducers/accountSlice'
-import { TextInput } from '@chainx/ui'
+import { PasswordInput } from '@chainx/ui'
 
 function EnterPassword(props) {
   const [pass, setPass] = useState('')
@@ -57,10 +56,8 @@ function EnterPassword(props) {
   return (
     <div className="enter-password">
       <span className="title">Input password</span>
-      <TextInput
-        showClear={false}
+      <PasswordInput
         className="fixed-width"
-        type="password"
         value={pass}
         onChange={setPass}
         onKeyPress={event => {
