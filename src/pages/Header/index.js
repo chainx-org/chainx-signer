@@ -1,11 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import {
-  isCurrentNodeInit,
-  setChainx,
-  sleep,
-  useOutsideClick
-} from '../../shared'
+import { setChainx, sleep, useOutsideClick } from '../../shared'
 import Icon from '../../components/Icon'
 import logo from '../../assets/extension_logo.svg'
 import testNetImg from '../../assets/testnet.svg'
@@ -21,7 +16,9 @@ import { chainxAccountsSelector } from '../../store/reducers/accountSlice'
 import {
   setInitLoading,
   setShowAccountMenu,
-  showAccountMenuSelector
+  setShowNodeMenu,
+  showAccountMenuSelector,
+  showNodeMenuSelector
 } from '../../store/reducers/statusSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
@@ -37,11 +34,12 @@ import getDelay from '../../shared/updateNodeStatus'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
 import { clearToSign } from '../../store/reducers/txSlice'
 import Accounts from './Accounts'
+import { getDelayClass } from './utils'
+import Nodes from './Nodes'
 
 function Header(props) {
   const refNodeList = useRef(null)
   const refAccountList = useRef(null)
-  const [showNodeListArea, setShowNodeListArea] = useState(false)
   const accounts = useSelector(chainxAccountsSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
   const nodeList = useSelector(chainxNodesSelector)
@@ -51,6 +49,7 @@ function Header(props) {
   const currentMainNetNode = useSelector(currentChainXMainNetNodeSelector)
   const currentTestNetNode = useSelector(currentChainXTestNetNodeSelector)
   const showAccountMenu = useSelector(showAccountMenuSelector)
+  const showNodeMenu = useSelector(showNodeMenuSelector)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -59,7 +58,7 @@ function Header(props) {
   }, [isTestNet, chainId, nodeList])
 
   useOutsideClick(refNodeList, () => {
-    setShowNodeListArea(false)
+    dispatch(setShowNodeMenu(false))
   })
 
   useOutsideClick(refAccountList, () => {
@@ -69,7 +68,7 @@ function Header(props) {
   async function setNode(url) {
     dispatch(setInitLoading(true))
     dispatch(setCurrentChainXNode({ chainId, url }))
-    setShowNodeListArea(false)
+    dispatch(setShowNodeMenu(false))
     Promise.race([setChainx(url), sleep(5000)])
       .then(chainx => {
         if (!chainx) {
@@ -87,22 +86,6 @@ function Header(props) {
       })
   }
 
-  function getDelayClass(delay) {
-    if (delay === 'timeout') {
-      return 'red'
-    } else if (delay > 300) {
-      return 'yellow'
-    } else if (delay <= 300) {
-      return 'green'
-    } else {
-      return 'green'
-    }
-  }
-
-  function getDelayText(delay) {
-    return delay ? (delay === 'timeout' ? 'timeout' : delay + ' ms') : ''
-  }
-
   async function switchNet() {
     dispatch(setNetwork(isTestNet ? CHAINX_MAIN : CHAINX_TEST))
     dispatch(clearToSign())
@@ -115,7 +98,7 @@ function Header(props) {
     }
 
     dispatch(fetchIntentions())
-    setShowNodeListArea(false)
+    dispatch(setShowNodeMenu(false))
     props.history.push('/')
   }
 
@@ -146,7 +129,7 @@ function Header(props) {
               ref={refNodeList}
               className="current-node"
               onClick={() => {
-                setShowNodeListArea(!showNodeListArea)
+                dispatch(setShowNodeMenu(!showNodeMenu))
                 dispatch(setShowAccountMenu(false))
               }}
             >
@@ -162,94 +145,41 @@ function Header(props) {
               className="setting"
               onClick={() => {
                 dispatch(setShowAccountMenu(!showAccountMenu))
-                setShowNodeListArea(false)
+                dispatch(setShowNodeMenu(false))
               }}
             >
               <Icon name="Menu" className="setting-icon" />
             </div>
           </div>
         )}
-        {
-          <div className={(showNodeListArea ? '' : 'hide ') + 'node-list-area'}>
-            <div className="node-list">
-              {currentNode &&
-                (nodeList || []).map((item, index) => (
-                  <div
-                    className={
-                      item.name === currentNode.name
-                        ? 'node-item active'
-                        : 'node-item'
-                    }
-                    key={item.name}
-                    onClick={() => {
-                      setNode(item.url)
-                    }}
-                  >
-                    <div className="node-item-active-flag" />
-                    <div className="node-item-detail">
-                      <div className="node-item-detail-url">
-                        <span className="url">
-                          {item.url.split('//')[1] || item.url}
-                        </span>
-                        <div
-                          className={
-                            isCurrentNodeInit(item, isTestNet)
-                              ? 'node-item-detail-edit'
-                              : 'node-item-detail-edit custom'
-                          }
-                          onClick={e => {
-                            e.stopPropagation()
-                            e.nativeEvent.stopImmediatePropagation()
-                            setShowNodeListArea(false)
-                            const query = {
-                              nodeInfo: item,
-                              type: 'remove'
-                            }
-                            props.history.push({
-                              pathname: '/addNode',
-                              query: query
-                            })
-                          }}
-                        >
-                          <Icon name="Edit" />
-                        </div>
-                      </div>
-                      <span
-                        className={
-                          'delay ' + getDelayClass(nodesDelay[item.url])
-                        }
-                      >
-                        {getDelayText(nodesDelay[item.url])}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-            </div>
-            <div
-              className="add-node node-action-item"
-              onClick={() => {
-                props.history.push('/addNode')
-              }}
-            >
-              <Icon name="Add" className="add-node-icon node-action-item-img" />
-              <span>Add node</span>
-            </div>
-            <div
-              className="switch-net node-action-item"
-              onClick={() => {
-                switchNet()
-              }}
-            >
-              <img
-                className="node-action-item-img"
-                src={switchImg}
-                alt="switchImg"
-              />
-              <span>Switch to {isTestNet ? 'Mainnet' : 'Testnet'}</span>
-            </div>
+        <div className={(showNodeMenu ? '' : 'hide ') + 'node-list-area'}>
+          <div className="node-list">
+            {currentNode && <Nodes history={props.history} setNode={setNode} />}
           </div>
-        }
-        {showAccountMenu && !showNodeListArea ? (
+          <div
+            className="add-node node-action-item"
+            onClick={() => {
+              props.history.push('/addNode')
+            }}
+          >
+            <Icon name="Add" className="add-node-icon node-action-item-img" />
+            <span>Add node</span>
+          </div>
+          <div
+            className="switch-net node-action-item"
+            onClick={() => {
+              switchNet()
+            }}
+          >
+            <img
+              className="node-action-item-img"
+              src={switchImg}
+              alt="switchImg"
+            />
+            <span>Switch to {isTestNet ? 'Mainnet' : 'Testnet'}</span>
+          </div>
+        </div>
+        {showAccountMenu && !showNodeMenu ? (
           <div className="account-area">
             <div className="action">
               <div
@@ -273,7 +203,7 @@ function Header(props) {
             </div>
             {accounts.length > 0 ? (
               <div className="accounts">
-                {accounts.length > 0 && <Accounts history={props.history} />}
+                <Accounts history={props.history} />
               </div>
             ) : null}
           </div>

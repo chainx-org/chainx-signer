@@ -5,7 +5,8 @@ import './requestSign.scss'
 import { DefaultButton, PasswordInput, PrimaryButton, Slider } from '@chainx/ui'
 import {
   setLoading,
-  setShowAccountMenu
+  setShowAccountMenu,
+  setShowNodeMenu
 } from '../../store/reducers/statusSlice'
 import { fetchTradePairs } from '../../store/reducers/tradeSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -51,6 +52,7 @@ function RequestSign(props) {
 
   useEffect(() => {
     dispatch(setShowAccountMenu(false))
+    dispatch(setShowNodeMenu(false))
   }, [dispatch])
 
   useEffect(() => {
