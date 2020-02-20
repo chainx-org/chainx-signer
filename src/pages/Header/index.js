@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { setChainx, sleep, useOutsideClick } from '../../shared'
 import Icon from '../../components/Icon'
-import switchImg from '../../assets/switch.svg'
 import './header.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -22,7 +21,6 @@ import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
   chainxNodesSelector,
   currentChainXMainNetNodeSelector,
-  currentChainxNodeSelector,
   currentChainXTestNetNodeSelector,
   setCurrentChainXNode,
   setNodeDelay
@@ -31,16 +29,15 @@ import getDelay from '../../shared/updateNodeStatus'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
 import { clearToSign } from '../../store/reducers/txSlice'
 import Accounts from './Accounts'
-import Nodes from './Nodes'
 import Logo from './Logo'
 import SignHeader from './SignHeader'
 import NodesPanelSwitch from './NodesPanelSwitch'
 import AccountPanelSwitch from './AccountPanelSwitch'
+import NodesPanel from './NodesPanel'
 
 function Header(props) {
   const refAccountList = useRef(null)
   const accounts = useSelector(chainxAccountsSelector)
-  const currentNode = useSelector(currentChainxNodeSelector)
   const nodeList = useSelector(chainxNodesSelector)
   const chainId = useSelector(networkSelector)
   const isTestNet = useSelector(isTestNetSelector)
@@ -114,33 +111,11 @@ function Header(props) {
             <AccountPanelSwitch />
           </div>
         )}
-        <div className={(showNodeMenu ? '' : 'hide ') + 'node-list-area'}>
-          <div className="node-list">
-            {currentNode && <Nodes history={props.history} setNode={setNode} />}
-          </div>
-          <div
-            className="add-node node-action-item"
-            onClick={() => {
-              props.history.push('/addNode')
-            }}
-          >
-            <Icon name="Add" className="add-node-icon node-action-item-img" />
-            <span>Add node</span>
-          </div>
-          <div
-            className="switch-net node-action-item"
-            onClick={() => {
-              switchNet().then(() => console.warn('fail to switch net'))
-            }}
-          >
-            <img
-              className="node-action-item-img"
-              src={switchImg}
-              alt="switchImg"
-            />
-            <span>Switch to {isTestNet ? 'Mainnet' : 'Testnet'}</span>
-          </div>
-        </div>
+        <NodesPanel
+          history={props.history}
+          setNode={setNode}
+          switchNet={switchNet}
+        />
         {showAccountMenu && !showNodeMenu ? (
           <div className="account-area">
             <div className="action">
