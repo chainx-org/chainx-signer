@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { setChainx, sleep, useOutsideClick } from '../../shared'
 import Icon from '../../components/Icon'
-import logo from '../../assets/extension_logo.svg'
-import testNetImg from '../../assets/testnet.svg'
 import switchImg from '../../assets/switch.svg'
 import './header.scss'
 import { useDispatch, useSelector } from 'react-redux'
@@ -36,6 +34,7 @@ import { clearToSign } from '../../store/reducers/txSlice'
 import Accounts from './Accounts'
 import { getDelayClass } from './utils'
 import Nodes from './Nodes'
+import Logo from './Logo'
 
 function Header(props) {
   const refNodeList = useRef(null)
@@ -102,16 +101,17 @@ function Header(props) {
     props.history.push('/')
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('props.history.location', props.history.location)
+  }
+
+  const nowInSignPage = props.history.location.pathname.includes('requestSign')
+
   return (
     <div className="header">
       <div className="container container-header">
-        <Link to="/">
-          <img className="logo" src={logo} alt="logo" />
-          {isTestNet && (
-            <img className="testnet" src={testNetImg} alt="testNetImg" />
-          )}
-        </Link>
-        {props.history.location.pathname.includes('requestSign') ? (
+        <Logo />
+        {nowInSignPage ? (
           <div className="center-title">
             <span>
               {(
