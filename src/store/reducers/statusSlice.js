@@ -5,7 +5,8 @@ const statusSlice = createSlice({
   initialState: {
     loading: false,
     initLoading: true,
-    homeLoading: true
+    homeLoading: true,
+    showAccountMenu: false
   },
   reducers: {
     setLoading: (state, action) => {
@@ -16,6 +17,9 @@ const statusSlice = createSlice({
     },
     setHomeLoading: (state, action) => {
       state.homeLoading = action.payload
+    },
+    setShowAccountMenu: (state, action) => {
+      state.showAccountMenu = action.payload
     }
   }
 })
@@ -23,7 +27,10 @@ const statusSlice = createSlice({
 export const {
   setLoading,
   setInitLoading,
-  setHomeLoading
+  setHomeLoading,
+  setShowAccountMenu
 } = statusSlice.actions
+
+export const showAccountMenuSelector = state => state.status.showAccountMenu
 
 export default statusSlice.reducer

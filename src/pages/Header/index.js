@@ -1,15 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import ClipboardJS from 'clipboard'
-import ReactTooltip from 'react-tooltip'
 import {
   isCurrentNodeInit,
-  useOutsideClick,
+  setChainx,
   sleep,
-  setChainx
+  useOutsideClick
 } from '../../shared'
 import Icon from '../../components/Icon'
-import DotInCenterStr from '../../components/DotInCenterStr'
 import logo from '../../assets/extension_logo.svg'
 import testNetImg from '../../assets/testnet.svg'
 import switchImg from '../../assets/switch.svg'
@@ -20,13 +17,12 @@ import {
   networkSelector,
   setNetwork
 } from '../../store/reducers/settingSlice'
+import { chainxAccountsSelector } from '../../store/reducers/accountSlice'
 import {
-  chainxAccountsSelector,
-  currentChainxAccountSelector,
-  setCurrentChainXMainNetAccount,
-  setCurrentChainXTestNetAccount
-} from '../../store/reducers/accountSlice'
-import { setInitLoading } from '../../store/reducers/statusSlice'
+  setInitLoading,
+  setShowAccountMenu,
+  showAccountMenuSelector
+} from '../../store/reducers/statusSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
   chainxNodesDelaySelector,
@@ -40,14 +36,12 @@ import {
 import getDelay from '../../shared/updateNodeStatus'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
 import { clearToSign } from '../../store/reducers/txSlice'
+import Accounts from './Accounts'
 
 function Header(props) {
   const refNodeList = useRef(null)
   const refAccountList = useRef(null)
   const [showNodeListArea, setShowNodeListArea] = useState(false)
-  const [showAccountArea, setShowAccountArea] = useState(false)
-  const [copyText, setCopyText] = useState('Copy')
-  const currentAccount = useSelector(currentChainxAccountSelector)
   const accounts = useSelector(chainxAccountsSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
   const nodeList = useSelector(chainxNodesSelector)
@@ -56,10 +50,10 @@ function Header(props) {
   const nodesDelay = useSelector(chainxNodesDelaySelector)
   const currentMainNetNode = useSelector(currentChainXMainNetNodeSelector)
   const currentTestNetNode = useSelector(currentChainXTestNetNodeSelector)
+  const showAccountMenu = useSelector(showAccountMenuSelector)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    setCopyEvent()
     getDelay(nodeList, chainId, dispatch, setNodeDelay)
     // eslint-disable-next-line
   }, [isTestNet, chainId, nodeList])
@@ -69,15 +63,8 @@ function Header(props) {
   })
 
   useOutsideClick(refAccountList, () => {
-    setShowAccountArea(false)
+    dispatch(setShowAccountMenu(false))
   })
-
-  function setCopyEvent() {
-    const clipboard = new ClipboardJS('.account-copy')
-    clipboard.on('success', function() {
-      setCopyText('Copied!')
-    })
-  }
 
   async function setNode(url) {
     dispatch(setInitLoading(true))
@@ -160,7 +147,7 @@ function Header(props) {
               className="current-node"
               onClick={() => {
                 setShowNodeListArea(!showNodeListArea)
-                setShowAccountArea(false)
+                dispatch(setShowAccountMenu(false))
               }}
             >
               <span
@@ -174,7 +161,7 @@ function Header(props) {
               ref={refAccountList}
               className="setting"
               onClick={() => {
-                setShowAccountArea(!showAccountArea)
+                dispatch(setShowAccountMenu(!showAccountMenu))
                 setShowNodeListArea(false)
               }}
             >
@@ -262,12 +249,12 @@ function Header(props) {
             </div>
           </div>
         }
-        {showAccountArea && !showNodeListArea ? (
+        {showAccountMenu && !showNodeListArea ? (
           <div className="account-area">
             <div className="action">
               <div
                 onClick={() => {
-                  setShowAccountArea(false)
+                  dispatch(setShowAccountMenu(false))
                   props.history.push('/importAccount')
                 }}
               >
@@ -276,7 +263,7 @@ function Header(props) {
               </div>
               <div
                 onClick={() => {
-                  setShowAccountArea(false)
+                  dispatch(setShowAccountMenu(false))
                   props.history.push('/createAccount')
                 }}
               >
@@ -286,63 +273,7 @@ function Header(props) {
             </div>
             {accounts.length > 0 ? (
               <div className="accounts">
-                {accounts.length > 0 &&
-                  accounts.map(item => (
-                    <div
-                      className={
-                        item.address === currentAccount.address
-                          ? 'account-item active'
-                          : 'account-item'
-                      }
-                      key={item.name}
-                      onClick={async () => {
-                        if (isTestNet) {
-                          dispatch(
-                            setCurrentChainXTestNetAccount({
-                              address: item.address
-                            })
-                          )
-                        } else {
-                          dispatch(
-                            setCurrentChainXMainNetAccount({
-                              address: item.address
-                            })
-                          )
-                        }
-                        setShowAccountArea(false)
-                        props.history.push('/')
-                      }}
-                    >
-                      <div className="account-item-active-flag" />
-                      <div className="account-item-detail">
-                        <span className="name">{item.name}</span>
-                        <div className="address">
-                          <DotInCenterStr value={item.address} />
-                          <button
-                            className="account-copy"
-                            data-clipboard-text={item.address}
-                            onClick={e => {
-                              e.stopPropagation()
-                              e.nativeEvent.stopImmediatePropagation()
-                            }}
-                            data-tip
-                            data-for="copy-address-tooltip"
-                          >
-                            <Icon className="copy-icon" name="copy" />
-                          </button>
-                          <ReactTooltip
-                            id="copy-address-tooltip"
-                            effect="solid"
-                            globalEventOff="click"
-                            className="extension-tooltip"
-                            afterHide={() => setCopyText('Copy')}
-                          >
-                            <span>{copyText}</span>
-                          </ReactTooltip>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                {accounts.length > 0 && <Accounts history={props.history} />}
               </div>
             ) : null}
           </div>

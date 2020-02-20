@@ -3,7 +3,10 @@ import { getGas, signAndSend } from '../../shared/signHelper'
 import ErrorMessage from '../../components/ErrorMessage'
 import './requestSign.scss'
 import { DefaultButton, PasswordInput, PrimaryButton, Slider } from '@chainx/ui'
-import { setLoading } from '../../store/reducers/statusSlice'
+import {
+  setLoading,
+  setShowAccountMenu
+} from '../../store/reducers/statusSlice'
 import { fetchTradePairs } from '../../store/reducers/tradeSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import Transfer from './Transfer'
@@ -45,6 +48,10 @@ function RequestSign(props) {
   const toSignMethodName = useSelector(toSignMethodNameSelector)
   const isStakingClaim = useSelector(isStakingClaimSelector)
   const isPseduClaim = useSelector(isPseduClaimSelector)
+
+  useEffect(() => {
+    dispatch(setShowAccountMenu(false))
+  }, [dispatch])
 
   useEffect(() => {
     if (toSign && toSign.data) {
