@@ -20,7 +20,6 @@ import {
 } from '../../store/reducers/statusSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
-  chainxNodesDelaySelector,
   chainxNodesSelector,
   currentChainXMainNetNodeSelector,
   currentChainxNodeSelector,
@@ -32,19 +31,19 @@ import getDelay from '../../shared/updateNodeStatus'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
 import { clearToSign } from '../../store/reducers/txSlice'
 import Accounts from './Accounts'
-import { getDelayClass } from './utils'
 import Nodes from './Nodes'
 import Logo from './Logo'
+import SignHeader from './SignHeader'
+import NodesPanelSwitch from './NodesPanelSwitch'
+import AccountPanelSwitch from './AccountPanelSwitch'
 
 function Header(props) {
-  const refNodeList = useRef(null)
   const refAccountList = useRef(null)
   const accounts = useSelector(chainxAccountsSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
   const nodeList = useSelector(chainxNodesSelector)
   const chainId = useSelector(networkSelector)
   const isTestNet = useSelector(isTestNetSelector)
-  const nodesDelay = useSelector(chainxNodesDelaySelector)
   const currentMainNetNode = useSelector(currentChainXMainNetNodeSelector)
   const currentTestNetNode = useSelector(currentChainXTestNetNodeSelector)
   const showAccountMenu = useSelector(showAccountMenuSelector)
@@ -55,10 +54,6 @@ function Header(props) {
     getDelay(nodeList, chainId, dispatch, setNodeDelay)
     // eslint-disable-next-line
   }, [isTestNet, chainId, nodeList])
-
-  useOutsideClick(refNodeList, () => {
-    dispatch(setShowNodeMenu(false))
-  })
 
   useOutsideClick(refAccountList, () => {
     dispatch(setShowAccountMenu(false))
@@ -112,44 +107,11 @@ function Header(props) {
       <div className="container container-header">
         <Logo />
         {nowInSignPage ? (
-          <div className="center-title">
-            <span>
-              {(
-                (props.history.location.query &&
-                  props.history.location.query.method) ||
-                ''
-              )
-                .replace(/([A-Z])/g, ' $1')
-                .toLowerCase() || 'Sign Request'}
-            </span>
-          </div>
+          <SignHeader history={props.history} />
         ) : (
           <div className="right">
-            <div
-              ref={refNodeList}
-              className="current-node"
-              onClick={() => {
-                dispatch(setShowNodeMenu(!showNodeMenu))
-                dispatch(setShowAccountMenu(false))
-              }}
-            >
-              <span
-                className={
-                  'dot ' + getDelayClass(nodesDelay[currentNode.url]) + '-bg'
-                }
-              />
-              <span>{currentNode && currentNode.name}</span>
-            </div>
-            <div
-              ref={refAccountList}
-              className="setting"
-              onClick={() => {
-                dispatch(setShowAccountMenu(!showAccountMenu))
-                dispatch(setShowNodeMenu(false))
-              }}
-            >
-              <Icon name="Menu" className="setting-icon" />
-            </div>
+            <NodesPanelSwitch />
+            <AccountPanelSwitch />
           </div>
         )}
         <div className={(showNodeMenu ? '' : 'hide ') + 'node-list-area'}>
@@ -168,7 +130,7 @@ function Header(props) {
           <div
             className="switch-net node-action-item"
             onClick={() => {
-              switchNet()
+              switchNet().then(() => console.warn('fail to switch net'))
             }}
           >
             <img
