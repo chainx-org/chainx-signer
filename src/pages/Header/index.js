@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { setChainx, sleep, useOutsideClick } from '../../shared'
-import Icon from '../../components/Icon'
 import './header.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -9,7 +8,6 @@ import {
   networkSelector,
   setNetwork
 } from '../../store/reducers/settingSlice'
-import { chainxAccountsSelector } from '../../store/reducers/accountSlice'
 import {
   setInitLoading,
   setShowAccountMenu,
@@ -28,16 +26,15 @@ import {
 import getDelay from '../../shared/updateNodeStatus'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
 import { clearToSign } from '../../store/reducers/txSlice'
-import Accounts from './Accounts'
 import Logo from './Logo'
 import SignHeader from './SignHeader'
 import NodesPanelSwitch from './NodesPanelSwitch'
 import AccountPanelSwitch from './AccountPanelSwitch'
 import NodesPanel from './NodesPanel'
+import AccountsPanel from './AccountsPanel'
 
 function Header(props) {
   const refAccountList = useRef(null)
-  const accounts = useSelector(chainxAccountsSelector)
   const nodeList = useSelector(chainxNodesSelector)
   const chainId = useSelector(networkSelector)
   const isTestNet = useSelector(isTestNetSelector)
@@ -117,33 +114,7 @@ function Header(props) {
           switchNet={switchNet}
         />
         {showAccountMenu && !showNodeMenu ? (
-          <div className="account-area">
-            <div className="action">
-              <div
-                onClick={() => {
-                  dispatch(setShowAccountMenu(false))
-                  props.history.push('/importAccount')
-                }}
-              >
-                <Icon name="Putin" className="account-area-icon" />
-                <span>Import</span>
-              </div>
-              <div
-                onClick={() => {
-                  dispatch(setShowAccountMenu(false))
-                  props.history.push('/createAccount')
-                }}
-              >
-                <Icon name="Add" className="account-area-icon" />
-                <span>New</span>
-              </div>
-            </div>
-            {accounts.length > 0 ? (
-              <div className="accounts">
-                <Accounts history={props.history} />
-              </div>
-            ) : null}
-          </div>
+          <AccountsPanel history={props.history} />
         ) : null}
       </div>
     </div>
