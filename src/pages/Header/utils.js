@@ -9,7 +9,3 @@ export function getDelayClass(delay) {
     return 'green'
   }
 }
-
-export function getDelayText(delay) {
-  return delay ? (delay === 'timeout' ? 'timeout' : delay + ' ms') : ''
-}

@@ -9,7 +9,7 @@ import Icon from '../../components/Icon'
 import React from 'react'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
 import { setShowNodeMenu } from '../../store/reducers/statusSlice'
-import { getDelayClass, getDelayText } from './utils'
+import Delay from './Delay'
 
 export default function({ history, setNode }) {
   const nodeList = useSelector(chainxNodesSelector)
@@ -55,9 +55,7 @@ export default function({ history, setNode }) {
             <Icon name="Edit" />
           </div>
         </div>
-        <span className={'delay ' + getDelayClass(nodesDelay[item.url])}>
-          {getDelayText(nodesDelay[item.url])}
-        </span>
+        <Delay delay={nodesDelay[item.url]} />
       </div>
     </div>
   ))
