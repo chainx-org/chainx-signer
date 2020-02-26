@@ -57,7 +57,7 @@ function Header(props) {
     dispatch(setInitLoading(true))
     dispatch(setCurrentChainXNode({ chainId, url }))
     dispatch(setShowNodeMenu(false))
-    Promise.race([setChainx(url), sleep(5000)])
+    Promise.race([setChainx(url), sleep(10000)])
       .then(chainx => {
         if (!chainx) {
           props.history.push('/nodeError')

@@ -5,7 +5,7 @@ function NodeError() {
   return (
     <div className="node-error">
       <span className="msg">
-        Current node is invalid, please switch node and retry.
+        Failed to init ChainX instance, please switch node and retry.
       </span>
     </div>
   )

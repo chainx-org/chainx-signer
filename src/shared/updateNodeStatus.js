@@ -1,6 +1,6 @@
 import fetchFromWs from './fetch'
 
-const TIMEOUT = 7000
+const TIMEOUT = 10000
 const INIT_NODES = [
   {
     name: 'w1.org',
