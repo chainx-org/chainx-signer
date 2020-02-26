@@ -1,8 +1,12 @@
 const electron = require('electron')
 const electronStore = require('electron-store')
 const { sockets, setMainWindow } = require('./server')
-const { fetchLatestVersion, versionLte } = require('./utils')
 const { shell } = require('electron')
+const https = require('https')
+const semver = require('semver')
+
+const updateJsonLink =
+  'https://chainx-signer-release.oss-cn-hangzhou.aliyuncs.com/update.json'
 
 setMainWindow(electron.remote.getCurrentWindow())
 
@@ -33,6 +37,33 @@ window.settingStore = new window.ElectronStore({
   name: 'settings',
   default: {}
 })
-window.fetchLatestVersion = fetchLatestVersion
-window.versionLte = versionLte
+window.fetchLatestVersion = async function fetchLatestVersion() {
+  const latestInfo = await new Promise((resolve, reject) => {
+    https
+      .get(updateJsonLink, res => {
+        let body = ''
+        res.on('data', d => {
+          body += d
+        })
+        res.on('end', function() {
+          try {
+            const parsed = JSON.parse(body)
+            resolve(parsed)
+          } catch (err) {
+            reject(err)
+          }
+        })
+      })
+      .on('error', e => {
+        reject(e)
+      })
+  })
+
+  return latestInfo
+}
+
+window.versionLte = function versionLte(v1, v2) {
+  return semver.lte(v1, v2)
+}
+
 window.openExternal = url => shell.openExternal(url)
