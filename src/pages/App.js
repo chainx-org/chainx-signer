@@ -14,7 +14,12 @@ import { setChainx, sleep } from '../shared'
 import spinner from '../assets/loading.gif'
 import './index.scss'
 import { useSelector, useDispatch } from 'react-redux'
-import { setInitLoading } from '../store/reducers/statusSlice'
+import {
+  setAppVersion,
+  setInitLoading,
+  setLatestVersion,
+  updateInfoSelector
+} from '../store/reducers/statusSlice'
 import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
 
 import {
@@ -22,6 +27,7 @@ import {
   handlePairedResponse,
   setService
 } from '../services/socketService'
+import ForceUpdateDialog from './ForceUpdateDialog'
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -39,6 +45,8 @@ setService(window.sockets)
 
 window.sockets.initialize().then(() => console.log('sockets initialized'))
 
+const appVersion = window.require('electron').remote.app.getVersion()
+
 export default function App() {
   let redirectUrl = '/'
 
@@ -53,6 +61,11 @@ export default function App() {
   }
 
   useEffect(() => {
+    dispatch(setAppVersion(appVersion))
+    window.fetchLatestVersion().then(latestVersion => {
+      dispatch(setLatestVersion(latestVersion))
+    })
+
     getSetting()
     // eslint-disable-next-line
   }, [])
@@ -67,10 +80,21 @@ export default function App() {
       })
   }
 
+  const updateInfo = useSelector(updateInfoSelector)
+
   return (
     <Router>
       <React.Fragment>
         <Header props />
+        {do {
+          if (
+            updateInfo.hasNewVersion &&
+            updateInfo?.versionInfo?.forceUpdate
+          ) {
+            // eslint-disable-next-line no-unused-expressions
+            ;<ForceUpdateDialog />
+          }
+        }}
         {do {
           if (loading || initLoading) {
             // eslint-disable-next-line no-unused-expressions

@@ -1,12 +1,21 @@
 @import '../../assets/variables.scss';
 
 .header {
+  position: relative;
   height: 70px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #DCE0E2;
+
+  & > span {
+    position: absolute;
+    top: -1px;
+    right: 0;
+    cursor: pointer;
+  }
+
   .container-header {
     justify-content: space-between;
     .logo {

@@ -1,8 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createSelector } from '@reduxjs/toolkit'
 
 const statusSlice = createSlice({
   name: 'status',
   initialState: {
+    appVersion: '0.0.0',
+    latestVersion: {
+      version: '0.0.0',
+      forceUpdate: false,
+      path: 'https://github.com/chainx-org/chainx-signer/releases'
+    },
     loading: false,
     initLoading: true,
     homeLoading: true,
@@ -10,6 +16,12 @@ const statusSlice = createSlice({
     showNodeMenu: false
   },
   reducers: {
+    setAppVersion: (state, action) => {
+      state.appVersion = action.payload
+    },
+    setLatestVersion: (state, action) => {
+      state.latestVersion = action.payload
+    },
     setLoading: (state, action) => {
       state.loading = action.payload
     },
@@ -29,6 +41,8 @@ const statusSlice = createSlice({
 })
 
 export const {
+  setAppVersion,
+  setLatestVersion,
   setLoading,
   setInitLoading,
   setHomeLoading,
@@ -38,5 +52,25 @@ export const {
 
 export const showAccountMenuSelector = state => state.status.showAccountMenu
 export const showNodeMenuSelector = state => state.status.showNodeMenu
+export const appVersionSelector = state => state.status.appVersion
+export const latestVersionSelector = state => state.status.latestVersion
+export const updateInfoSelector = createSelector(
+  latestVersionSelector,
+  appVersionSelector,
+  (latestVersion, appVersion) => {
+    if (window.versionLte(latestVersion.version, appVersion)) {
+      return {
+        hasNewVersion: false
+      }
+    }
+
+    return {
+      hasNewVersion: true,
+      versionInfo: {
+        ...latestVersion
+      }
+    }
+  }
+)
 
 export default statusSlice.reducer

@@ -13,7 +13,8 @@ import {
   setShowAccountMenu,
   setShowNodeMenu,
   showAccountMenuSelector,
-  showNodeMenuSelector
+  showNodeMenuSelector,
+  updateInfoSelector
 } from '../../store/reducers/statusSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
@@ -32,6 +33,7 @@ import NodesPanelSwitch from './NodesPanelSwitch'
 import AccountPanelSwitch from './AccountPanelSwitch'
 import NodesPanel from './NodesPanel'
 import AccountsPanel from './AccountsPanel'
+import newVersion from '../../assets/new-version.svg'
 
 function Header(props) {
   const refAccountList = useRef(null)
@@ -43,6 +45,7 @@ function Header(props) {
   const showAccountMenu = useSelector(showAccountMenuSelector)
   const showNodeMenu = useSelector(showNodeMenuSelector)
   const dispatch = useDispatch()
+  const updateInfo = useSelector(updateInfoSelector)
 
   useEffect(() => {
     getDelay(nodeList, chainId, dispatch, setNodeDelay)
@@ -117,6 +120,16 @@ function Header(props) {
           <AccountsPanel history={props.history} />
         ) : null}
       </div>
+      {updateInfo && updateInfo.hasNewVersion && (
+        <span
+          onClick={event => {
+            event.preventDefault()
+            window.openExternal(updateInfo.versionInfo.path)
+          }}
+        >
+          <img src={newVersion} alt="new version" />
+        </span>
+      )}
     </div>
   )
 }

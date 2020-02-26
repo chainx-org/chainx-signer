@@ -1,6 +1,8 @@
 const electron = require('electron')
 const electronStore = require('electron-store')
 const { sockets, setMainWindow } = require('./server')
+const { fetchLatestVersion, versionLte } = require('./utils')
+const { shell } = require('electron')
 
 setMainWindow(electron.remote.getCurrentWindow())
 
@@ -16,6 +18,8 @@ window.wallet = {
   }
 }
 
+window.require = require
+
 window.ElectronStore = function(...args) {
   return new electronStore(...args)
 }
@@ -29,3 +33,6 @@ window.settingStore = new window.ElectronStore({
   name: 'settings',
   default: {}
 })
+window.fetchLatestVersion = fetchLatestVersion
+window.versionLte = versionLte
+window.openExternal = url => shell.openExternal(url)
