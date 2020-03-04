@@ -18,11 +18,9 @@ import {
 } from '../../store/reducers/statusSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
-  chainxNodesSelector,
   currentChainXMainNetNodeSelector,
   currentChainXTestNetNodeSelector,
-  setCurrentChainXNode,
-  setNodeDelay
+  setCurrentChainXNode
 } from '../../store/reducers/nodeSlice'
 import getDelay from '../../shared/updateNodeStatus'
 import { fetchIntentions } from '../../store/reducers/intentionSlice'
@@ -37,7 +35,6 @@ import newVersion from '../../assets/new-version.svg'
 
 function Header(props) {
   const refAccountList = useRef(null)
-  const nodeList = useSelector(chainxNodesSelector)
   const chainId = useSelector(networkSelector)
   const isTestNet = useSelector(isTestNetSelector)
   const currentMainNetNode = useSelector(currentChainXMainNetNodeSelector)
@@ -48,9 +45,21 @@ function Header(props) {
   const updateInfo = useSelector(updateInfoSelector)
 
   useEffect(() => {
-    getDelay(nodeList, chainId, dispatch, setNodeDelay)
+    const intervalId = setInterval(() => {
+      getDelay()
+        .then(() => console.log('Delay info updated'))
+        .catch(() => console.log('Failed to update delay info'))
+    }, 10000)
+
+    return () => clearInterval(intervalId)
+  }, [])
+
+  useEffect(() => {
+    getDelay()
+      .then(() => console.log('Delay info updated'))
+      .catch(() => console.log('Failed to update delay info'))
     // eslint-disable-next-line
-  }, [isTestNet, chainId, nodeList])
+  }, [isTestNet])
 
   useOutsideClick(refAccountList, () => {
     dispatch(setShowAccountMenu(false))

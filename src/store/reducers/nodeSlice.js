@@ -204,8 +204,28 @@ export const {
   setNodeDelay
 } = nodeSlice.actions
 
-export const chainxMainNetNodesSelector = state => state.node.chainxMainNetNodes
-export const chainxTestNetNodesSelector = state => state.node.chainxTestNetNodes
+export const chainxMainNetNodesSelector = state =>
+  state.node.chainxMainNetNodes.map(node => {
+    const isInit = [...mainNetInitNodes, ...testNetInitNodes].some(
+      n => n.url === node.url
+    )
+
+    return {
+      ...node,
+      isInit
+    }
+  })
+export const chainxTestNetNodesSelector = state =>
+  state.node.chainxTestNetNodes.map(node => {
+    const isInit = [...mainNetInitNodes, ...testNetInitNodes].some(
+      n => n.url === node.url
+    )
+
+    return {
+      ...node,
+      isInit
+    }
+  })
 export const currentChainXMainNetNodeSelector = state =>
   state.node.currentChainXMainNetNode
 export const currentChainXTestNetNodeSelector = state =>

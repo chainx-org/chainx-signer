@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import ErrorMessage from '../../components/ErrorMessage'
 import {
-  chainxNodesSelector,
   addNode,
-  removeNode,
-  setNodeDelay
+  chainxNodesSelector,
+  removeNode
 } from '../../store/reducers/nodeSlice'
 import { networkSelector } from '../../store/reducers/settingSlice'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import './nodeAction.scss'
 import getDelay from '../../shared/updateNodeStatus'
 import { TextInput } from '@chainx/ui'
@@ -42,7 +41,9 @@ function AddNode(props) {
 
     try {
       dispatch(addNode({ chainId, node: { name, url } }))
-      getDelay(nodeList, chainId, dispatch, setNodeDelay)
+      getDelay()
+        .then(() => console.log('Delay info updated'))
+        .catch(() => console.log('Failed to update delay info'))
       setErrMsg('')
       props.history.push('/')
     } catch (error) {
@@ -57,7 +58,9 @@ function AddNode(props) {
     }
     try {
       dispatch(removeNode({ chainId, url }))
-      getDelay(nodeList, chainId, dispatch, setNodeDelay)
+      getDelay()
+        .then(() => console.log('Delay info updated'))
+        .catch(() => console.log('Failed to update delay info'))
       setErrMsg('')
       props.history.push('/')
     } catch (error) {

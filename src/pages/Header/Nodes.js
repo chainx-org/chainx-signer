@@ -4,17 +4,14 @@ import {
   chainxNodesSelector,
   currentChainxNodeSelector
 } from '../../store/reducers/nodeSlice'
-import { isCurrentNodeInit } from '../../shared'
 import Icon from '../../components/Icon'
 import React from 'react'
-import { isTestNetSelector } from '../../store/reducers/settingSlice'
 import { setShowNodeMenu } from '../../store/reducers/statusSlice'
 import Delay from './Delay'
 
 export default function({ history, setNode }) {
   const nodeList = useSelector(chainxNodesSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
-  const isTestNet = useSelector(isTestNetSelector)
   const nodesDelay = useSelector(chainxNodesDelaySelector)
   const dispatch = useDispatch()
 
@@ -34,7 +31,7 @@ export default function({ history, setNode }) {
           <span className="url">{item.url.split('//')[1] || item.url}</span>
           <div
             className={
-              isCurrentNodeInit(item, isTestNet)
+              item.isInit
                 ? 'node-item-detail-edit'
                 : 'node-item-detail-edit custom'
             }
