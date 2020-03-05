@@ -26,35 +26,8 @@
       position: absolute;
       margin-bottom: 24px;
     }
-    .center-title {
-      font-weight: 500;
-      font-size: 20px;
-      color: $fontgray;
-      flex: 1;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
     .right {
       display: flex;
-      .current-node {
-        font-size: 13px;
-        height: 32px;
-        width: 123px;
-        border-radius: 16px;
-        border: 1px solid #DCE0E2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-right: 26px;
-        cursor: pointer;
-        .dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 3px;
-          margin-right: 6px;
-        }
-      }
       .setting {
         display: flex;
         justify-content: center;
