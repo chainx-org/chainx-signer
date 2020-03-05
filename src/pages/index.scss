@@ -6,8 +6,6 @@ body {
 }
 
 #root {
-  width: 358px;
-  height: 580px;
   line-height: 1.25;
   display: flex;
   flex-direction: column;
@@ -171,24 +169,6 @@ body {
       .copy-text {
         color: $fontgray;
       }
-    }
-  }
-
-  .container-no-account {
-    align-items: center;
-    
-    .home-logo {
-      margin-top: 60px;
-      width: 90px;
-      height: 90px;
-    }
-
-    .button-new-account {
-      margin-top: 40px;
-    }
-
-    .button-import-account {
-      margin-top: 16px;
     }
   }
 }

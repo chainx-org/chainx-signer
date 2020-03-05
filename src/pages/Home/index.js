@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useOutsideClick } from '../shared'
+import { useOutsideClick } from '../../shared'
 import { useDispatch, useSelector } from 'react-redux'
 import ClipboardJS from 'clipboard'
-import Icon from '../components/Icon'
-import './index.scss'
-import logo from '../assets/extension_logo.svg'
-import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
-import { isTestNetSelector } from '../store/reducers/settingSlice'
-import { fetchIntentions } from '../store/reducers/intentionSlice'
-import { fetchAssetsInfo } from '../store/reducers/assetSlice'
-import { fetchTradePairs } from '../store/reducers/tradeSlice'
+import Icon from '../../components/Icon'
+import '../index.scss'
+import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
+import { isTestNetSelector } from '../../store/reducers/settingSlice'
+import { fetchIntentions } from '../../store/reducers/intentionSlice'
+import { fetchAssetsInfo } from '../../store/reducers/assetSlice'
+import { fetchTradePairs } from '../../store/reducers/tradeSlice'
+import CreateOrImportAccount from './CreateOrImportAccount'
 
 function Home(props) {
   const ref = useRef(null)
@@ -106,23 +106,7 @@ function Home(props) {
           <span>{copySuccess}</span>
         </div>
       ) : (
-        <div className="container container-column container-no-account">
-          <div className="home-logo">
-            <img src={logo} alt="logo" />
-          </div>
-          <button
-            className="button button-white button-new-account"
-            onClick={() => props.history.push('/createAccount')}
-          >
-            New Account
-          </button>
-          <button
-            className="button button-white button-import-account"
-            onClick={() => props.history.push('/importAccount')}
-          >
-            Import Account
-          </button>
-        </div>
+        <CreateOrImportAccount history={props.history} />
       )}
     </>
   )
