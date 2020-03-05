@@ -71,7 +71,7 @@ export default function App() {
   }, [])
 
   const getSetting = async () => {
-    Promise.race([setChainx(currentNode.url), sleep(3000)])
+    Promise.race([setChainx(currentNode.url), sleep(10000)])
       .catch(e => {
         console.log(`set Chainx catch error: ${e}`)
       })
