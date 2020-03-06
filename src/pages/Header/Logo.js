@@ -10,9 +10,13 @@ export default function() {
 
   return (
     <Link to="/">
-      <img className="logo" src={logo} alt="logo" />
+      <img src={logo} alt="logo" width={32} height={32} />
       {isTestNet && (
-        <img className="testnet" src={testNetImg} alt="testNetImg" />
+        <img
+          src={testNetImg}
+          alt="testNetImg"
+          style={{ position: 'absolute', marginBottom: 24 }}
+        />
       )}
     </Link>
   )
