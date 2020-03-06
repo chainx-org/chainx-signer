@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { getGas, signAndSend } from '../../shared/signHelper'
 import ErrorMessage from '../../components/ErrorMessage'
-import './requestSign.scss'
-import { DefaultButton, PasswordInput, PrimaryButton, Slider } from '@chainx/ui'
+import { DefaultButton, PasswordInput, PrimaryButton } from '@chainx/ui'
 import {
   setLoading,
   setShowAccountMenu,
@@ -24,7 +23,6 @@ import {
   toSignSelector
 } from '../../store/reducers/txSlice'
 import { service } from '../../services/socketService'
-import toPrecision from '../../shared/toPrecision'
 import {
   stakingMethodNames,
   tradeMethodNames,
@@ -33,6 +31,16 @@ import {
 import PseduClaim from './PseduClaim'
 import { getChainx } from '../../shared/chainx'
 import ButtonLine from './components/ButtonLine'
+import { TxDetail } from './components'
+import Fee from './Fee'
+import styled from 'styled-components'
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 20px;
+`
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -173,44 +181,18 @@ function RequestSign(props) {
     }
   }
 
-  const marks = [
-    {
-      value: 1,
-      label: '1x'
-    },
-    {
-      value: 10,
-      label: '10x'
-    }
-  ]
-
   if (!toSign) {
     return <></>
   }
 
   return (
-    <div className="container request-sign">
-      <div className="tx-panel">{txPanel}</div>
-      <div className="adjust-gas">
-        <div className="adjust-gas-desc">
-          <div>
-            <span>Fee</span>
-            <span className="yellow">{toPrecision(currentGas, 8)} PCX</span>
-          </div>
-          <span>More fee, faster speed</span>
-        </div>
-        <Slider
-          defaultValue={acceleration}
-          onChange={v => setAcceleration(v)}
-          // getAriaValueText={valuetext}
-          aria-labelledby="discrete-slider"
-          valueLabelDisplay="auto"
-          step={1}
-          marks={marks}
-          min={1}
-          max={10}
-        />
-      </div>
+    <Wrapper>
+      <TxDetail>{txPanel}</TxDetail>
+      <Fee
+        currentGas={currentGas}
+        acceleration={acceleration}
+        setAcceleration={setAcceleration}
+      />
       <div>
         <PasswordInput
           value={pass}
@@ -241,7 +223,7 @@ function RequestSign(props) {
           </PrimaryButton>
         </ButtonLine>
       </div>
-    </div>
+    </Wrapper>
   )
 }
 

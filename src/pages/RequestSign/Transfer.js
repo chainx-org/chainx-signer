@@ -11,13 +11,13 @@ export default function() {
   const [dest, token, balance, memo] = useSelector(toSignArgsSelector)
 
   return (
-    <div className="detail">
+    <>
       <DetailAmount
         token={replaceBTC(token)}
         value={toPrecision(balance, pcxPrecision)}
       />
       <DetailItem label="Dest" value={dest} />
       <DetailItem label="Memo" value={memo} />
-    </div>
+    </>
   )
 }

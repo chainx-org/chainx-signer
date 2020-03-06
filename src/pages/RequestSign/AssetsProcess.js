@@ -22,7 +22,7 @@ export default function() {
   const args = useSelector(toSignArgsSelector)
 
   return (
-    <div className="detail">
+    <>
       {methodName === 'withdraw' && (
         <>
           <DetailAmount
@@ -40,6 +40,6 @@ export default function() {
       {methodName === 'revokeWithdraw' && (
         <DetailItem label="Id" value={args[0]} />
       )}
-    </div>
+    </>
   )
 }

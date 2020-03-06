@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { getChainx } from '../../shared/chainx'
 import camelcase from 'camelcase'
 
@@ -42,5 +42,13 @@ export const fetchAssetsInfo = () => async dispatch => {
 export const assetsInfoSelector = state => {
   return state.assets.assetsInfo
 }
+
+export const pcxInfoSelector = createSelector(assetsInfoSelector, assets => {
+  return assets.find(asset => asset.name === 'PCX')
+})
+
+export const pcxPrecisionSelector = createSelector(pcxInfoSelector, pcx => {
+  return pcx && pcx.precision
+})
 
 export default assetSlice.reducer

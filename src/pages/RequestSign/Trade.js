@@ -27,7 +27,7 @@ export default function() {
   const pairInfo = `${replaceBTC(assets)}/${replaceBTC(currency)}`
 
   return (
-    <div className="detail">
+    <>
       {toSignMethodName === 'putOrder' && (
         <>
           <DetailAmount
@@ -44,6 +44,6 @@ export default function() {
         <DetailItem label="Id" value={args[1]} />
       )}
       <DetailItem label="Trade pair" value={pairInfo} />
-    </div>
+    </>
   )
 }

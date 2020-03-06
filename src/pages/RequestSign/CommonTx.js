@@ -60,7 +60,7 @@ export default function() {
   const extrinsic = useSelector(toSignExtrinsicSelector)
 
   return (
-    <div className="detail">
+    <>
       <DetailItem label="Method" value={methodName} />
       <Args>
         <span>Args</span>
@@ -85,6 +85,6 @@ export default function() {
           </ol>
         </section>
       </Args>
-    </div>
+    </>
   )
 }
