@@ -225,8 +225,9 @@ function RequestSign(props) {
               sign()
             }
           }}
-          className="fixed-width"
+          className="full-width"
           placeholder="Password"
+          style={{ marginTop: 16 }}
         />
         <ErrorMessage msg={errMsg} />
         <div className="button-area margin-top-40">

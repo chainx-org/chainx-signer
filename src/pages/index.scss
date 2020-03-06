@@ -31,9 +31,9 @@ body {
 }
 
 .container {
-  width: 318px;
   display: flex;
-  color: $fontgray;
+  flex: 1;
+  padding: 0 20px;
 }
 
 .container-column {

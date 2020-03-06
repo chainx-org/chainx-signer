@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function({ delay }) {
   return (
-    <span className={'delay ' + getDelayClass(delay)}>
+    <span className={getDelayClass(delay)}>
       {do {
         if (!delay) {
           // eslint-disable-next-line no-unused-expressions

@@ -237,14 +237,13 @@
       }
 
       .account-item-detail {
-        margin-left: 12px;
-        margin-right: 12px;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         width: 100%;
         font-size: 12px;
         color: $addressColor;
+        padding: 0 12px;
 
         .name {
           font-size: 13px;
