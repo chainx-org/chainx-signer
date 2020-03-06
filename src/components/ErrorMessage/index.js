@@ -1,14 +1,18 @@
 import React from 'react'
-import './index.scss'
+import styled from 'styled-components'
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 30px;
+  color: red;
+  font-size: 16px;
+`
 
 function ErrorMessage(props) {
   const { msg } = props
 
-  return (
-    <div className="error-message">
-      <span>{msg}</span>
-    </div>
-  )
+  return <Wrapper>{msg}</Wrapper>
 }
 
 export default ErrorMessage

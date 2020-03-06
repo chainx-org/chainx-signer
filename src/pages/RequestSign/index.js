@@ -32,6 +32,7 @@ import {
 } from './constants'
 import PseduClaim from './PseduClaim'
 import { getChainx } from '../../shared/chainx'
+import ButtonLine from './components/ButtonLine'
 
 function RequestSign(props) {
   const dispatch = useDispatch()
@@ -230,7 +231,7 @@ function RequestSign(props) {
           style={{ marginTop: 16 }}
         />
         <ErrorMessage msg={errMsg} />
-        <div className="button-area margin-top-40">
+        <ButtonLine>
           <DefaultButton size="large" onClick={cancel}>
             Cancel
           </DefaultButton>
@@ -241,7 +242,7 @@ function RequestSign(props) {
           >
             Sign
           </PrimaryButton>
-        </div>
+        </ButtonLine>
       </div>
     </div>
   )
