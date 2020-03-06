@@ -7,6 +7,8 @@ import {
   toSignArgsSelector,
   toSignMethodNameSelector
 } from '../../store/reducers/txSlice'
+import DetailItem from './components/DetailItem'
+import DetailAmount from './components/DetailAmount'
 
 export default function() {
   const fee = useSelector(feeSelector)
@@ -23,33 +25,20 @@ export default function() {
     <div className="detail">
       {methodName === 'withdraw' && (
         <>
-          <div className="detail-amount">
-            <span>Amount</span>
-            <span>
-              {toPrecision(args[1], pcxPrecision)} {args[0]}
-            </span>
-          </div>
-          <div className="detail-item">
-            <span>Fee</span>
-            <span>
-              {toPrecision(fee, pcxPrecision)} {args[0]}
-            </span>
-          </div>
-          <div className="detail-item">
-            <span>Dest</span>
-            <span>{args[2]}</span>
-          </div>
-          <div className="detail-item">
-            <span>Memo</span>
-            <span>{args[3]}</span>
-          </div>
+          <DetailAmount
+            value={toPrecision(args[1], pcxPrecision)}
+            token={args[0]}
+          />
+          <DetailItem
+            label="Fee"
+            value={`${toPrecision(fee, pcxPrecision)} ${args[0]}`}
+          />
+          <DetailItem label="Dest" value={args[2]} />
+          <DetailItem label="Memo" value={args[3]} />
         </>
       )}
       {methodName === 'revokeWithdraw' && (
-        <div className="detail-item">
-          <span>Id</span>
-          <span>{args[0]}</span>
-        </div>
+        <DetailItem label="Id" value={args[0]} />
       )}
     </div>
   )

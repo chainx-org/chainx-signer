@@ -211,10 +211,7 @@ function RequestSign(props) {
           max={10}
         />
       </div>
-      <div className="submit-area">
-        <div className="title">
-          <span>Input password</span>
-        </div>
+      <div>
         <PasswordInput
           value={pass}
           onChange={value => {
