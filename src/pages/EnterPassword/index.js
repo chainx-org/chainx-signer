@@ -9,6 +9,8 @@ import {
 } from '../../store/reducers/settingSlice'
 import { removeAccount } from '../../store/reducers/accountSlice'
 import { PasswordInput } from '@chainx/ui'
+import { ButtonLine, InputWrapper, Title } from '../../components/styled'
+import PrimaryButton from '@chainx/ui/dist/Button/PrimaryButton'
 
 function EnterPassword(props) {
   const [pass, setPass] = useState('')
@@ -55,24 +57,26 @@ function EnterPassword(props) {
 
   return (
     <div className="enter-password">
-      <span className="title">Input password</span>
-      <PasswordInput
-        className="fixed-width"
-        value={pass}
-        onChange={setPass}
-        onKeyPress={event => {
-          if (event.key === 'Enter') {
-            enter()
-          }
-        }}
-        placeholder="Password"
-      />
-      <button
-        className="button button-yellow margin-top-40"
-        onClick={() => enter()}
-      >
-        Confirm
-      </button>
+      <Title>Input password</Title>
+      <InputWrapper>
+        <PasswordInput
+          className="fixed-width"
+          value={pass}
+          onChange={setPass}
+          style={{ width: '100%' }}
+          onKeyPress={event => {
+            if (event.key === 'Enter') {
+              enter()
+            }
+          }}
+          placeholder="Password"
+        />
+      </InputWrapper>
+      <ButtonLine>
+        <PrimaryButton size="large" onClick={() => enter()}>
+          Confirm
+        </PrimaryButton>
+      </ButtonLine>
       {errMsg ? <ErrorMessage msg={errMsg} /> : null}
     </div>
   )
