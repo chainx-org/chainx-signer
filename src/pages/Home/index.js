@@ -21,7 +21,7 @@ function Home(props) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    getUnapprovedTxs()
+    setCopyEvent()
     dispatch(fetchIntentions())
     dispatch(fetchAssetsInfo())
     dispatch(fetchTradePairs())
@@ -31,20 +31,6 @@ function Home(props) {
   useOutsideClick(ref, () => {
     setShowAccountAction(false)
   })
-
-  function getUnapprovedTxs() {
-    try {
-      if (toSign) {
-        props.history.push({
-          pathname: '/requestSign'
-        })
-      }
-    } catch (error) {
-      console.log('sign request error occurs ', error)
-    } finally {
-      setCopyEvent()
-    }
-  }
 
   function setCopyEvent() {
     const clipboard = new ClipboardJS('.copy')

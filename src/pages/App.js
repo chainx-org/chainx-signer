@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router } from 'react-router-dom'
-import { Redirect, Route, Switch } from 'react-router'
+import { Redirect, Route, Switch, useHistory } from 'react-router'
 import Home from './Home'
 import Header from './Header'
 import CreateAccount from './CreateAccount'
@@ -13,7 +12,7 @@ import NodeError from './NodeAction/NodeError'
 import { setChainx, sleep } from '../shared'
 import spinner from '../assets/loading.gif'
 import './index.scss'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   setAppVersion,
   setInitLoading,
@@ -21,7 +20,6 @@ import {
   updateInfoSelector
 } from '../store/reducers/statusSlice'
 import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
-
 import {
   handleApiResponse,
   handlePairedResponse,
@@ -60,6 +58,21 @@ export default function App() {
     console.log('state', state)
   }
 
+  const history = useHistory()
+  const toSign = useSelector(state => state.tx.toSign)
+
+  useEffect(() => {
+    try {
+      if (toSign) {
+        history.push({
+          pathname: '/requestSign'
+        })
+      }
+    } catch (error) {
+      console.log('sign request error occurs ', error)
+    }
+  }, [toSign, history])
+
   useEffect(() => {
     dispatch(setAppVersion(appVersion))
     window.fetchLatestVersion().then(latestVersion => {
@@ -83,42 +96,37 @@ export default function App() {
   const updateInfo = useSelector(updateInfoSelector)
 
   return (
-    <Router>
-      <React.Fragment>
-        <Header props />
-        {do {
-          if (
-            updateInfo.hasNewVersion &&
-            updateInfo?.versionInfo?.forceUpdate
-          ) {
-            // eslint-disable-next-line no-unused-expressions
-            ;<ForceUpdateDialog />
-          }
-        }}
-        {do {
-          if (loading || initLoading) {
-            // eslint-disable-next-line no-unused-expressions
-            ;<div className="spinner">
-              <img src={spinner} alt="spinner" />
-            </div>
-          } else if (!initLoading) {
-            // eslint-disable-next-line no-unused-expressions
-            ;<div className="content">
-              <Switch>
-                <Route exact path="/" component={Home} />
-                <Route path="/createAccount" component={CreateAccount} />
-                <Route path="/importAccount" component={ImportAccount} />
-                <Route path="/requestSign" component={RequestSign} />
-                <Route path="/showPrivateKey" component={ShowPrivateKey} />
-                <Route path="/enterPassword" component={EnterPassword} />
-                <Route path="/addNode" component={NodeAction} />
-                <Route path="/nodeError" component={NodeError} />
-                <Redirect to={redirectUrl} />
-              </Switch>
-            </div>
-          }
-        }}
-      </React.Fragment>
-    </Router>
+    <React.Fragment>
+      <Header props />
+      {do {
+        if (updateInfo.hasNewVersion && updateInfo?.versionInfo?.forceUpdate) {
+          // eslint-disable-next-line no-unused-expressions
+          ;<ForceUpdateDialog />
+        }
+      }}
+      {do {
+        if (loading || initLoading) {
+          // eslint-disable-next-line no-unused-expressions
+          ;<div className="spinner">
+            <img src={spinner} alt="spinner" />
+          </div>
+        } else if (!initLoading) {
+          // eslint-disable-next-line no-unused-expressions
+          ;<div className="content">
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/createAccount" component={CreateAccount} />
+              <Route path="/importAccount" component={ImportAccount} />
+              <Route path="/requestSign" component={RequestSign} />
+              <Route path="/showPrivateKey" component={ShowPrivateKey} />
+              <Route path="/enterPassword" component={EnterPassword} />
+              <Route path="/addNode" component={NodeAction} />
+              <Route path="/nodeError" component={NodeError} />
+              <Redirect to={redirectUrl} />
+            </Switch>
+          </div>
+        }
+      }}
+    </React.Fragment>
   )
 }
