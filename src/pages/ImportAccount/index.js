@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import './importAccount.scss'
 import ErrorMessage from '../../components/ErrorMessage'
 import NameAndPassword from '../../components/NameAndPassword'
-import { TextInput } from '@chainx/ui'
+import { PrimaryButton, TextInput } from '@chainx/ui'
 import { Account } from 'chainx.js'
+import { ButtonLine } from '../../components/styled'
 
 function ImportAccount(props) {
   const [currentStep, setCurrentStep] = useState(0)
@@ -106,16 +107,19 @@ function ImportAccount(props) {
           )}
         </div>
         {currentStep === 0 && (
-          <button
-            className="button button-yellow margin-top-40"
-            onClick={() => {
-              if (currentStep < 1) {
-                checkStep1()
-              }
-            }}
-          >
-            Next
-          </button>
+          <ButtonLine>
+            <PrimaryButton
+              style={{ minWidth: 200 }}
+              size="large"
+              onClick={() => {
+                if (currentStep < 1) {
+                  checkStep1()
+                }
+              }}
+            >
+              Next
+            </PrimaryButton>
+          </ButtonLine>
         )}
         {errMsg ? <ErrorMessage msg={errMsg} /> : null}
       </div>

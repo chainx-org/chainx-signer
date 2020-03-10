@@ -9,7 +9,8 @@ import {
   addAccount,
   chainxAccountsSelector
 } from '../../store/reducers/accountSlice'
-import { TextInput, PasswordInput } from '@chainx/ui'
+import { TextInput, PasswordInput, PrimaryButton } from '@chainx/ui'
+import ButtonLine from '../../pages/RequestSign/components/ButtonLine'
 
 function NameAndPassword(props) {
   const { secret, onSuccess } = props
@@ -72,20 +73,20 @@ function NameAndPassword(props) {
     <div className="flex-column">
       <TextInput
         showClear={false}
-        className="fixed-width"
+        style={{ width: '100%' }}
         type="text"
         value={name}
         onChange={value => setName(value)}
         placeholder="Name(12 characters max)"
       />
       <PasswordInput
-        className="fixed-width"
+        style={{ width: '100%', marginTop: 12 }}
         value={password}
         onChange={value => setPassword(value)}
         placeholder="Password"
       />
       <PasswordInput
-        className="fixed-width"
+        style={{ width: '100%', marginTop: 12 }}
         value={confirmation}
         onChange={value => setConfirmation(value)}
         placeholder="Password confirmation"
@@ -96,14 +97,17 @@ function NameAndPassword(props) {
         }}
       />
 
-      <button
-        className="button button-yellow margin-top-40"
-        onClick={() => {
-          create()
-        }}
-      >
-        OK
-      </button>
+      <ButtonLine>
+        <PrimaryButton
+          style={{ minWidth: 200 }}
+          size="large"
+          onClick={() => {
+            create()
+          }}
+        >
+          OK
+        </PrimaryButton>
+      </ButtonLine>
       {errMsg && <ErrorMessage msg={errMsg} />}
       {sameAccount && (
         <WarningMessage
