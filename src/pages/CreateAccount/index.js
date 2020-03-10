@@ -129,18 +129,18 @@ function CreateAccount(props) {
           )}
           {currentStep === 2 && (
             <>
-              <button
-                className="button button-white-half"
+              <PrimaryButton
+                size="large"
                 onClick={() => clearErrMsg() && setCurrentStep(s => s - 1)}
               >
                 Pre
-              </button>
-              <button
-                className="button button-yellow-half"
+              </PrimaryButton>
+              <PrimaryButton
+                size="large"
                 onClick={() => checkMnemonic() && setCurrentStep(s => s + 1)}
               >
                 Next
-              </button>
+              </PrimaryButton>
             </>
           )}
         </Wrapper>
