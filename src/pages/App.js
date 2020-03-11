@@ -6,7 +6,7 @@ import CreateAccount from './CreateAccount'
 import ImportAccount from './ImportAccount'
 import RequestSign from './RequestSign'
 import ShowPrivateKey from './ShowPrivateKey/index'
-import EnterPassword from './EnterPassword'
+import RemoveAccount from './RemoveAccount'
 import NodeAction from './NodeAction'
 import NodeError from './NodeAction/NodeError'
 import { setChainx, sleep } from '../shared'
@@ -128,7 +128,7 @@ export default function App() {
               <Route path="/importAccount" component={ImportAccount} />
               <Route path="/requestSign" component={RequestSign} />
               <Route path="/showPrivateKey" component={ShowPrivateKey} />
-              <Route path="/enterPassword" component={EnterPassword} />
+              <Route path="/removeAccount" component={RemoveAccount} />
               <Route path="/addNode" component={NodeAction} />
               <Route path="/nodeError" component={NodeError} />
               <Redirect to="/" />

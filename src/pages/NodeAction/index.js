@@ -77,6 +77,7 @@ function AddNode(props) {
         <>
           <InputWrapper>
             <TextInput
+              showClear={false}
               value={name}
               onChange={setName}
               placeholder="Name(12 characters max)"

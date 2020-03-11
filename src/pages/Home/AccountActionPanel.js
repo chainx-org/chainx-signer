@@ -5,7 +5,7 @@ import { useHistory } from 'react-router'
 import { setShowAccountAction } from '../../store/reducers/statusSlice'
 import styled from 'styled-components'
 
-const Wrapper = styled.div`
+const Wrapper = styled.ul`
   position: absolute;
   top: 55px;
   right: 20px;
@@ -18,8 +18,11 @@ const Wrapper = styled.div`
   justify-content: space-around;
   font-size: 14px;
   background-color: #fff;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 
-  span {
+  li {
     cursor: pointer;
     padding: 10px 0 10px 20px;
     &:hover {
@@ -33,22 +36,24 @@ export default function() {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  function operateAccount(type) {
+  function goToRemoveAccountPage() {
     if (currentAccount.address) {
-      history.push({
-        pathname: '/enterPassword',
-        query: {
-          type: type
-        }
-      })
+      history.push({ pathname: '/removeAccount' })
+    }
+    dispatch(setShowAccountAction(false))
+  }
+
+  function goToPrivateKeyPage() {
+    if (currentAccount.address) {
+      history.push({ pathname: '/showPrivateKey' })
     }
     dispatch(setShowAccountAction(false))
   }
 
   return (
     <Wrapper>
-      <span onClick={() => operateAccount('export')}>Export PrivateKey</span>
-      <span onClick={() => operateAccount('remove')}>Forget Account</span>
+      <li onClick={goToPrivateKeyPage}>Export PrivateKey</li>
+      <li onClick={goToRemoveAccountPage}>Forget Account</li>
     </Wrapper>
   )
 }
