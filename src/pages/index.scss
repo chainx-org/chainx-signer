@@ -106,34 +106,6 @@ body {
           font-size: 8px;
         }
       }
-
-      .account-action {
-        position: absolute;
-        top: 130px;
-        right: 20px;
-        border: 1px solid $grayDivide;
-        box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.30);
-        border-radius: 4px;
-        display: flex;
-        flex-direction: column;
-        width: 226px;
-        height: 80px;
-        justify-content: space-around;
-        font-size: 14px;
-        background-color: #fff;
-
-        span {
-          cursor: pointer;
-          padding-left: 20px;
-          padding-top: 12px;
-          padding-bottom: 12px;
-          border-radius: 4px;
-        }
-
-        :hover {
-          background-color: $itemBgColor;
-        }
-      }
     }
 
     .account-address {

@@ -7,7 +7,10 @@ import {
   isTestNetSelector,
   networkSelector
 } from '../../store/reducers/settingSlice'
-import { removeAccount } from '../../store/reducers/accountSlice'
+import {
+  currentChainxAccountSelector,
+  removeAccount
+} from '../../store/reducers/accountSlice'
 import { PasswordInput } from '@chainx/ui'
 import { ButtonLine, InputWrapper, Title } from '../../components/styled'
 import PrimaryButton from '@chainx/ui/dist/Button/PrimaryButton'
@@ -18,8 +21,9 @@ function EnterPassword(props) {
   const isTestNet = useSelector(isTestNetSelector)
   const dispatch = useDispatch()
   const chainId = useSelector(networkSelector)
+  const currentAccount = useSelector(currentChainxAccountSelector)
 
-  async function exportPk(keystore, password) {
+  function exportPk(keystore, password) {
     try {
       const pk = Account.fromKeyStore(keystore, password).privateKey()
       props.history.push({
@@ -31,7 +35,7 @@ function EnterPassword(props) {
     }
   }
 
-  async function _removeAccount(address, password, keystore) {
+  function _removeAccount(address, password, keystore) {
     try {
       Account.setNet(isTestNet ? 'testnet' : 'mainnet')
       Account.fromKeyStore(keystore, password)
@@ -43,15 +47,17 @@ function EnterPassword(props) {
   }
 
   const enter = async function() {
-    if (pass) {
-      const address = props.location.query.address
-      const keystore = props.location.query.keystore
-      const type = props.location.query.type
-      if (type === 'export') {
-        exportPk(keystore, pass)
-      } else if (type === 'remove') {
-        _removeAccount(address, pass, keystore)
-      }
+    if (!pass || !currentAccount) {
+      return
+    }
+
+    const address = currentAccount.address
+    const keystore = currentAccount.keystore
+    const type = props.location.query.type
+    if (type === 'export') {
+      exportPk(keystore, pass)
+    } else if (type === 'remove') {
+      _removeAccount(address, pass, keystore)
     }
   }
 

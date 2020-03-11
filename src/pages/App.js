@@ -26,6 +26,10 @@ import {
   setService
 } from '../services/socketService'
 import ForceUpdateDialog from './ForceUpdateDialog'
+import { fetchIntentions } from '../store/reducers/intentionSlice'
+import { fetchAssetsInfo } from '../store/reducers/assetSlice'
+import { fetchTradePairs } from '../store/reducers/tradeSlice'
+import { isTestNetSelector } from '../store/reducers/settingSlice'
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -46,13 +50,12 @@ window.sockets.initialize().then(() => console.log('sockets initialized'))
 const appVersion = window.require('electron').remote.app.getVersion()
 
 export default function App() {
-  let redirectUrl = '/'
-
   const dispatch = useDispatch()
   const loading = useSelector(state => state.status.loading)
   const initLoading = useSelector(state => state.status.initLoading)
   const currentNode = useSelector(currentChainxNodeSelector)
   const state = useSelector(state => state)
+  const isTestNet = useSelector(isTestNetSelector)
 
   if (process.env.NODE_ENV === 'development') {
     console.log('state', state)
@@ -82,6 +85,12 @@ export default function App() {
     getSetting()
     // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    dispatch(fetchIntentions())
+    dispatch(fetchAssetsInfo())
+    dispatch(fetchTradePairs())
+  }, [isTestNet, dispatch])
 
   const getSetting = async () => {
     Promise.race([setChainx(currentNode.url), sleep(10000)])
@@ -122,7 +131,7 @@ export default function App() {
               <Route path="/enterPassword" component={EnterPassword} />
               <Route path="/addNode" component={NodeAction} />
               <Route path="/nodeError" component={NodeError} />
-              <Redirect to={redirectUrl} />
+              <Redirect to="/" />
             </Switch>
           </div>
         }
