@@ -46,7 +46,7 @@ function EnterPassword(props) {
     }
   }
 
-  const enter = async function() {
+  const enter = function() {
     if (!pass || !currentAccount) {
       return
     }

@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import './nodeAction.scss'
 import getDelay from '../../shared/updateNodeStatus'
 import { TextInput } from '@chainx/ui'
+import { ButtonLine, InputWrapper, Title } from '../../components/styled'
+import PrimaryButton from '@chainx/ui/dist/Button/PrimaryButton'
 
 function AddNode(props) {
   const [name, setName] = useState('')
@@ -70,45 +72,47 @@ function AddNode(props) {
 
   return (
     <div className="node-action">
-      <span className="title">{title}</span>
+      <Title>{title}</Title>
       {action !== 'remove' ? (
         <>
-          <TextInput
-            showClear={false}
-            className="fixed-width"
-            value={name}
-            onChange={setName}
-            placeholder="Name(12 characters max)"
-          />
+          <InputWrapper>
+            <TextInput
+              value={name}
+              onChange={setName}
+              placeholder="Name(12 characters max)"
+            />
+          </InputWrapper>
           <span className="node-url">Node address</span>
-          <TextInput
-            showClear={false}
-            className="fixed-width"
-            value={url}
-            onChange={setUrl}
-            onKeyPress={event => {
-              if (event.key === 'Enter') {
-                enter()
-              }
-            }}
-            placeholder="wss://w1.chainx.org/ws"
-          />
-          <button
-            className="button button-yellow margin-top-40"
-            onClick={() => enter()}
-          >
-            Confirm
-          </button>
+          <InputWrapper>
+            <TextInput
+              showClear={false}
+              value={url}
+              onChange={setUrl}
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  enter()
+                }
+              }}
+              placeholder="wss://w1.chainx.org/ws"
+            />
+          </InputWrapper>
+          <ButtonLine>
+            <PrimaryButton size="large" onClick={() => enter()}>
+              Confirm
+            </PrimaryButton>
+          </ButtonLine>
         </>
       ) : (
-        <button
-          className="button button-white margin-top-16"
-          onClick={() => {
-            deleteNode(query.nodeInfo.name, query.nodeInfo.url)
-          }}
-        >
-          Delete
-        </button>
+        <ButtonLine>
+          <PrimaryButton
+            size="large"
+            onClick={() => {
+              deleteNode(query.nodeInfo.name, query.nodeInfo.url)
+            }}
+          >
+            Delete
+          </PrimaryButton>
+        </ButtonLine>
       )}
       {errMsg ? <ErrorMessage msg={errMsg} /> : null}
     </div>
