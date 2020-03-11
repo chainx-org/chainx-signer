@@ -35,7 +35,7 @@ function AddNode(props) {
     title = 'Delete node'
   }
 
-  const enter = async () => {
+  const enter = () => {
     if (!name || !url) {
       setErrMsg('name and url are required')
       return
