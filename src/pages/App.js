@@ -27,9 +27,13 @@ import {
 } from '../services/socketService'
 import ForceUpdateDialog from './ForceUpdateDialog'
 import { fetchIntentions } from '../store/reducers/intentionSlice'
-import { fetchAssetsInfo } from '../store/reducers/assetSlice'
+import {
+  fetchAccountAssets,
+  fetchAssetsInfo
+} from '../store/reducers/assetSlice'
 import { fetchTradePairs } from '../store/reducers/tradeSlice'
 import { isTestNetSelector } from '../store/reducers/settingSlice'
+import { currentAddressSelector } from '../store/reducers/accountSlice'
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -53,9 +57,10 @@ export default function App() {
   const dispatch = useDispatch()
   const loading = useSelector(state => state.status.loading)
   const initLoading = useSelector(state => state.status.initLoading)
-  const currentNode = useSelector(currentChainxNodeSelector)
+  const { url: currentNodeUrl } = useSelector(currentChainxNodeSelector) || {}
   const state = useSelector(state => state)
   const isTestNet = useSelector(isTestNetSelector)
+  const address = useSelector(currentAddressSelector)
 
   if (process.env.NODE_ENV === 'development') {
     console.log('state', state)
@@ -82,9 +87,14 @@ export default function App() {
       dispatch(setLatestVersion(latestVersion))
     })
 
-    getSetting()
-    // eslint-disable-next-line
-  }, [])
+    Promise.race([setChainx(currentNodeUrl), sleep(10000)])
+      .catch(e => {
+        console.log(`set Chainx catch error: ${e}`)
+      })
+      .finally(() => {
+        dispatch(setInitLoading(false))
+      })
+  }, [currentNodeUrl, dispatch])
 
   useEffect(() => {
     dispatch(fetchIntentions())
@@ -92,15 +102,11 @@ export default function App() {
     dispatch(fetchTradePairs())
   }, [isTestNet, dispatch])
 
-  const getSetting = async () => {
-    Promise.race([setChainx(currentNode.url), sleep(10000)])
-      .catch(e => {
-        console.log(`set Chainx catch error: ${e}`)
-      })
-      .finally(() => {
-        dispatch(setInitLoading(false))
-      })
-  }
+  useEffect(() => {
+    if (address) {
+      dispatch(fetchAccountAssets(address))
+    }
+  }, [dispatch, address])
 
   const updateInfo = useSelector(updateInfoSelector)
 

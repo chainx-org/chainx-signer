@@ -179,4 +179,11 @@ export const currentChainxAccountSelector = createSelector(
   }
 )
 
+export const currentAddressSelector = createSelector(
+  currentChainxAccountSelector,
+  account => {
+    return account ? account.address : null
+  }
+)
+
 export default accountSlice.reducer

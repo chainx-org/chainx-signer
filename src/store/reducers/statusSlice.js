@@ -14,7 +14,8 @@ const statusSlice = createSlice({
     homeLoading: true,
     showAccountMenu: false,
     showNodeMenu: false,
-    showAccountAction: false
+    showAccountAction: false,
+    fetchAssetLoading: false
   },
   reducers: {
     setAppVersion: (state, action) => {
@@ -40,6 +41,9 @@ const statusSlice = createSlice({
     },
     setShowAccountAction: (state, action) => {
       state.showAccountAction = action.payload
+    },
+    setFetchAssetLoading: (state, { payload }) => {
+      state.fetchAssetLoading = payload
     }
   }
 })
@@ -52,7 +56,8 @@ export const {
   setHomeLoading,
   setShowAccountMenu,
   setShowNodeMenu,
-  setShowAccountAction
+  setShowAccountAction,
+  setFetchAssetLoading
 } = statusSlice.actions
 
 export const showAccountMenuSelector = state => state.status.showAccountMenu
@@ -60,6 +65,7 @@ export const showNodeMenuSelector = state => state.status.showNodeMenu
 export const showAccountActionSelector = state => state.status.showAccountAction
 export const appVersionSelector = state => state.status.appVersion
 export const latestVersionSelector = state => state.status.latestVersion
+export const fetchAssetLoadingSelector = state => state.status.fetchAssetLoading
 export const updateInfoSelector = createSelector(
   latestVersionSelector,
   appVersionSelector,
