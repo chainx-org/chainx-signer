@@ -1,12 +1,22 @@
 import React from 'react'
-import './index.scss'
+import styled from 'styled-components'
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 30px;
+  span {
+    color: #f6c94a;
+    font-size: 16px;
+  }
+`
 
 export default function(props) {
   const { msg } = props
 
   return (
-    <div className="warning-message">
+    <Wrapper>
       <span>{msg}</span>
-    </div>
+    </Wrapper>
   )
 }

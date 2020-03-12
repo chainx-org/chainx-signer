@@ -16,3 +16,17 @@ export const Title = styled.h3`
   font-weight: 500;
   color: #3f3f3f;
 `
+
+export const SubTitle = styled.h4`
+  margin-top: 8px;
+  color: #666666;
+  font-size: 14px;
+  font-weight: normal;
+`
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+  flex: 1;
+`

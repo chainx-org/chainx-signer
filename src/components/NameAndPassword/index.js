@@ -11,9 +11,16 @@ import {
 } from '../../store/reducers/accountSlice'
 import { TextInput, PasswordInput, PrimaryButton } from '@chainx/ui'
 import ButtonLine from '../../pages/RequestSign/components/ButtonLine'
+import styled from 'styled-components'
+import { SubTitle, Title } from '../styled'
 
-function NameAndPassword(props) {
-  const { secret, onSuccess } = props
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+`
+
+function NameAndPassword({ secret, onSuccess }) {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [confirmation, setConfirmation] = useState('')
@@ -70,7 +77,12 @@ function NameAndPassword(props) {
   }
 
   return (
-    <div className="flex-column">
+    <Wrapper>
+      <Title>Name and password setting</Title>
+      <SubTitle>
+        Password contains at lease 8 characters, and at least one upper,lower
+        and number case character.
+      </SubTitle>
       <TextInput
         showClear={false}
         style={{ width: '100%' }}
@@ -114,7 +126,7 @@ function NameAndPassword(props) {
           msg={`Account ${sameAccount.name} has same address, and it will be overwritten by this account.`}
         />
       )}
-    </div>
+    </Wrapper>
   )
 }
 

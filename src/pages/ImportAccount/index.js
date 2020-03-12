@@ -13,14 +13,8 @@ function ImportAccount(props) {
   const [errMsg, setErrMsg] = useState('')
   const [mnemonicList, setMnemonicList] = useState(new Array(12).fill(''))
 
-  const titleList = [
-    ['Mnemonic', 'Private key'],
-    ['Password', 'Password']
-  ]
-  const subTitleList = [
-    ['Input mnemonic words', 'Input private key'],
-    ['', '']
-  ]
+  const subTitleList = ['Input mnemonic words', 'Input private key']
+  const isMnemonic = 0 === currentTabIndex
 
   const checkStep1 = () => {
     if (currentTabIndex === 0) {
@@ -42,85 +36,80 @@ function ImportAccount(props) {
     setCurrentStep(s => s + 1)
   }
 
+  if (currentStep === 1) {
+    return (
+      <NameAndPassword
+        type={currentTabIndex === 0 ? 'mnemonic' : 'pk'}
+        secret={currentTabIndex === 0 ? mnemonicList.join(' ') : pk.trim()}
+        onSuccess={function() {
+          props.history.push('/')
+        }}
+      />
+    )
+  }
+
   return (
     <div className="container import-account">
       <div className="import-account-title">
         <div className="import-account-title-select">
-          <span>{titleList[currentStep][currentTabIndex]}</span>
-          {currentStep === 0 ? (
-            <span
-              className="second-choice"
-              onClick={() => {
-                setErrMsg('')
-                setCurrentTabIndex(1 - currentTabIndex)
-              }}
-            >
-              {titleList[currentStep][1 - currentTabIndex]}
-            </span>
-          ) : null}
+          <span>{isMnemonic ? 'Mnemonic' : 'Private key'}</span>
+          <span
+            className="second-choice"
+            onClick={() => {
+              setErrMsg('')
+              setCurrentTabIndex(1 - currentTabIndex)
+            }}
+          >
+            {isMnemonic ? 'Private key' : 'Mnemonic'}
+          </span>
         </div>
         <span className="import-account-sub-title">
-          {subTitleList[currentStep][currentTabIndex]}
+          {subTitleList[currentTabIndex]}
         </span>
       </div>
       <div className="import-account-body">
         <div className="import-account-body-content">
-          {currentStep === 0 ? (
-            currentTabIndex === 0 ? (
-              <div className="import-mnemonic">
-                {mnemonicList.map((item, index) => (
-                  <input
-                    className="word-item"
-                    key={index}
-                    value={mnemonicList[index]}
-                    onChange={e => {
-                      mnemonicList.splice(index, 1, e.target.value)
-                      setMnemonicList(Array.from(mnemonicList))
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <TextInput
-                value={pk}
-                onChange={value => setPk(value)}
-                multiline={true}
-                rows={4}
-                onKeyPress={event => {
-                  if (event.key === 'Enter') {
-                    checkStep1()
-                  }
-                }}
-              />
-            )
-          ) : null}
-          {currentStep === 1 && (
-            <NameAndPassword
-              type={currentTabIndex === 0 ? 'mnemonic' : 'pk'}
-              secret={
-                currentTabIndex === 0 ? mnemonicList.join(' ') : pk.trim()
-              }
-              onSuccess={function() {
-                props.history.push('/')
+          {isMnemonic ? (
+            <div className="import-mnemonic">
+              {mnemonicList.map((item, index) => (
+                <input
+                  className="word-item"
+                  key={index}
+                  value={mnemonicList[index]}
+                  onChange={e => {
+                    mnemonicList.splice(index, 1, e.target.value)
+                    setMnemonicList(Array.from(mnemonicList))
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <TextInput
+              value={pk}
+              onChange={value => setPk(value)}
+              multiline={true}
+              rows={4}
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  checkStep1()
+                }
               }}
             />
           )}
         </div>
-        {currentStep === 0 && (
-          <ButtonLine>
-            <PrimaryButton
-              style={{ minWidth: 200 }}
-              size="large"
-              onClick={() => {
-                if (currentStep < 1) {
-                  checkStep1()
-                }
-              }}
-            >
-              Next
-            </PrimaryButton>
-          </ButtonLine>
-        )}
+        <ButtonLine>
+          <PrimaryButton
+            style={{ minWidth: 200 }}
+            size="large"
+            onClick={() => {
+              if (currentStep < 1) {
+                checkStep1()
+              }
+            }}
+          >
+            Next
+          </PrimaryButton>
+        </ButtonLine>
         {errMsg ? <ErrorMessage msg={errMsg} /> : null}
       </div>
     </div>

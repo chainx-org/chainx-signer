@@ -4,6 +4,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import { DefaultButton, PasswordInput, PrimaryButton } from '@chainx/ui'
 import {
   setLoading,
+  setShowAccountAction,
   setShowAccountMenu,
   setShowNodeMenu
 } from '../../store/reducers/statusSlice'
@@ -61,6 +62,7 @@ function RequestSign(props) {
   useEffect(() => {
     dispatch(setShowAccountMenu(false))
     dispatch(setShowNodeMenu(false))
+    dispatch(setShowAccountAction(false))
   }, [dispatch])
 
   useEffect(() => {
