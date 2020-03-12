@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { WhiteButton } from '@chainx/ui'
 
 const Wrapper = styled.div`
-  width: 100%;
   padding: 60px 20px 0;
 
   display: flex;
