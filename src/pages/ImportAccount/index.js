@@ -4,7 +4,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import NameAndPassword from '../../components/NameAndPassword'
 import { PrimaryButton, TextInput } from '@chainx/ui'
 import { Account } from 'chainx.js'
-import { ButtonLine } from '../../components/styled'
+import { ButtonLine, Container, SubTitle } from '../../components/styled'
 
 function ImportAccount(props) {
   const [currentStep, setCurrentStep] = useState(0)
@@ -55,7 +55,7 @@ function ImportAccount(props) {
   }
 
   return (
-    <div className="container import-account">
+    <Container>
       <div className="import-account-title">
         <div className="import-account-title-select">
           <span>{isMnemonic ? 'Mnemonic' : 'Private key'}</span>
@@ -69,56 +69,51 @@ function ImportAccount(props) {
             {isMnemonic ? 'Private key' : 'Mnemonic'}
           </span>
         </div>
-        <span className="import-account-sub-title">
-          {subTitleList[currentTabIndex]}
-        </span>
+        <SubTitle>{subTitleList[currentTabIndex]}</SubTitle>
       </div>
-      <div className="import-account-body">
-        <div className="import-account-body-content">
-          {isMnemonic ? (
-            <div className="import-mnemonic">
-              {mnemonicList.map((item, index) => (
-                <input
-                  className="word-item"
-                  key={index}
-                  value={mnemonicList[index]}
-                  onChange={e => {
-                    mnemonicList.splice(index, 1, e.target.value)
-                    setMnemonicList(Array.from(mnemonicList))
-                  }}
-                />
-              ))}
-            </div>
-          ) : (
-            <TextInput
-              value={pk}
-              onChange={value => setPk(value)}
-              multiline={true}
-              rows={4}
-              onKeyPress={event => {
-                if (event.key === 'Enter') {
-                  checkStep1()
-                }
+      {isMnemonic ? (
+        <div className="import-mnemonic">
+          {mnemonicList.map((item, index) => (
+            <input
+              className="word-item"
+              key={index}
+              value={mnemonicList[index]}
+              onChange={e => {
+                mnemonicList.splice(index, 1, e.target.value)
+                setMnemonicList(Array.from(mnemonicList))
               }}
             />
-          )}
+          ))}
         </div>
-        <ButtonLine>
-          <PrimaryButton
-            style={{ minWidth: 200 }}
-            size="large"
-            onClick={() => {
-              if (currentStep < 1) {
-                checkStep1()
-              }
-            }}
-          >
-            Next
-          </PrimaryButton>
-        </ButtonLine>
-        {errMsg ? <ErrorMessage msg={errMsg} /> : null}
-      </div>
-    </div>
+      ) : (
+        <TextInput
+          value={pk}
+          onChange={value => setPk(value)}
+          multiline={true}
+          rows={4}
+          style={{ flex: 'unset' }}
+          onKeyPress={event => {
+            if (event.key === 'Enter') {
+              checkStep1()
+            }
+          }}
+        />
+      )}
+      <ButtonLine>
+        <PrimaryButton
+          style={{ minWidth: 200 }}
+          size="large"
+          onClick={() => {
+            if (currentStep < 1) {
+              checkStep1()
+            }
+          }}
+        >
+          Next
+        </PrimaryButton>
+      </ButtonLine>
+      {errMsg ? <ErrorMessage msg={errMsg} /> : null}
+    </Container>
   )
 }
 
