@@ -2,6 +2,7 @@ import logo from '../../assets/extension_logo.svg'
 import React from 'react'
 import styled from 'styled-components'
 import { WhiteButton } from '@chainx/ui'
+import { useHistory } from 'react-router'
 
 const Wrapper = styled.div`
   padding: 60px 20px 0;
@@ -11,7 +12,9 @@ const Wrapper = styled.div`
   align-items: center;
 `
 
-export default React.memo(function({ history }) {
+export default React.memo(function() {
+  const history = useHistory()
+
   return (
     <Wrapper>
       <img src={logo} alt="logo" width="90" height="90" />

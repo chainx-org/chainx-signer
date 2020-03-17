@@ -6,7 +6,7 @@ import CreateOrImportAccount from './CreateOrImportAccount'
 import CurrentAccount from './CurrentAccount'
 import Assets from './Assets'
 
-function Home(props) {
+function Home() {
   const currentAccount = useSelector(currentChainxAccountSelector)
 
   return currentAccount ? (
@@ -15,7 +15,7 @@ function Home(props) {
       <Assets />
     </>
   ) : (
-    <CreateOrImportAccount history={props.history} />
+    <CreateOrImportAccount />
   )
 }
 
