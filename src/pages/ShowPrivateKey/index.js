@@ -20,7 +20,7 @@ const KeyWrapper = styled.span`
   white-space: pre-wrap;
 `
 
-function ShowPrivateKey(props) {
+function ShowPrivateKey() {
   const [privateKey, setPrivateKey] = useState(null)
   const [errMsg, setErrMsg] = useState('')
 
