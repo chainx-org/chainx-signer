@@ -18,6 +18,7 @@ const Args = styled.div`
 
   & > span {
     color: #afb1b4;
+    word-break: keep-all;
   }
 
   :last-child {
@@ -29,7 +30,6 @@ const Args = styled.div`
 
   section.args {
     display: flex;
-    width: 300px;
 
     ol,
     li {

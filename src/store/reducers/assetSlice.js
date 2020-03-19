@@ -104,7 +104,7 @@ export const normalizedAssetsSelector = createSelector(
 
       return {
         ...asset,
-        precision: info.precision
+        precision: info?.precision
       }
     })
   }
@@ -115,7 +115,7 @@ export const pcxInfoSelector = createSelector(assetsInfoSelector, assets => {
 })
 
 export const pcxPrecisionSelector = createSelector(pcxInfoSelector, pcx => {
-  return pcx && pcx.precision
+  return pcx ? pcx.precision : 8
 })
 
 export default assetSlice.reducer
