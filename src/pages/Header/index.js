@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
-import { setChainx, sleep, useOutsideClick } from '../../shared'
+import { useOutsideClick } from '../../shared'
 import './header.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -69,21 +69,6 @@ function Header(props) {
     dispatch(setInitLoading(true))
     dispatch(setCurrentChainXNode({ chainId, url }))
     dispatch(setShowNodeMenu(false))
-    Promise.race([setChainx(url), sleep(10000)])
-      .then(chainx => {
-        if (!chainx) {
-          props.history.push('/nodeError')
-        } else {
-          props.history.push('/redirect')
-        }
-      })
-      .catch(e => {
-        console.log('switch node error ', e)
-        props.history.push('/nodeError')
-      })
-      .finally(() => {
-        dispatch(setInitLoading(false))
-      })
   }
 
   async function switchNet() {
@@ -93,17 +78,9 @@ function Header(props) {
     const node = isTestNet ? currentMainNetNode : currentTestNetNode
     await setNode(node.url)
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('node', node)
-    }
-
     dispatch(fetchIntentions())
     dispatch(setShowNodeMenu(false))
     props.history.push('/')
-  }
-
-  if (process.env.NODE_ENV === 'development') {
-    console.log('props.history.location', props.history.location)
   }
 
   const nowInSignPage = props.history.location.pathname.includes('requestSign')

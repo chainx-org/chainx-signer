@@ -86,15 +86,24 @@ export default function App() {
     window.fetchLatestVersion().then(latestVersion => {
       dispatch(setLatestVersion(latestVersion))
     })
+  }, [dispatch])
+
+  useEffect(() => {
+    console.log('currentNodeUrl', currentNodeUrl)
 
     Promise.race([setChainx(currentNodeUrl), sleep(10000)])
+      .then(chainx => {
+        if (!chainx) {
+          history.push('/nodeError')
+        }
+      })
       .catch(e => {
         console.log(`set Chainx catch error: ${e}`)
       })
       .finally(() => {
         dispatch(setInitLoading(false))
       })
-  }, [currentNodeUrl, dispatch])
+  }, [currentNodeUrl, dispatch, history])
 
   useEffect(() => {
     dispatch(fetchIntentions())

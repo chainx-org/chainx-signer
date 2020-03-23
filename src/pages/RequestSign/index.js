@@ -51,9 +51,6 @@ function RequestSign(props) {
   const [txPanel, setTxPanel] = useState(null)
   const currentAccount = useSelector(currentChainxAccountSelector)
   const toSign = useSelector(toSignSelector)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('toSign', toSign)
-  }
 
   const toSignMethodName = useSelector(toSignMethodNameSelector)
   const isStakingClaim = useSelector(isStakingClaimSelector)
@@ -151,8 +148,9 @@ function RequestSign(props) {
       dispatch(setLoading(false))
       removeCurrentSign()
     } catch (e) {
-      dispatch(setLoading(false))
       setErrMsg(`Error: ${e.message}`)
+    } finally {
+      dispatch(setLoading(false))
     }
   }
 
