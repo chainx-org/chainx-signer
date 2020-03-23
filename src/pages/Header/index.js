@@ -45,6 +45,10 @@ function Header(props) {
   const updateInfo = useSelector(updateInfoSelector)
 
   useEffect(() => {
+    getDelay()
+      .then(() => console.log('Delay info updated'))
+      .catch(() => console.log('Failed to update delay info'))
+
     const intervalId = setInterval(() => {
       getDelay()
         .then(() => console.log('Delay info updated'))
@@ -53,13 +57,6 @@ function Header(props) {
 
     return () => clearInterval(intervalId)
   }, [])
-
-  useEffect(() => {
-    getDelay()
-      .then(() => console.log('Delay info updated'))
-      .catch(() => console.log('Failed to update delay info'))
-    // eslint-disable-next-line
-  }, [isTestNet])
 
   useOutsideClick(refAccountList, () => {
     dispatch(setShowAccountMenu(false))

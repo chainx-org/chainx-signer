@@ -1,9 +1,10 @@
-import Chainx from 'chainx.js'
+import { instances } from './chainxInstances'
 
 let chainx = null
 
 export const setChainx = async nodeUrl => {
-  chainx = new Chainx(nodeUrl)
+  chainx = instances.get(nodeUrl)
+
   await chainx.isRpcReady()
   return chainx
 }

@@ -1,6 +1,11 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { CHAINX_MAIN, CHAINX_TEST, events, NODE_STORE_KEY } from './constants'
 import { chainxNetwork, networkSelector } from './settingSlice'
+import {
+  removeInstance,
+  setInstances,
+  instances
+} from '../../shared/chainxInstances'
 
 export const mainNetInitNodes = [
   {
@@ -45,6 +50,8 @@ const defaultNodeInitialState = {
 const initialState =
   window.nodeStore.get(NODE_STORE_KEY) || defaultNodeInitialState
 
+setInstances([...mainNetInitNodes, ...testNetInitNodes].map(node => node.url))
+
 function findTargetNodes(state, chainId) {
   let targetNodes
   if (CHAINX_MAIN === chainId) {
@@ -79,6 +86,8 @@ const nodeSlice = createSlice({
 
       const newNode = { name, url }
       targetNodes.push(newNode)
+      setInstances([url])
+
       let pre
       if (CHAINX_MAIN === chainId) {
         pre = state.currentChainXMainNetNode
@@ -117,6 +126,7 @@ const nodeSlice = createSlice({
       }
 
       targetNodes.splice(index, 1)
+      removeInstance(url)
 
       let pre = null
       if (CHAINX_MAIN === chainId) {
@@ -267,6 +277,13 @@ export const currentChainxNodeSelector = createSelector(
     } else if (network === chainxNetwork.MAIN) {
       return mainNetNode
     }
+  }
+)
+
+export const currentChainxInstanceSelector = createSelector(
+  currentChainXTestNetNodeSelector,
+  node => {
+    return instances.get(node.url)
   }
 )
 
