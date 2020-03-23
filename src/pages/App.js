@@ -89,8 +89,6 @@ export default function App() {
   }, [dispatch])
 
   useEffect(() => {
-    console.log('currentNodeUrl', currentNodeUrl)
-
     Promise.race([setChainx(currentNodeUrl), sleep(10000)])
       .then(chainx => {
         if (!chainx) {

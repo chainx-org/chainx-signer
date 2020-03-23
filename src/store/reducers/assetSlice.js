@@ -56,8 +56,14 @@ export const fetchAssetsInfo = () => async dispatch => {
   dispatch(setInfo(assetsInfo))
 }
 
-export const fetchAccountAssets = address => async dispatch => {
-  dispatch(setFetchAssetLoading(true))
+export const fetchAccountAssets = (
+  address,
+  loading = false
+) => async dispatch => {
+  if (loading) {
+    dispatch(setFetchAssetLoading(true))
+  }
+
   try {
     const chainx = getChainx()
     await chainx.isRpcReady()

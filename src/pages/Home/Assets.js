@@ -1,6 +1,9 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { normalizedAssetsSelector } from '../../store/reducers/assetSlice'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  fetchAccountAssets,
+  normalizedAssetsSelector
+} from '../../store/reducers/assetSlice'
 import styled from 'styled-components'
 import dotLogo from '../../assets/svg/DOT.svg'
 import btcLogo from '../../assets/svg/X-BTC.svg'
@@ -11,6 +14,7 @@ import toPrecision, { localString } from '../../shared/toPrecision'
 import { replaceBTC } from '../../shared/chainx'
 import { fetchAssetLoadingSelector } from '../../store/reducers/statusSlice'
 import MiniLoading from '../../components/MiniLoading'
+import { currentAddressSelector } from '../../store/reducers/accountSlice'
 
 const LoadingWrapper = styled.div`
   display: flex;
@@ -42,6 +46,22 @@ const Wrapper = styled.ul`
 export default function() {
   const assets = useSelector(normalizedAssetsSelector)
   const loading = useSelector(fetchAssetLoadingSelector)
+  const dispatch = useDispatch()
+  const address = useSelector(currentAddressSelector)
+
+  useEffect(() => {
+    if (!address) {
+      return
+    }
+
+    dispatch(fetchAccountAssets(address, true))
+
+    const intervalId = setInterval(() => {
+      dispatch(fetchAccountAssets(address))
+    }, 5000)
+
+    return () => clearInterval(intervalId)
+  }, [dispatch, address])
 
   if (loading) {
     return (
