@@ -3,7 +3,6 @@ import { Redirect, Route, Switch, useHistory } from 'react-router'
 import Home from './Home'
 import Header from './Header'
 import CreateAccount from './CreateAccount'
-import ImportAccount from './ImportAccount'
 import RequestSign from './RequestSign'
 import ShowPrivateKey from './ShowPrivateKey/index'
 import RemoveAccount from './RemoveAccount'
@@ -17,6 +16,7 @@ import {
   setAppVersion,
   setInitLoading,
   setLatestVersion,
+  showImportMenuSelector,
   updateInfoSelector
 } from '../store/reducers/statusSlice'
 import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
@@ -34,6 +34,9 @@ import {
 import { fetchTradePairs } from '../store/reducers/tradeSlice'
 import { isTestNetSelector } from '../store/reducers/settingSlice'
 import { currentAddressSelector } from '../store/reducers/accountSlice'
+import { NewAccountDrawer } from './Drawers'
+import ImportMnemonic from './ImportAccount/Mnemonic'
+import ImportPrivateKey from './ImportAccount/PrivateKey'
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -61,6 +64,7 @@ export default function App() {
   const state = useSelector(state => state)
   const isTestNet = useSelector(isTestNetSelector)
   const address = useSelector(currentAddressSelector)
+  const showImportMenu = useSelector(showImportMenuSelector)
 
   if (process.env.NODE_ENV === 'development') {
     console.log('state', state)
@@ -138,7 +142,8 @@ export default function App() {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/createAccount" component={CreateAccount} />
-              <Route path="/importAccount" component={ImportAccount} />
+              <Route path="/importMnemonic" component={ImportMnemonic} />
+              <Route path="/importPrivateKey" component={ImportPrivateKey} />
               <Route path="/requestSign" component={RequestSign} />
               <Route path="/showPrivateKey" component={ShowPrivateKey} />
               <Route path="/removeAccount" component={RemoveAccount} />
@@ -149,6 +154,7 @@ export default function App() {
           </div>
         }
       }}
+      {showImportMenu && <NewAccountDrawer />}
     </React.Fragment>
   )
 }

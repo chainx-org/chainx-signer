@@ -1,4 +1,7 @@
-import { setShowAccountMenu } from '../../store/reducers/statusSlice'
+import {
+  setShowAccountMenu,
+  setShowImportMenu
+} from '../../store/reducers/statusSlice'
 import Icon from '../../components/Icon'
 import Accounts from './Accounts'
 import React from 'react'
@@ -15,7 +18,7 @@ export default function({ history }) {
         <div
           onClick={() => {
             dispatch(setShowAccountMenu(false))
-            history.push('/importAccount')
+            dispatch(setShowImportMenu(true))
           }}
         >
           <Icon name="Putin" className="account-area-icon" />

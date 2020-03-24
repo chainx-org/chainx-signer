@@ -1,23 +1,5 @@
 @import '../../assets/variables.scss';
 
-.import-account-title {
-  font-size: 20px;
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  .import-account-title-select {
-    display: flex;
-    justify-content: space-between;
-
-    .second-choice {
-      color: $placeholderColor;
-      cursor: pointer;
-    }
-  }
-}
-
 .import-mnemonic {
   display: flex;
   justify-content: space-between;
