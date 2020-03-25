@@ -16,7 +16,6 @@ import {
   setAppVersion,
   setInitLoading,
   setLatestVersion,
-  showImportMenuSelector,
   updateInfoSelector
 } from '../store/reducers/statusSlice'
 import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
@@ -37,6 +36,7 @@ import { currentAddressSelector } from '../store/reducers/accountSlice'
 import { NewAccountDrawer } from './Drawers'
 import ImportMnemonic from './ImportAccount/Mnemonic'
 import ImportPrivateKey from './ImportAccount/PrivateKey'
+import ImportKeystore from './ImportAccount/Keystore'
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -64,7 +64,6 @@ export default function App() {
   const state = useSelector(state => state)
   const isTestNet = useSelector(isTestNetSelector)
   const address = useSelector(currentAddressSelector)
-  const showImportMenu = useSelector(showImportMenuSelector)
 
   if (process.env.NODE_ENV === 'development') {
     console.log('state', state)
@@ -97,6 +96,8 @@ export default function App() {
       .then(chainx => {
         if (!chainx) {
           history.push('/nodeError')
+        } else if (history.location.pathname === '/nodeError') {
+          history.push('/')
         }
       })
       .catch(e => {
@@ -144,6 +145,7 @@ export default function App() {
               <Route path="/createAccount" component={CreateAccount} />
               <Route path="/importMnemonic" component={ImportMnemonic} />
               <Route path="/importPrivateKey" component={ImportPrivateKey} />
+              <Route path="/importKeystore" component={ImportKeystore} />
               <Route path="/requestSign" component={RequestSign} />
               <Route path="/showPrivateKey" component={ShowPrivateKey} />
               <Route path="/removeAccount" component={RemoveAccount} />
@@ -154,7 +156,7 @@ export default function App() {
           </div>
         }
       }}
-      {showImportMenu && <NewAccountDrawer />}
+      <NewAccountDrawer />
     </React.Fragment>
   )
 }

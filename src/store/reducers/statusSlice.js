@@ -16,7 +16,8 @@ const statusSlice = createSlice({
     showNodeMenu: false,
     showAccountAction: false,
     fetchAssetLoading: false,
-    showImportMenu: false
+    showImportMenu: false,
+    importedKeystore: null
   },
   reducers: {
     setAppVersion: (state, action) => {
@@ -48,6 +49,9 @@ const statusSlice = createSlice({
     },
     setShowImportMenu: (state, { payload }) => {
       state.showImportMenu = payload
+    },
+    setImportedKeystore(state, { payload }) {
+      state.importedKeystore = payload
     }
   }
 })
@@ -62,9 +66,11 @@ export const {
   setShowNodeMenu,
   setShowAccountAction,
   setFetchAssetLoading,
-  setShowImportMenu
+  setShowImportMenu,
+  setImportedKeystore
 } = statusSlice.actions
 
+export const importedKeystoreSelector = state => state.status.importedKeystore
 export const showImportMenuSelector = state => state.status.showImportMenu
 export const showAccountMenuSelector = state => state.status.showAccountMenu
 export const showNodeMenuSelector = state => state.status.showNodeMenu

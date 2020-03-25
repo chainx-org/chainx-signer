@@ -7,6 +7,7 @@
     "@babel/core": "7.6.0",
     "@babel/plugin-proposal-do-expressions": "^7.8.3",
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@chainx/keystore": "^2.22.31",
     "@chainx/types": "^2.22.31",
     "@chainx/ui": "^0.1.4",
     "@chainx/util": "^2.22.31",
