@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './showPrivateKey.scss'
 import StaticWarning from '../../components/StaticWarning'
 import styled from 'styled-components'
-import { Title } from '../../components/styled'
+import { Container, Title } from '../../components/styled'
 import { useSelector } from 'react-redux'
 import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
 import { Account } from 'chainx.js'
@@ -42,13 +42,13 @@ function ShowPrivateKey() {
   return !privateKey ? (
     <PasswordInput enter={exportPrivateKey} errMsg={errMsg} />
   ) : (
-    <div className="show-private-key">
+    <Container>
       <Title>Private Key</Title>
       <StaticWarning desc="Do not store your private key in your PC or network. Anybody with your private key will take your asseets." />
       <div className="pk">
         <KeyWrapper>{privateKey}</KeyWrapper>
       </div>
-    </div>
+    </Container>
   )
 }
 

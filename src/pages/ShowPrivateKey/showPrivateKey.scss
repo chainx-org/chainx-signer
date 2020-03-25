@@ -1,19 +1,14 @@
 @import '../../assets/variables.scss';
 
-.show-private-key {
+.pk {
+  margin: 24px -20px 0;
+  padding: 10px 0;
+  background-color: $yellow;
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 0 20px;
-  .pk {
-    margin: 24px -20px 0;
-    padding: 10px 0;
-    background-color: $yellow;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    span {
-      width: 245px;
-    }
+  justify-content: center;
+  align-items: center;
+
+  span {
+    width: 245px;
   }
 }

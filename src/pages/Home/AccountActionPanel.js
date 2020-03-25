@@ -4,6 +4,7 @@ import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
 import { useHistory } from 'react-router'
 import { setShowAccountAction } from '../../store/reducers/statusSlice'
 import styled from 'styled-components'
+import { paths } from '../../constants'
 
 const Wrapper = styled.ul`
   position: absolute;
@@ -36,24 +37,18 @@ export default function() {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  function goToRemoveAccountPage() {
+  function goToPage(url) {
     if (currentAccount.address) {
-      history.push({ pathname: '/removeAccount' })
-    }
-    dispatch(setShowAccountAction(false))
-  }
-
-  function goToPrivateKeyPage() {
-    if (currentAccount.address) {
-      history.push({ pathname: '/showPrivateKey' })
+      history.push(url)
     }
     dispatch(setShowAccountAction(false))
   }
 
   return (
     <Wrapper>
-      <li onClick={goToPrivateKeyPage}>Export PrivateKey</li>
-      <li onClick={goToRemoveAccountPage}>Forget Account</li>
+      <li onClick={() => goToPage(paths.showPrivateKey)}>Export PrivateKey</li>
+      <li onClick={() => goToPage(paths.exportKeystore)}>Export Keystore</li>
+      <li onClick={() => goToPage(paths.removeAccount)}>Forget Account</li>
     </Wrapper>
   )
 }

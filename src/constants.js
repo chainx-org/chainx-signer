@@ -12,3 +12,11 @@ export const token = {
   SDOT: 'SDOT',
   PCX: 'PCX'
 }
+
+export const paths = {
+  removeAccount: '/removeAccount',
+  showPrivateKey: '/showPrivateKey',
+  exportKeystore: '/exportKeystore',
+  nodeError: '/nodeError',
+  home: '/'
+}

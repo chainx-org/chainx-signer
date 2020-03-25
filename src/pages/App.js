@@ -37,6 +37,8 @@ import { NewAccountDrawer } from './Drawers'
 import ImportMnemonic from './ImportAccount/Mnemonic'
 import ImportPrivateKey from './ImportAccount/PrivateKey'
 import ImportKeystore from './ImportAccount/Keystore'
+import { paths } from '../constants'
+import ExportKeystore from './ExportKeystore'
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -95,8 +97,8 @@ export default function App() {
     Promise.race([setChainx(currentNodeUrl), sleep(10000)])
       .then(chainx => {
         if (!chainx) {
-          history.push('/nodeError')
-        } else if (history.location.pathname === '/nodeError') {
+          history.push(paths.nodeError)
+        } else if (history.location.pathname === paths.nodeError) {
           history.push('/')
         }
       })
@@ -147,10 +149,11 @@ export default function App() {
               <Route path="/importPrivateKey" component={ImportPrivateKey} />
               <Route path="/importKeystore" component={ImportKeystore} />
               <Route path="/requestSign" component={RequestSign} />
-              <Route path="/showPrivateKey" component={ShowPrivateKey} />
-              <Route path="/removeAccount" component={RemoveAccount} />
+              <Route path={paths.showPrivateKey} component={ShowPrivateKey} />
+              <Route path={paths.removeAccount} component={RemoveAccount} />
               <Route path="/addNode" component={NodeAction} />
-              <Route path="/nodeError" component={NodeError} />
+              <Route path={paths.nodeError} component={NodeError} />
+              <Route path={paths.exportKeystore} component={ExportKeystore} />
               <Redirect to="/" />
             </Switch>
           </div>

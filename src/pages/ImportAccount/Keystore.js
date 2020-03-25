@@ -1,11 +1,15 @@
 import { useHistory } from 'react-router'
-import { Container, InputWrapper, Title } from '../../components/styled'
+import {
+  ButtonLine,
+  Container,
+  InputWrapper,
+  Title
+} from '../../components/styled'
 import React, { useState } from 'react'
 import { PasswordInput, PrimaryButton, TextInput } from '@chainx/ui'
 import { useDispatch, useSelector } from 'react-redux'
 import { importedKeystoreSelector } from '../../store/reducers/statusSlice'
 import { isKeystoreV1 } from '../../utils'
-import ButtonLine from '../RequestSign/components/ButtonLine'
 import ErrorMessage from '../../components/ErrorMessage'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
 import KeyStore from '@chainx/keystore'
