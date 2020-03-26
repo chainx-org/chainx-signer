@@ -12,8 +12,19 @@ const Wrapper = styled.div`
   padding: 0 20px;
 `
 
-export default function({ enter = nonFunc, errMsg }) {
+export default function({ enter = nonFunc, errMsg, onChange }) {
   const [pass, setPass] = useState('')
+  const [innerErrMsg, setInnerErrMsg] = useState('')
+
+  const confirm = () => {
+    if (!pass) {
+      return setInnerErrMsg('Password required')
+    }
+
+    enter(pass)
+  }
+
+  const err = innerErrMsg || errMsg
 
   return (
     <Wrapper>
@@ -22,22 +33,26 @@ export default function({ enter = nonFunc, errMsg }) {
         <PasswordInput
           className="fixed-width"
           value={pass}
-          onChange={setPass}
+          onChange={v => {
+            setPass(v)
+            setInnerErrMsg('')
+            onChange(v)
+          }}
           style={{ width: '100%' }}
           onKeyPress={event => {
             if (event.key === 'Enter') {
-              enter(pass)
+              confirm()
             }
           }}
           placeholder="Password"
         />
       </InputWrapper>
+      <ErrorMessage msg={err} />
       <ButtonLine>
-        <PrimaryButton size="large" onClick={() => enter(pass)}>
+        <PrimaryButton size="large" onClick={confirm}>
           Confirm
         </PrimaryButton>
       </ButtonLine>
-      {errMsg ? <ErrorMessage msg={errMsg} /> : null}
     </Wrapper>
   )
 }

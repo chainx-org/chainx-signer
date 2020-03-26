@@ -10,6 +10,7 @@ import {
   removeAccount
 } from '../../store/reducers/accountSlice'
 import PasswordInput from '../../components/PasswordInput'
+import RemoveAccountConfirm from '../Drawers/RemoveAccountConfirm'
 
 function RemoveAccount(props) {
   const [errMsg, setErrMsg] = useState('')
@@ -17,29 +18,42 @@ function RemoveAccount(props) {
   const dispatch = useDispatch()
   const chainId = useSelector(networkSelector)
   const currentAccount = useSelector(currentChainxAccountSelector)
+  const [showConfirm, setShowConfirm] = useState(false)
 
-  function _removeAccount(address, password, keystore) {
-    try {
-      Account.setNet(isTestNet ? 'testnet' : 'mainnet')
-      Account.fromKeyStore(keystore, password)
-      dispatch(removeAccount({ address, chainId }))
-      props.history.push('/')
-    } catch (error) {
-      setErrMsg(error.message)
-    }
+  function _removeAccount() {
+    const address = currentAccount.address
+    dispatch(removeAccount({ address, chainId }))
+    props.history.push('/')
   }
 
   const enter = function(pass) {
-    if (!pass || !currentAccount) {
-      return
-    }
-
-    const address = currentAccount.address
     const keystore = currentAccount.keystore
-    _removeAccount(address, pass, keystore)
+
+    try {
+      Account.setNet(isTestNet ? 'testnet' : 'mainnet')
+      Account.fromKeyStore(keystore, pass)
+      setShowConfirm(true)
+    } catch (e) {
+      setErrMsg('Invalid password')
+    }
   }
 
-  return <PasswordInput enter={enter} errMsg={errMsg} />
+  return (
+    <>
+      <PasswordInput
+        enter={enter}
+        errMsg={errMsg}
+        onChange={() => setErrMsg('')}
+      />
+
+      <RemoveAccountConfirm
+        text={'Sure to delete account?'}
+        open={showConfirm}
+        closeMenu={() => setShowConfirm(false)}
+        ok={_removeAccount}
+      />
+    </>
+  )
 }
 
 export default RemoveAccount
