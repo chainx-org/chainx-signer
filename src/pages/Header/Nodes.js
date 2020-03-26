@@ -8,6 +8,7 @@ import Icon from '../../components/Icon'
 import React from 'react'
 import { setShowNodeMenu } from '../../store/reducers/statusSlice'
 import Delay from './Delay'
+import { paths } from '../../constants'
 
 export default function({ history, setNode }) {
   const nodeList = useSelector(chainxNodesSelector)
@@ -39,13 +40,9 @@ export default function({ history, setNode }) {
               e.stopPropagation()
               e.nativeEvent.stopImmediatePropagation()
               dispatch(setShowNodeMenu(false))
-              const query = {
-                nodeInfo: item,
-                type: 'remove'
-              }
               history.push({
-                pathname: '/addNode',
-                query: query
+                pathname: paths.removeNode,
+                query: { url: item.url }
               })
             }}
           >

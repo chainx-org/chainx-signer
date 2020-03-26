@@ -39,6 +39,7 @@ import ImportPrivateKey from './ImportAccount/PrivateKey'
 import ImportKeystore from './ImportAccount/Keystore'
 import { paths } from '../constants'
 import ExportKeystore from './ExportKeystore'
+import RemoveNode from './NodeAction/RemoveNode'
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -152,6 +153,7 @@ export default function App() {
               <Route path={paths.showPrivateKey} component={ShowPrivateKey} />
               <Route path={paths.removeAccount} component={RemoveAccount} />
               <Route path="/addNode" component={NodeAction} />
+              <Route path={paths.removeNode} component={RemoveNode} />
               <Route path={paths.nodeError} component={NodeError} />
               <Route path={paths.exportKeystore} component={ExportKeystore} />
               <Redirect to="/" />

@@ -50,7 +50,11 @@ const defaultNodeInitialState = {
 const initialState =
   window.nodeStore.get(NODE_STORE_KEY) || defaultNodeInitialState
 
-setInstances([...mainNetInitNodes, ...testNetInitNodes].map(node => node.url))
+setInstances(
+  [...initialState.chainxMainNetNodes, ...initialState.chainxTestNetNodes].map(
+    node => node.url
+  )
+)
 
 function findTargetNodes(state, chainId) {
   let targetNodes

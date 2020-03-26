@@ -10,7 +10,7 @@ import {
   removeAccount
 } from '../../store/reducers/accountSlice'
 import PasswordInput from '../../components/PasswordInput'
-import RemoveAccountConfirm from '../Drawers/RemoveAccountConfirm'
+import Confirm from '../Drawers/Confirm'
 
 function RemoveAccount(props) {
   const [errMsg, setErrMsg] = useState('')
@@ -46,7 +46,7 @@ function RemoveAccount(props) {
         onChange={() => setErrMsg('')}
       />
 
-      <RemoveAccountConfirm
+      <Confirm
         text={'Sure to delete account?'}
         open={showConfirm}
         closeMenu={() => setShowConfirm(false)}

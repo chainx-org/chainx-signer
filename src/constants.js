@@ -18,5 +18,6 @@ export const paths = {
   showPrivateKey: '/showPrivateKey',
   exportKeystore: '/exportKeystore',
   nodeError: '/nodeError',
-  home: '/'
+  home: '/',
+  removeNode: '/removeNode'
 }

@@ -2,8 +2,11 @@ import Nodes from './Nodes'
 import Icon from '../../components/Icon'
 import switchImg from '../../assets/switch.svg'
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { showNodeMenuSelector } from '../../store/reducers/statusSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  setShowNodeMenu,
+  showNodeMenuSelector
+} from '../../store/reducers/statusSlice'
 import { currentChainxNodeSelector } from '../../store/reducers/nodeSlice'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
 
@@ -11,6 +14,7 @@ export default function({ history, setNode, switchNet }) {
   const showNodeMenu = useSelector(showNodeMenuSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
   const isTestNet = useSelector(isTestNetSelector)
+  const dispatch = useDispatch()
 
   return (
     <div className={(showNodeMenu ? '' : 'hide ') + 'node-list-area'}>
@@ -21,6 +25,7 @@ export default function({ history, setNode, switchNet }) {
         className="add-node node-action-item"
         onClick={() => {
           history.push('/addNode')
+          dispatch(setShowNodeMenu(false))
         }}
       >
         <Icon name="Add" className="add-node-icon node-action-item-img" />

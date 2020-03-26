@@ -21,7 +21,7 @@ const Title = styled.h3`
   line-height: 20px;
 `
 
-export default function RemoveAccountConfirm({
+export default function Confirm({
   text,
   open,
   closeMenu = nonFunc,
