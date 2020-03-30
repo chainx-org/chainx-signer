@@ -6,6 +6,21 @@ const isDev = require('electron-is-dev')
 
 let mainWindow
 
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+  return
+}
+
+app.on('second-instance', () => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  }
+})
+
 function isWin() {
   return process.platform === 'win32'
 }
@@ -43,7 +58,9 @@ function createWindow() {
 }
 
 const restoreInstance = () => {
-  if (mainWindow.isMinimized()) mainWindow.restore()
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore()
+  }
   mainWindow.show()
 }
 
