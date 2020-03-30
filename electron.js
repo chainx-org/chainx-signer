@@ -1,7 +1,6 @@
 const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
-
 const path = require('path')
 const isDev = require('electron-is-dev')
 
@@ -18,11 +17,15 @@ function createWindow() {
     webPreferences: { preload: path.join(__dirname, 'preload.js') }
   })
   mainWindow.removeMenu()
-  mainWindow.loadURL(
-    isDev
-      ? 'http://localhost:3001'
-      : `file://${path.join(__dirname, './build/index.html')}`
-  )
+  if (isDev) {
+    mainWindow
+      .loadURL('http://localhost:3001')
+      .then(() => console.log('url loaded'))
+  } else {
+    mainWindow
+      .loadFile(path.join(__dirname, './build/index.html'))
+      .then(() => console.log('index.html loaded'))
+  }
 
   if (isDev) {
     // Open the DevTools.
@@ -30,6 +33,13 @@ function createWindow() {
     mainWindow.webContents.openDevTools()
   }
   mainWindow.on('closed', () => (mainWindow = null))
+
+  electron.globalShortcut.register('CommandOrControl+O', () => {
+    mainWindow.openDevTools()
+  })
+  electron.globalShortcut.register('CommandOrControl+R', () => {
+    mainWindow.reload()
+  })
 }
 
 const restoreInstance = () => {
