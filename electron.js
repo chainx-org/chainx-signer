@@ -37,8 +37,8 @@ function createWindow() {
   electron.globalShortcut.register('CommandOrControl+O', () => {
     mainWindow.openDevTools()
   })
-  electron.globalShortcut.register('CommandOrControl+R', () => {
-    mainWindow.reload()
+  electron.globalShortcut.register('CommandOrControl+Shift+I', () => {
+    mainWindow.openDevTools()
   })
 }
 
