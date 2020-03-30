@@ -17,6 +17,7 @@ function createWindow() {
     height: isWin() ? 665 : 610,
     webPreferences: { preload: path.join(__dirname, 'preload.js') }
   })
+  mainWindow.removeMenu()
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:3001'
