@@ -2,6 +2,8 @@ import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { Extrinsic } from '../../shared/extensionExtrinsic'
 import { stringCamelCase } from '@chainx/util'
 import { Token, Address } from '@chainx/types'
+import { isTestNetSelector } from './settingSlice'
+import { Account } from 'chainx.js'
 
 const initialState = {
   version: 0,
@@ -26,11 +28,13 @@ export const { setToSign, clearToSign } = txSlice.actions
 export const toSignSelector = state => state.tx.toSign
 export const toSignExtrinsicSelector = createSelector(
   toSignSelector,
-  toSign => {
+  isTestNetSelector,
+  (toSign, isTestNet) => {
     if (!toSign) {
       return null
     }
 
+    Account.setNet(isTestNet ? 'testnet' : 'mainnet')
     return new Extrinsic(toSign.data)
   }
 )
@@ -49,6 +53,7 @@ export const toSignArgsSelector = createSelector(
       return []
     }
 
+    console.log(extrinsic.argsArr)
     return extrinsic.argsArr.map(item =>
       extrinsic.methodName === 'put_code' ? item.value : item.value.toString()
     )
