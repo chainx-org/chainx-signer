@@ -30,3 +30,8 @@ export const Container = styled.div`
   padding: 0 20px;
   flex: 1;
 `
+
+export const VerticalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`

@@ -34,11 +34,7 @@ export default function({ history }) {
           <span>New</span>
         </div>
       </div>
-      {accounts.length > 0 ? (
-        <div className="accounts">
-          <Accounts history={history} />
-        </div>
-      ) : null}
+      {accounts.length > 0 && <Accounts history={history} />}
     </div>
   )
 }
