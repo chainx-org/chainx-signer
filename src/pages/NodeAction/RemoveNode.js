@@ -4,7 +4,7 @@ import { chainxNodesSelector, removeNode } from '../../store/reducers/nodeSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { networkSelector } from '../../store/reducers/settingSlice'
 import { useHistory, useLocation } from 'react-router'
-import { ButtonLine, Container, Title } from '../../components/styled'
+import { ButtonLine, Container, SubTitle, Title } from '../../components/styled'
 import PrimaryButton from '@chainx/ui/dist/Button/PrimaryButton'
 import ErrorMessage from '../../components/ErrorMessage'
 
@@ -35,6 +35,7 @@ export default function() {
     <>
       <Container>
         <Title>Delete Node</Title>
+        <SubTitle>{url}</SubTitle>
         {errMsg && <ErrorMessage msg={errMsg} />}
 
         <ButtonLine>
