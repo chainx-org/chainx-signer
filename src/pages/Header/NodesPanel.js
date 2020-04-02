@@ -34,7 +34,7 @@ export default function({ history, setNode, switchNet }) {
       <div
         className="switch-net node-action-item"
         onClick={() => {
-          switchNet().then(() => console.warn('fail to switch net'))
+          switchNet().then(() => console.log('Net switched'))
         }}
       >
         <img className="node-action-item-img" src={switchImg} alt="switchImg" />
