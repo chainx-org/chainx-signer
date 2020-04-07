@@ -25,9 +25,6 @@ function AddNode(props) {
     location: { query }
   } = props
 
-  console.log('props', props)
-  console.log('query', query)
-
   let action = ''
   let title = 'Add node'
   if (query && query.type === 'edit') {
@@ -38,8 +35,6 @@ function AddNode(props) {
     title = 'Delete node'
   }
 
-  console.log('action', action)
-
   const enter = () => {
     if (!name || !url) {
       setErrMsg('name and url are required')
@@ -47,6 +42,7 @@ function AddNode(props) {
     }
 
     try {
+      // TODO: 检查网络是否匹配
       dispatch(addNode({ chainId, node: { name, url } }))
       getDelay()
         .then(() => console.log('Delay info updated'))
