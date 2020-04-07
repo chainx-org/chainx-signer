@@ -25,7 +25,7 @@ async function getStake() {
 export const fetchIntentions = () => async dispatch => {
   const stake = await getStake()
 
-  const resp = await stake.getIntentions()
+  const resp = await stake.getIntentionsV1()
   dispatch(setIntentions(resp))
 }
 
