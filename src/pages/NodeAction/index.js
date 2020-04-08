@@ -93,7 +93,6 @@ function AddNode(props) {
     }
 
     try {
-      // TODO: 检查网络是否匹配
       dispatch(addNode({ chainId, node: { name, url } }))
       getDelay()
         .then(() => console.log('Delay info updated'))
