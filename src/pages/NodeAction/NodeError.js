@@ -5,9 +5,9 @@ import ErrorMessage from '../../components/ErrorMessage'
 function NodeError() {
   return (
     <Container style={{ paddingTop: 20 }}>
-      <ErrorMessage
-        msg={'Failed to init ChainX instance, please switch node and retry.'}
-      />
+      <ErrorMessage>
+        Failed to init ChainX instance, please switch node and retry.
+      </ErrorMessage>
     </Container>
   )
 }

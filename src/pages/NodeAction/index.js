@@ -47,7 +47,10 @@ function AddNode(props) {
         <TextInput
           showClear={false}
           value={name}
-          onChange={setName}
+          onChange={v => {
+            setErrMsg(null)
+            setName(v)
+          }}
           placeholder="Name(12 characters max)"
         />
       </InputWrapper>
@@ -56,7 +59,10 @@ function AddNode(props) {
         <TextInput
           showClear={false}
           value={url}
-          onChange={setUrl}
+          onChange={v => {
+            setErrMsg(null)
+            setUrl(v)
+          }}
           onKeyPress={event => {
             if (event.key === 'Enter') {
               enter()
@@ -70,7 +76,7 @@ function AddNode(props) {
           Confirm
         </PrimaryButton>
       </ButtonLine>
-      {errMsg ? <ErrorMessage msg={errMsg} /> : null}
+      {errMsg && <ErrorMessage>{errMsg}</ErrorMessage>}
     </Container>
   )
 }

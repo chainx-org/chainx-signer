@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 function ErrorMessage(props) {
   const { msg } = props
 
-  return <Wrapper>{msg}</Wrapper>
+  return <Wrapper>{props.children || msg}</Wrapper>
 }
 
 export default ErrorMessage
