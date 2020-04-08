@@ -1,17 +1,5 @@
 @import '../../assets/variables.scss';
 
-.node-action {
-  display: flex;
-  flex-direction: column;
-  padding: 0 20px;
-  .node-url {
-    margin-top: 16px;
-    font-size: 14px;
-    align-self: flex-start;
-    color: #000;
-  }
-}
-
 .node-error {
   display: flex;
   flex-direction: column;

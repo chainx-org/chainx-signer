@@ -6,8 +6,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import './nodeAction.scss'
 import getDelay from '../../shared/updateNodeStatus'
 import { TextInput } from '@chainx/ui'
-import { ButtonLine, InputWrapper, Title } from '../../components/styled'
+import {
+  ButtonLine,
+  Container,
+  InputWrapper,
+  Title
+} from '../../components/styled'
 import PrimaryButton from '@chainx/ui/dist/Button/PrimaryButton'
+import InfoLabel from '../../components/InfoLabel'
 
 function AddNode(props) {
   const [name, setName] = useState('')
@@ -36,7 +42,7 @@ function AddNode(props) {
   }
 
   return (
-    <div className="node-action">
+    <Container>
       <Title>Add node</Title>
       <InputWrapper>
         <TextInput
@@ -46,8 +52,8 @@ function AddNode(props) {
           placeholder="Name(12 characters max)"
         />
       </InputWrapper>
-      <span className="node-url">Node address</span>
       <InputWrapper>
+        <InfoLabel>Node address</InfoLabel>
         <TextInput
           showClear={false}
           value={url}
@@ -66,7 +72,7 @@ function AddNode(props) {
         </PrimaryButton>
       </ButtonLine>
       {errMsg ? <ErrorMessage msg={errMsg} /> : null}
-    </div>
+    </Container>
   )
 }
 
