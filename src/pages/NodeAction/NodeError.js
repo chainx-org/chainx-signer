@@ -1,13 +1,14 @@
 import React from 'react'
-import './nodeAction.scss'
+import { Container } from '../../components/styled'
+import ErrorMessage from '../../components/ErrorMessage'
 
 function NodeError() {
   return (
-    <div className="node-error">
-      <span className="msg">
-        Failed to init ChainX instance, please switch node and retry.
-      </span>
-    </div>
+    <Container style={{ paddingTop: 20 }}>
+      <ErrorMessage
+        msg={'Failed to init ChainX instance, please switch node and retry.'}
+      />
+    </Container>
   )
 }
 

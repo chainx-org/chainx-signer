@@ -3,7 +3,6 @@ import ErrorMessage from '../../components/ErrorMessage'
 import { addNode } from '../../store/reducers/nodeSlice'
 import { networkSelector } from '../../store/reducers/settingSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import './nodeAction.scss'
 import getDelay from '../../shared/updateNodeStatus'
 import { TextInput } from '@chainx/ui'
 import {
