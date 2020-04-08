@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   padding: 0 20px;
 `
 
-export default function({ enter = nonFunc, errMsg, onChange }) {
+export default function({ enter = nonFunc, errMsg, onChange = nonFunc }) {
   const [pass, setPass] = useState('')
   const [innerErrMsg, setInnerErrMsg] = useState('')
 
