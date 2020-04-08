@@ -2,23 +2,16 @@ import React, { useState } from 'react'
 import { Account } from 'chainx.js'
 import ErrorMessage from '../ErrorMessage'
 import WarningMessage from '../WarningMessage'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
   addAccount,
   chainxAccountsSelector
 } from '../../store/reducers/accountSlice'
-import { TextInput, PasswordInput, PrimaryButton } from '@chainx/ui'
+import { PasswordInput, PrimaryButton, TextInput } from '@chainx/ui'
 import ButtonLine from '../../pages/RequestSign/components/ButtonLine'
-import styled from 'styled-components'
-import { SubTitle, Title } from '../styled'
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0 20px;
-`
+import { Container, SubTitle, Title } from '../styled'
 
 function NameAndPassword({ secret, onSuccess }) {
   const [name, setName] = useState('')
@@ -77,7 +70,7 @@ function NameAndPassword({ secret, onSuccess }) {
   }
 
   return (
-    <Wrapper>
+    <Container style={{ flex: 'unset' }}>
       <Title>Name and password setting</Title>
       <SubTitle>
         Password contains at lease 8 characters, and at least one upper,lower
@@ -126,7 +119,7 @@ function NameAndPassword({ secret, onSuccess }) {
           msg={`Account ${sameAccount.name} has same address, and it will be overwritten by this account.`}
         />
       )}
-    </Wrapper>
+    </Container>
   )
 }
 
