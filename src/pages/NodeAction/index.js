@@ -12,6 +12,7 @@ import {
   ButtonLine,
   Container,
   InputWrapper,
+  SubTitle,
   Title
 } from '../../components/styled'
 import PrimaryButton from '@chainx/ui/dist/Button/PrimaryButton'
@@ -107,6 +108,9 @@ function AddNode(props) {
   return (
     <Container>
       <Title>Add node</Title>
+      <SubTitle>
+        Please add node for ChainX {isTestNet ? 'testnet' : 'mainnet'}
+      </SubTitle>
       <InputWrapper>
         <TextInput
           showClear={false}
