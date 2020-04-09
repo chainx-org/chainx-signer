@@ -152,7 +152,7 @@ export default function App() {
               <Route path="/requestSign" component={RequestSign} />
               <Route path={paths.showPrivateKey} component={ShowPrivateKey} />
               <Route path={paths.removeAccount} component={RemoveAccount} />
-              <Route path="/addNode" component={NodeAction} />
+              <Route path={paths.addNode} component={NodeAction} />
               <Route path={paths.removeNode} component={RemoveNode} />
               <Route path={paths.nodeError} component={NodeError} />
               <Route path={paths.exportKeystore} component={ExportKeystore} />

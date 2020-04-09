@@ -9,6 +9,7 @@ import {
 } from '../../store/reducers/statusSlice'
 import { currentChainxNodeSelector } from '../../store/reducers/nodeSlice'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
+import { paths } from '../../constants'
 
 export default function({ history, setNode, switchNet }) {
   const showNodeMenu = useSelector(showNodeMenuSelector)
@@ -24,7 +25,7 @@ export default function({ history, setNode, switchNet }) {
       <div
         className="add-node node-action-item"
         onClick={() => {
-          history.push('/addNode')
+          history.push(paths.addNode)
           dispatch(setShowNodeMenu(false))
         }}
       >

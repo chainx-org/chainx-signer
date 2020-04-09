@@ -19,5 +19,6 @@ export const paths = {
   exportKeystore: '/exportKeystore',
   nodeError: '/nodeError',
   home: '/',
-  removeNode: '/removeNode'
+  removeNode: '/removeNode',
+  addNode: '/addNode'
 }
