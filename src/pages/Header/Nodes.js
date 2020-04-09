@@ -39,6 +39,7 @@ export default function({ history, setNode }) {
   return (nodeList || []).map((item, index) => (
     <div
       className="node-item"
+      style={item.url === currentNode.url ? { backgroundColor: '#F2F3F4' } : {}}
       key={index}
       onClick={() => {
         setNode(item.url)
