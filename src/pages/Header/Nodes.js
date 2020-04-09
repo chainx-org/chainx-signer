@@ -20,6 +20,16 @@ const IconWrapper = styled.span`
   }
 `
 
+const FlagPlaceHolder = styled.div`
+  width: 3px;
+  height: 100%;
+  border-radius: 1.5px;
+`
+
+const ActiveFlag = styled(FlagPlaceHolder)`
+  background-color: #f6c94a;
+`
+
 export default function({ history, setNode }) {
   const nodeList = useSelector(chainxNodesSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
@@ -28,15 +38,13 @@ export default function({ history, setNode }) {
 
   return (nodeList || []).map((item, index) => (
     <div
-      className={
-        item.name === currentNode.name ? 'node-item active' : 'node-item'
-      }
+      className="node-item"
       key={index}
       onClick={() => {
         setNode(item.url)
       }}
     >
-      <div className="node-item-active-flag" />
+      {item.url === currentNode.url ? <ActiveFlag /> : <FlagPlaceHolder />}
       <div className="node-item-detail">
         <div className="node-item-detail-url">
           <span className="url">{item.url.split('//')[1] || item.url}</span>

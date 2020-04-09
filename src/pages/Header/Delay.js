@@ -1,8 +1,28 @@
-import { getDelayClass } from './utils'
 import React from 'react'
+import styled from 'styled-components'
+
+const RedDelay = styled.span`
+  color: #de071c;
+`
+
+const YellowDelay = styled.span`
+  color: #ecb417;
+`
+
+const GreenDelay = styled.span`
+  color: #2caa84;
+`
 
 export default function({ delay }) {
   function getDelayText(delay) {
+    if (!delay) {
+      return ''
+    }
+
+    if (delay === 'timeout') {
+      return 'timeout'
+    }
+
     if (delay > 1000) {
       return `${(delay / 1000).toFixed(1)} s`
     }
@@ -10,20 +30,15 @@ export default function({ delay }) {
     return `${delay} ms`
   }
 
-  return (
-    <span className={getDelayClass(delay)}>
-      {do {
-        if (!delay) {
-          // eslint-disable-next-line no-unused-expressions
-          ;('')
-        } else if (delay === 'timeout') {
-          // eslint-disable-next-line no-unused-expressions
-          ;('timeout')
-        } else {
-          // eslint-disable-next-line no-unused-expressions
-          getDelayText(delay)
-        }
-      }}
-    </span>
-  )
+  const text = getDelayText(delay)
+
+  if (delay === 'timeout' || !delay) {
+    return <RedDelay>{text}</RedDelay>
+  }
+
+  if (delay > 300) {
+    return <YellowDelay>{text}</YellowDelay>
+  }
+
+  return <GreenDelay>{text}</GreenDelay>
 }
