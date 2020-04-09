@@ -3,7 +3,6 @@ import {
   setShowNodeMenu,
   showNodeMenuSelector
 } from '../../store/reducers/statusSlice'
-import { getDelayClass } from './utils'
 import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -31,6 +30,12 @@ const Dot = styled.span`
   height: 6px;
   border-radius: 3px;
   margin-right: 6px;
+  background-color: ${props =>
+    props.delay === 'timeout'
+      ? '#DE071C'
+      : props.delay > 300
+      ? '#ECB417'
+      : '#2CAA84'};
 `
 
 export default function() {
@@ -52,7 +57,7 @@ export default function() {
         dispatch(setShowAccountMenu(false))
       }}
     >
-      <Dot className={getDelayClass(nodesDelay[currentNode.url]) + '-bg'} />
+      <Dot delay={nodesDelay[currentNode.url]} />
       <span>{currentNode && currentNode.name}</span>
     </Wrapper>
   )
