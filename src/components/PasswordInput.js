@@ -31,7 +31,6 @@ export default function({ enter = nonFunc, errMsg, onChange = nonFunc }) {
       <Title>Input password</Title>
       <InputWrapper>
         <PasswordInput
-          className="fixed-width"
           value={pass}
           onChange={v => {
             setPass(v)
