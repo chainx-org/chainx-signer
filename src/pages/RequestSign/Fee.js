@@ -8,7 +8,7 @@ import { pcxPrecisionSelector } from '../../store/reducers/assetSlice'
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  .adjust-gas-desc {
+  & > div:first-of-type {
     display: flex;
     flex-direction: column;
     color: #000;
@@ -43,10 +43,10 @@ export default function({ currentGas, acceleration, setAcceleration }) {
 
   return (
     <Wrapper>
-      <div className="adjust-gas-desc">
+      <div>
         <div>
           <span>Fee</span>
-          <span className="yellow">
+          <span style={{ color: '#ECB417' }}>
             {toPrecision(currentGas, precision)} PCX
           </span>
         </div>
