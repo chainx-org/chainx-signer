@@ -13,6 +13,12 @@ export const setInstances = urls => {
 }
 
 export const removeInstance = url => {
+  if (!instances.has(url)) {
+    return
+  }
+  const instance = instances.get(url)
+  instance.provider.websocket.close()
+
   const deleted = instances.delete(url)
   console.log(
     deleted
