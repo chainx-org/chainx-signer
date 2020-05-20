@@ -31,10 +31,10 @@ function createWindow() {
     height: isWin() ? 665 : 610,
     webPreferences: { preload: path.join(__dirname, 'preload.js') }
   })
-  mainWindow.removeMenu()
+  mainWindow.removeMenu() // only work for linux and windows
   if (isDev) {
     mainWindow
-      .loadURL('http://localhost:3001')
+      .loadURL('http://localhost:3002')
       .then(() => console.log('url loaded'))
   } else {
     mainWindow
