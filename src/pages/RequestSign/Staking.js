@@ -28,6 +28,10 @@ export default function() {
     dispatch(fetchIntentions())
   }, [dispatch])
 
+  if (methodName === 'register') {
+    return <DetailItem label="Name" value={args[0]} />
+  }
+
   const getPublicKey = address => {
     if (methodName && args && address) {
       return chainx.account.decodeAddress(address)
@@ -54,8 +58,6 @@ export default function() {
     </>
   )
 
-  const registerElement = <DetailItem label="Name" value={args[0]} />
-
   const unfreezeElement = (
     <>
       <DetailItem
@@ -78,8 +80,6 @@ export default function() {
 
   if (isNominateMethod) {
     element = nominateMethodElement
-  } else if (methodName === 'register') {
-    element = registerElement
   } else if (methodName === 'unfreeze') {
     element = unfreezeElement
   }
