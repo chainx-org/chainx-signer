@@ -2,14 +2,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   chainxNodesDelaySelector,
   chainxNodesSelector,
-  currentChainxNodeSelector
+  currentChainxNodeSelector,
+  setCurrentChainXNode
 } from '../../store/reducers/nodeSlice'
 import Icon from '../../components/Icon'
 import React from 'react'
-import { setShowNodeMenu } from '../../store/reducers/statusSlice'
+import {
+  setInitLoading,
+  setShowNodeMenu
+} from '../../store/reducers/statusSlice'
 import Delay from './Delay'
 import { paths } from '../../constants'
 import styled from 'styled-components'
+import { networkSelector } from '../../store/reducers/settingSlice'
+import { useHistory } from 'react-router'
 
 const IconWrapper = styled.span`
   color: #f6c94a;
@@ -30,11 +36,23 @@ const ActiveFlag = styled(FlagPlaceHolder)`
   background-color: #f6c94a;
 `
 
-export default function({ history, setNode }) {
+export default function() {
   const nodeList = useSelector(chainxNodesSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
   const nodesDelay = useSelector(chainxNodesDelaySelector)
   const dispatch = useDispatch()
+  const chainId = useSelector(networkSelector)
+  const history = useHistory()
+
+  async function setNode(url) {
+    if (currentNode.url === url) {
+      return
+    }
+
+    dispatch(setInitLoading(true))
+    dispatch(setCurrentChainXNode({ chainId, url }))
+    dispatch(setShowNodeMenu(false))
+  }
 
   return (nodeList || []).map((item, index) => (
     <div

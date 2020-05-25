@@ -8,7 +8,8 @@ export const setInstances = urls => {
       continue
     }
 
-    instances.set(url, new ChainX(url))
+    const instance = new ChainX(url)
+    instances.set(url, instance)
   }
 }
 

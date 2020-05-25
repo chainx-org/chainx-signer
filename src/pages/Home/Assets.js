@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchAccountAssets,
+  fetchAssetsInfo,
   normalizedAssetsSelector
 } from '../../store/reducers/assetSlice'
 import styled from 'styled-components'
@@ -48,6 +49,10 @@ export default function() {
   const loading = useSelector(fetchAssetLoadingSelector)
   const dispatch = useDispatch()
   const address = useSelector(currentAddressSelector)
+
+  useEffect(() => {
+    dispatch(fetchAssetsInfo())
+  }, [dispatch])
 
   useEffect(() => {
     if (!address) {

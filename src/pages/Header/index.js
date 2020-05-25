@@ -4,27 +4,12 @@ import { useOutsideClick } from '../../shared'
 import './header.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  isTestNetSelector,
-  networkSelector,
-  setNetwork
-} from '../../store/reducers/settingSlice'
-import {
-  setInitLoading,
   setShowAccountMenu,
-  setShowNodeMenu,
   showAccountMenuSelector,
   showNodeMenuSelector,
   updateInfoSelector
 } from '../../store/reducers/statusSlice'
-import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
-import {
-  currentChainXMainNetNodeSelector,
-  currentChainXTestNetNodeSelector,
-  setCurrentChainXNode
-} from '../../store/reducers/nodeSlice'
 import getDelay from '../../shared/updateNodeStatus'
-import { fetchIntentions } from '../../store/reducers/intentionSlice'
-import { clearToSign } from '../../store/reducers/txSlice'
 import Logo from './Logo'
 import SignHeader from './SignHeader'
 import NodesPanelSwitch from './NodesPanelSwitch'
@@ -35,10 +20,6 @@ import newVersion from '../../assets/new-version.svg'
 
 function Header(props) {
   const refAccountList = useRef(null)
-  const chainId = useSelector(networkSelector)
-  const isTestNet = useSelector(isTestNetSelector)
-  const currentMainNetNode = useSelector(currentChainXMainNetNodeSelector)
-  const currentTestNetNode = useSelector(currentChainXTestNetNodeSelector)
   const showAccountMenu = useSelector(showAccountMenuSelector)
   const showNodeMenu = useSelector(showNodeMenuSelector)
   const dispatch = useDispatch()
@@ -62,24 +43,6 @@ function Header(props) {
     dispatch(setShowAccountMenu(false))
   })
 
-  async function setNode(url) {
-    dispatch(setInitLoading(true))
-    dispatch(setCurrentChainXNode({ chainId, url }))
-    dispatch(setShowNodeMenu(false))
-  }
-
-  async function switchNet() {
-    dispatch(setNetwork(isTestNet ? CHAINX_MAIN : CHAINX_TEST))
-    dispatch(clearToSign())
-
-    const node = isTestNet ? currentMainNetNode : currentTestNetNode
-    await setNode(node.url)
-
-    dispatch(fetchIntentions())
-    dispatch(setShowNodeMenu(false))
-    props.history.push('/')
-  }
-
   const nowInSignPage = props.history.location.pathname.includes('requestSign')
 
   return (
@@ -94,11 +57,7 @@ function Header(props) {
             <AccountPanelSwitch />
           </div>
         )}
-        <NodesPanel
-          history={props.history}
-          setNode={setNode}
-          switchNet={switchNet}
-        />
+        <NodesPanel />
         {showAccountMenu && !showNodeMenu ? (
           <AccountsPanel history={props.history} />
         ) : null}

@@ -4,6 +4,9 @@ let chainx = null
 
 export const setChainx = async nodeUrl => {
   chainx = instances.get(nodeUrl)
+  if (!chainx) {
+    throw new Error('Can not find target ChainX instance')
+  }
 
   await chainx.isRpcReady()
   return chainx
