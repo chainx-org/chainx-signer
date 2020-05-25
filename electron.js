@@ -1,6 +1,7 @@
 const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
+const Menu = electron.Menu
 const path = require('path')
 const isDev = require('electron-is-dev')
 
@@ -25,7 +26,36 @@ function isWin() {
   return process.platform === 'win32'
 }
 
+function setDarwinMenu() {
+  const name = app.getName()
+  const template = [
+    {
+      label: app.name,
+      submenu: [
+        {
+          label: 'About ' + name,
+          role: 'about'
+        },
+        {
+          label: 'Quit',
+          accelerator: 'Command+Q',
+          click() {
+            app.quit()
+          }
+        }
+      ]
+    }
+  ]
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+}
+
 function createWindow() {
+  if (process.platform === 'darwin') {
+    setDarwinMenu()
+  }
+
   mainWindow = new BrowserWindow({
     width: isWin() ? 380 : 358,
     height: isWin() ? 665 : 610,
@@ -47,6 +77,7 @@ function createWindow() {
     //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools()
   }
+
   mainWindow.on('closed', () => (mainWindow = null))
 
   electron.globalShortcut.register('CommandOrControl+O', () => {
