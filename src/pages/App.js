@@ -40,6 +40,15 @@ import ImportKeystore from './ImportAccount/Keystore'
 import { paths } from '../constants'
 import ExportKeystore from './ExportKeystore'
 import RemoveNode from './NodeAction/RemoveNode'
+import styled from 'styled-components'
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+`
 
 window.wallet.socketResponse = data => {
   if (typeof data === 'string') data = JSON.parse(data)
@@ -142,7 +151,7 @@ export default function App() {
           </div>
         } else if (!initLoading) {
           // eslint-disable-next-line no-unused-expressions
-          ;<div className="content">
+          ;<Wrapper>
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/createAccount" component={CreateAccount} />
@@ -158,7 +167,7 @@ export default function App() {
               <Route path={paths.exportKeystore} component={ExportKeystore} />
               <Redirect to="/" />
             </Switch>
-          </div>
+          </Wrapper>
         }
       }}
       <NewAccountDrawer />
