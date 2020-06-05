@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { getGas, signAndSend } from '../../shared/signHelper'
 import ErrorMessage from '../../components/ErrorMessage'
 import { DefaultButton, PasswordInput, PrimaryButton } from '@chainx/ui'
@@ -51,6 +51,14 @@ function RequestSign(props) {
   const [txPanel, setTxPanel] = useState(null)
   const currentAccount = useSelector(currentChainxAccountSelector)
   const toSign = useSelector(toSignSelector)
+
+  const inputWrapperRef = useRef(null)
+
+  useEffect(() => {
+    if (inputWrapperRef.current) {
+      inputWrapperRef.current.querySelector('input').focus()
+    }
+  }, [inputWrapperRef])
 
   const toSignMethodName = useSelector(toSignMethodNameSelector)
   const isStakingClaim = useSelector(isStakingClaimSelector)
@@ -192,7 +200,7 @@ function RequestSign(props) {
         acceleration={acceleration}
         setAcceleration={setAcceleration}
       />
-      <div>
+      <div ref={inputWrapperRef}>
         <PasswordInput
           value={pass}
           onChange={value => {
