@@ -141,6 +141,27 @@
         }
       ]
     },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "publish": {
+      "provider": "github",
+      "repo": "chainx-signer",
+      "owner": "chainx-org"
+    },
     "directories": {
       "app": "./",
       "buildResources": "./resources"
