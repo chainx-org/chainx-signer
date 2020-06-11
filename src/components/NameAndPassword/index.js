@@ -73,7 +73,7 @@ function NameAndPassword({ secret, onSuccess }) {
     <Container style={{ flex: 'unset' }}>
       <Title>Name and password setting</Title>
       <SubTitle>
-        Password contains at lease 8 characters, and at least one upper,lower
+        Password contains at least 8 characters, and at least one upper,lower
         and number case character.
       </SubTitle>
       <TextInput
