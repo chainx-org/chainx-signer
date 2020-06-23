@@ -5,7 +5,7 @@ import {
   InputWrapper,
   Title
 } from '../../components/styled'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PasswordInput, PrimaryButton, TextInput } from '@chainx/ui'
 import { useDispatch, useSelector } from 'react-redux'
 import { importedKeystoreSelector } from '../../store/reducers/statusSlice'
@@ -20,25 +20,49 @@ import { Account } from 'chainx.js'
 export default function ImportKeystore() {
   const history = useHistory()
   const [name, setName] = useState('')
-  const [password, setPassword] = useState('')
+  const [keystorePass, setKeystorePass] = useState('')
+  const [accountPass, setAccountPass] = useState('')
+  const [confirmation, setConfirmation] = useState('')
   const [errMsg, setErrMsg] = useState('')
 
   const dispatch = useDispatch()
   const isTestNet = useSelector(isTestNetSelector)
   const keystore = useSelector(importedKeystoreSelector)
-  const isV1 = do {
-    if (keystore) {
-      isKeystoreV1(keystore)
-    }
-  }
+  const [encoded, setEncoded] = useState(null)
 
-  const encoded = isV1 ? keystore.encoded : keystore
+  useEffect(() => {
+    if (keystore) {
+      const isV1 = isKeystoreV1(keystore)
+
+      setEncoded(isV1 ? keystore.encoded : keystore)
+      if (isV1) {
+        setName(keystore.tag)
+      }
+    }
+  }, [keystore])
 
   const checkAndImport = () => {
+    if (!name || !accountPass || !confirmation) {
+      setErrMsg('Name and password are required')
+      return false
+    }
+    if (accountPass !== confirmation) {
+      setErrMsg('password is not match')
+      return false
+    }
+    if (accountPass.length < 8) {
+      setErrMsg('password length must great than 8')
+      return false
+    }
+    if (!/(?=.*[a-z])(?=.*[A-Z])/.test(accountPass)) {
+      setErrMsg('password must include lower and upper characters')
+      return false
+    }
+
     let account
     try {
       Account.setNet(isTestNet ? 'testnet' : 'mainnet')
-      account = Account.from(KeyStore.decrypt(encoded, password))
+      account = Account.from(KeyStore.decrypt(encoded, keystorePass))
     } catch (e) {
       setErrMsg('Invalid password or keystore')
       return
@@ -48,9 +72,9 @@ export default function ImportKeystore() {
       addAccount({
         chainId: isTestNet ? CHAINX_TEST : CHAINX_MAIN,
         account: {
-          name: isV1 ? keystore.tag : name,
+          name,
           address: account.address(),
-          keystore: encoded
+          keystore: account.encrypt(accountPass)
         }
       })
     )
@@ -63,21 +87,37 @@ export default function ImportKeystore() {
       <Title>Import from keystore</Title>
 
       <InputWrapper>
-        {!isV1 && (
-          <TextInput
-            showClear={false}
-            style={{ width: '100%' }}
-            type="text"
-            value={name}
-            onChange={value => setName(value)}
-            placeholder="Name(12 characters max)"
-          />
-        )}
+        <TextInput
+          showClear={false}
+          style={{ width: '100%' }}
+          type="text"
+          value={name}
+          onChange={value => setName(value)}
+          placeholder="Name(12 characters max)"
+        />
         <PasswordInput
           style={{ width: '100%', marginTop: 12 }}
-          value={password}
-          onChange={value => setPassword(value)}
-          placeholder="Password"
+          value={keystorePass}
+          onChange={value => setKeystorePass(value)}
+          placeholder="Keystore Password"
+        />
+
+        <PasswordInput
+          style={{ width: '100%', marginTop: 12 }}
+          value={accountPass}
+          onChange={value => setAccountPass(value)}
+          placeholder="Account Password"
+        />
+        <PasswordInput
+          style={{ width: '100%', marginTop: 12 }}
+          value={confirmation}
+          onChange={value => setConfirmation(value)}
+          placeholder="Account password confirmation"
+          onKeyPress={event => {
+            if (event.key === 'Enter') {
+              checkAndImport()
+            }
+          }}
         />
       </InputWrapper>
 
