@@ -8,6 +8,7 @@ import intentionSlice from './intentionSlice'
 import tradeSlice from './tradeSlice'
 import assetReducer from './assetSlice'
 import chainReducer from './chainSlice'
+import chainx2Node from './chainx2NodeSlice'
 
 export default {
   assets: assetReducer,
@@ -19,5 +20,6 @@ export default {
   node,
   setting,
   tx,
-  chain: chainReducer
+  chain: chainReducer,
+  chainx2Node
 }
