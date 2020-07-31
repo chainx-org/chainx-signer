@@ -136,7 +136,7 @@ export default function App() {
 
   return (
     <React.Fragment>
-      <Header props />
+      <Header />
       {do {
         if (updateInfo.hasNewVersion && updateInfo?.versionInfo?.forceUpdate) {
           // eslint-disable-next-line no-unused-expressions

@@ -7,10 +7,12 @@ import Accounts from './Accounts'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { chainxAccountsSelector } from '../../store/reducers/accountSlice'
+import { useHistory } from 'react-router'
 
-export default function({ history }) {
+export default function() {
   const dispatch = useDispatch()
   const accounts = useSelector(chainxAccountsSelector)
+  const history = useHistory()
 
   return (
     <div className="account-area">

@@ -17,13 +17,16 @@ import AccountPanelSwitch from './AccountPanelSwitch'
 import NodesPanel from './NodesPanel'
 import AccountsPanel from './AccountsPanel'
 import newVersion from '../../assets/new-version.svg'
+import { useHistory } from 'react-router'
 
-function Header(props) {
+function Header() {
   const refAccountList = useRef(null)
   const showAccountMenu = useSelector(showAccountMenuSelector)
   const showNodeMenu = useSelector(showNodeMenuSelector)
   const dispatch = useDispatch()
   const updateInfo = useSelector(updateInfoSelector)
+
+  const history = useHistory()
 
   useEffect(() => {
     getDelay()
@@ -43,14 +46,14 @@ function Header(props) {
     dispatch(setShowAccountMenu(false))
   })
 
-  const nowInSignPage = props.history.location.pathname.includes('requestSign')
+  const nowInSignPage = history.location.pathname.includes('requestSign')
 
   return (
     <div className="header">
       <div className="container container-header">
         <Logo />
         {nowInSignPage ? (
-          <SignHeader history={props.history} />
+          <SignHeader />
         ) : (
           <div style={{ display: 'flex' }}>
             <NodesPanelSwitch />
@@ -58,9 +61,7 @@ function Header(props) {
           </div>
         )}
         <NodesPanel />
-        {showAccountMenu && !showNodeMenu ? (
-          <AccountsPanel history={props.history} />
-        ) : null}
+        {showAccountMenu && !showNodeMenu ? <AccountsPanel /> : null}
       </div>
       {updateInfo && updateInfo.hasNewVersion && (
         <span
