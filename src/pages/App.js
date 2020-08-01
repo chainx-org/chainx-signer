@@ -13,9 +13,7 @@ import spinner from '../assets/loading.gif'
 import './index.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  setAppVersion,
   setInitLoading,
-  setLatestVersion,
   updateInfoSelector
 } from '../store/reducers/statusSlice'
 import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
@@ -42,6 +40,7 @@ import ExportKeystore from './ExportKeystore'
 import RemoveNode from './NodeAction/RemoveNode'
 import styled from 'styled-components'
 import useListenSignRequest from '../hooks/useListenSignRequest'
+import useCheckVersion from '../hooks/useCheckVersion'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -67,8 +66,6 @@ setService(window.sockets)
 
 window.sockets.initialize().then(() => console.log('sockets initialized'))
 
-const appVersion = window.require('electron').remote.app.getVersion()
-
 export default function App() {
   const dispatch = useDispatch()
   const loading = useSelector(state => state.status.loading)
@@ -85,13 +82,7 @@ export default function App() {
   const history = useHistory()
 
   useListenSignRequest()
-
-  useEffect(() => {
-    dispatch(setAppVersion(appVersion))
-    window.fetchLatestVersion().then(latestVersion => {
-      dispatch(setLatestVersion(latestVersion))
-    })
-  }, [dispatch])
+  useCheckVersion()
 
   useEffect(() => {
     Promise.race([setChainx(currentNodeUrl), sleep(10000)])
