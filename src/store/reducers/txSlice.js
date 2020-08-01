@@ -53,7 +53,6 @@ export const toSignArgsSelector = createSelector(
       return []
     }
 
-    console.log(extrinsic.argsArr)
     return extrinsic.argsArr.map(item =>
       extrinsic.methodName === 'put_code' ? item.value : item.value.toString()
     )

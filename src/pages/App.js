@@ -41,6 +41,7 @@ import { paths } from '../constants'
 import ExportKeystore from './ExportKeystore'
 import RemoveNode from './NodeAction/RemoveNode'
 import styled from 'styled-components'
+import useListenSignRequest from '../hooks/useListenSignRequest'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -82,19 +83,8 @@ export default function App() {
   }
 
   const history = useHistory()
-  const toSign = useSelector(state => state.tx.toSign)
 
-  useEffect(() => {
-    try {
-      if (toSign) {
-        history.push({
-          pathname: '/requestSign'
-        })
-      }
-    } catch (error) {
-      console.log('sign request error occurs ', error)
-    }
-  }, [toSign, history])
+  useListenSignRequest()
 
   useEffect(() => {
     dispatch(setAppVersion(appVersion))
