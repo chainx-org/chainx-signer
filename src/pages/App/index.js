@@ -26,11 +26,7 @@ import { paths } from '../../constants'
 import ExportKeystore from '@pages/ExportKeystore'
 import RemoveNode from '@pages/NodeAction/RemoveNode'
 import styled from 'styled-components'
-import useListenSignRequest from '../../hooks/useListenSignRequest'
-import useCheckVersion from '../../hooks/useCheckVersion'
-import useFetchBasicInfo from '../../hooks/useFetchBasicInfo'
-import useFetchChainxAssets from '../../hooks/useFetchChainxAssets'
-import useInitChainx from '../../hooks/useInitChainx'
+import initChainx from '@pages/App/initChainx'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -65,11 +61,7 @@ export default function App() {
     console.log('state', state)
   }
 
-  useListenSignRequest()
-  useCheckVersion()
-  useInitChainx()
-  useFetchBasicInfo()
-  useFetchChainxAssets()
+  initChainx()
 
   const updateInfo = useSelector(updateInfoSelector)
 
