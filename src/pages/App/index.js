@@ -11,7 +11,7 @@ import NodeError from '../NodeAction/NodeError'
 import spinner from '../../assets/loading.gif'
 import '../index.scss'
 import { useSelector } from 'react-redux'
-import { updateInfoSelector } from '../../store/reducers/statusSlice'
+import { forceUpdateSelector } from '../../store/reducers/statusSlice'
 import {
   handleApiResponse,
   handlePairedResponse,
@@ -63,13 +63,13 @@ export default function App() {
 
   initChainx()
 
-  const updateInfo = useSelector(updateInfoSelector)
+  const forceUpdate = useSelector(forceUpdateSelector)
 
   return (
     <React.Fragment>
       <Header />
       {do {
-        if (updateInfo.hasNewVersion && updateInfo?.versionInfo?.forceUpdate) {
+        if (forceUpdate) {
           // eslint-disable-next-line no-unused-expressions
           ;<ForceUpdateDialog />
         }

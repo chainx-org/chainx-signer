@@ -96,5 +96,11 @@ export const updateInfoSelector = createSelector(
     }
   }
 )
+export const forceUpdateSelector = createSelector(
+  updateInfoSelector,
+  updateInfo => {
+    return updateInfo.hasNewVersion && updateInfo?.versionInfo?.forceUpdate
+  }
+)
 
 export default statusSlice.reducer
