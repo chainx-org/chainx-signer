@@ -5,13 +5,20 @@ import { setInitLoading } from '../store/reducers/statusSlice'
 import { useHistory } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
+import { chainSelector } from '@store/reducers/chainSlice'
+import { CHAINS } from '@store/reducers/constants'
 
 export default function useInitChainx() {
   const history = useHistory()
   const { url: currentNodeUrl } = useSelector(currentChainxNodeSelector) || {}
   const dispatch = useDispatch()
+  const chain = useSelector(chainSelector)
 
   useEffect(() => {
+    if (CHAINS.chainx !== chain) {
+      return
+    }
+
     dispatch(setInitLoading(true))
     Promise.race([setChainx(currentNodeUrl), sleep(10000)])
       .then(chainx => {
@@ -27,5 +34,5 @@ export default function useInitChainx() {
       .finally(() => {
         dispatch(setInitLoading(false))
       })
-  }, [currentNodeUrl, dispatch, history])
+  }, [chain, currentNodeUrl, dispatch, history])
 }
