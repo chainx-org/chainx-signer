@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react'
 import { Redirect, Route, Switch } from 'react-router'
 import Home from '../Home'
@@ -70,18 +71,12 @@ export default function App() {
       <Header />
       {do {
         if (forceUpdate) {
-          // eslint-disable-next-line no-unused-expressions
           ;<ForceUpdateDialog />
-        }
-      }}
-      {do {
-        if (loading || initLoading) {
-          // eslint-disable-next-line no-unused-expressions
+        } else if (loading || initLoading) {
           ;<div className="spinner">
             <img src={spinner} alt="spinner" />
           </div>
         } else if (!initLoading) {
-          // eslint-disable-next-line no-unused-expressions
           ;<Wrapper>
             <Switch>
               <Route exact path="/" component={Home} />

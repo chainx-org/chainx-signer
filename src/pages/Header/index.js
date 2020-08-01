@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useOutsideClick } from '../../shared'
 import './header.scss'
@@ -9,7 +9,6 @@ import {
   showNodeMenuSelector,
   updateInfoSelector
 } from '../../store/reducers/statusSlice'
-import getDelay from '../../shared/updateNodeStatus'
 import Logo from './Logo'
 import SignHeader from './SignHeader'
 import NodesPanelSwitch from './NodesPanelSwitch'
@@ -18,6 +17,7 @@ import NodesPanel from './NodesPanel'
 import AccountsPanel from './AccountsPanel'
 import newVersion from '../../assets/new-version.svg'
 import { useHistory } from 'react-router'
+import useUpdateChainxNodesDelay from '@pages/Header/useUpdateChainxNodesDelay'
 
 function Header() {
   const refAccountList = useRef(null)
@@ -27,20 +27,7 @@ function Header() {
   const updateInfo = useSelector(updateInfoSelector)
 
   const history = useHistory()
-
-  useEffect(() => {
-    getDelay()
-      .then(() => console.log('Delay info updated'))
-      .catch(() => console.log('Failed to update delay info'))
-
-    const intervalId = setInterval(() => {
-      getDelay()
-        .then(() => console.log('Delay info updated'))
-        .catch(() => console.log('Failed to update delay info'))
-    }, 10000)
-
-    return () => clearInterval(intervalId)
-  }, [])
+  useUpdateChainxNodesDelay()
 
   useOutsideClick(refAccountList, () => {
     dispatch(setShowAccountMenu(false))
