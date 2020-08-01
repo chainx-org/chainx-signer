@@ -2,7 +2,11 @@ import ChainX from 'chainx.js'
 
 export const instances = new Map()
 
-export const setInstances = urls => {
+export function getChainxInstances() {
+  return instances
+}
+
+export const setChainxInstances = urls => {
   for (const url of urls) {
     if (instances.has(url)) {
       continue

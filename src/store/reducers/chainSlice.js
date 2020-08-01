@@ -4,7 +4,7 @@ import { CHAINS } from './constants'
 const chainSlice = createSlice({
   name: 'chain',
   initialState: {
-    chain: CHAINS.chainx2
+    chain: CHAINS.chainx
   },
   reducers: {
     setChain(state, action) {

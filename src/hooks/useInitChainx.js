@@ -12,6 +12,7 @@ export default function useInitChainx() {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(setInitLoading(true))
     Promise.race([setChainx(currentNodeUrl), sleep(10000)])
       .then(chainx => {
         if (!chainx) {

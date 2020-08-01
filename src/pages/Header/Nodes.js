@@ -6,10 +6,7 @@ import {
 } from '../../store/reducers/nodeSlice'
 import Icon from '../../components/Icon'
 import React from 'react'
-import {
-  setInitLoading,
-  setShowNodeMenu
-} from '../../store/reducers/statusSlice'
+import { setShowNodeMenu } from '../../store/reducers/statusSlice'
 import Delay from './Delay'
 import { paths } from '../../constants'
 import styled from 'styled-components'
@@ -47,7 +44,6 @@ export default function() {
       return
     }
 
-    dispatch(setInitLoading(true))
     dispatch(setCurrentChainXNode({ chainId, url }))
     dispatch(setShowNodeMenu(false))
   }

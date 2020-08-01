@@ -9,7 +9,9 @@ const mainNetInitNodes = [
   }
 ]
 
-setChainx2Instances(mainNetInitNodes.map(node => node.url))
+export function initChainx2Instances() {
+  setChainx2Instances(mainNetInitNodes.map(node => node.url))
+}
 
 const defaultNodeInitialState = {
   version: 0,

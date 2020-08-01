@@ -1,9 +1,9 @@
-import { instances } from './chainxInstances'
+import { getChainxInstances } from './chainxInstances'
 
 let chainx = null
 
 export const setChainx = async nodeUrl => {
-  chainx = instances.get(nodeUrl)
+  chainx = getChainxInstances().get(nodeUrl)
   if (!chainx) {
     throw new Error('Can not find target ChainX instance')
   }

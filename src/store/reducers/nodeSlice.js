@@ -4,8 +4,7 @@ import { CHAINX_MAIN, CHAINX_TEST, events, NODE_STORE_KEY } from './constants'
 import { chainxNetwork, networkSelector } from './settingSlice'
 import {
   removeInstance,
-  setInstances,
-  instances
+  setChainxInstances
 } from '../../shared/chainxInstances'
 
 export const mainNetInitNodes = [
@@ -44,7 +43,7 @@ const defaultNodeInitialState = {
    * 1. 去掉了testnetNodesDelay和mainnetNodesDelay
    * 2. 将delay信息直接保存在node对象中
    */
-  version: 0,
+  version: 1,
   chainxMainNetNodes: mainNetInitNodes,
   currentChainXMainNetNode: mainNetInitNodes[0],
   chainxTestNetNodes: testNetInitNodes,
@@ -60,11 +59,14 @@ const initialState = do {
   }
 }
 
-setInstances(
-  [...initialState.chainxMainNetNodes, ...initialState.chainxTestNetNodes].map(
-    node => node.url
+export const initChainxInstances = () => {
+  setChainxInstances(
+    [
+      ...initialState.chainxMainNetNodes,
+      ...initialState.chainxTestNetNodes
+    ].map(node => node.url)
   )
-)
+}
 
 function findTargetNodes(state, chainId) {
   let targetNodes
@@ -100,7 +102,7 @@ const nodeSlice = createSlice({
 
       const newNode = { name, url }
       targetNodes.push(newNode)
-      setInstances([url])
+      setChainxInstances([url])
 
       let pre
       if (CHAINX_MAIN === chainId) {
@@ -167,34 +169,6 @@ const nodeSlice = createSlice({
 
       // TODO: 处理不存在url的情况
     },
-    setCurrentChainXMainNetNode(state, { payload: { url } }) {
-      const target = state.chainxMainNetNodes.find(n => n.url === url)
-      if (!target) {
-        throw new Error(`No ChainX mainnet node with url ${url}`)
-      }
-
-      const pre = state.currentChainXTestNetNode
-      state.currentChainXMainNetNode = target
-      window.nodeStore.set(NODE_STORE_KEY, state)
-      window.sockets.broadcastEvent(events.NODE_CHANGE, {
-        from: pre,
-        to: target
-      })
-    },
-    setCurrentChainXTestNetNode(state, { payload: { url } }) {
-      const target = state.chainxTestNetNodes.find(n => n.url === url)
-      if (!target) {
-        throw new Error(`No ChainX testnet node with url ${url}`)
-      }
-
-      const pre = state.currentChainXTestNetNode
-      state.currentChainXTestNetNode = target
-      window.nodeStore.set(NODE_STORE_KEY, state)
-      window.sockets.broadcastEvent(events.NODE_CHANGE, {
-        from: pre,
-        to: target
-      })
-    },
     setCurrentChainXNode(state, { payload: { chainId, url } }) {
       const targetNodes = findTargetNodes(state, chainId)
       if (!targetNodes) {
@@ -227,8 +201,6 @@ const nodeSlice = createSlice({
 export const {
   addNode,
   removeNode,
-  setCurrentChainXMainNetNode,
-  setCurrentChainXTestNetNode,
   setCurrentChainXNode,
   setNodeDelay
 } = nodeSlice.actions
@@ -283,13 +255,6 @@ export const currentChainxNodeSelector = createSelector(
     } else if (network === chainxNetwork.MAIN) {
       return mainNetNode
     }
-  }
-)
-
-export const currentChainxInstanceSelector = createSelector(
-  currentChainXTestNetNodeSelector,
-  node => {
-    return instances.get(node.url)
   }
 )
 
