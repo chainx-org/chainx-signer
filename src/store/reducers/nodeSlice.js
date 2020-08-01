@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { CHAINX_MAIN, CHAINX_TEST, events, NODE_STORE_KEY } from './constants'
 import { chainxNetwork, networkSelector } from './settingSlice'
@@ -38,17 +39,26 @@ export const testNetInitNodes = [
 ]
 
 const defaultNodeInitialState = {
+  /**
+   * version 1:
+   * 1. 去掉了testnetNodesDelay和mainnetNodesDelay
+   * 2. 将delay信息直接保存在node对象中
+   */
   version: 0,
   chainxMainNetNodes: mainNetInitNodes,
   currentChainXMainNetNode: mainNetInitNodes[0],
   chainxTestNetNodes: testNetInitNodes,
-  currentChainXTestNetNode: testNetInitNodes[0],
-  testnetNodesDelay: {},
-  mainnetNodesDelay: {}
+  currentChainXTestNetNode: testNetInitNodes[0]
 }
 
-const initialState =
-  window.nodeStore.get(NODE_STORE_KEY) || defaultNodeInitialState
+const initialState = do {
+  const storedState = window.nodeStore.get(NODE_STORE_KEY)
+  if (storedState.version < 1 || !storedState) {
+    defaultNodeInitialState
+  } else {
+    storedState
+  }
+}
 
 setInstances(
   [...initialState.chainxMainNetNodes, ...initialState.chainxTestNetNodes].map(
@@ -111,11 +121,16 @@ const nodeSlice = createSlice({
       window.nodeStore.set(NODE_STORE_KEY, state)
     },
     setNodeDelay(state, { payload: { chainId, url, delay } }) {
-      let nodes = state.testnetNodesDelay
-      if (CHAINX_MAIN === chainId) {
-        nodes = state.mainnetNodesDelay
+      const targetNodes = findTargetNodes(state, chainId)
+      const targetNode = targetNodes.find(node => node.url === url)
+      const idx = targetNodes.findIndex(n => n.url === url)
+      targetNodes.splice(idx, 1, { ...targetNode, delay })
+
+      if (url === state.currentChainXTestNetNode.url) {
+        state.currentChainXTestNetNode.delay = delay
+      } else if (url === state.currentChainXMainNetNode.url) {
+        state.currentChainXMainNetNode.delay = delay
       }
-      nodes[url] = delay
       window.nodeStore.set(NODE_STORE_KEY, state)
     },
     removeNode(state, { payload: { chainId, url } }) {
@@ -254,19 +269,6 @@ export const chainxNodesSelector = createSelector(
       return testNetNodes
     } else if (network === chainxNetwork.MAIN) {
       return mainNetNodes
-    }
-  }
-)
-
-export const chainxNodesDelaySelector = createSelector(
-  networkSelector,
-  state => state.node.mainnetNodesDelay,
-  state => state.node.testnetNodesDelay,
-  (network, mainnetNodesDelay, testnetNodesDelay) => {
-    if (network === chainxNetwork.TEST) {
-      return testnetNodesDelay
-    } else if (network === chainxNetwork.MAIN) {
-      return mainnetNodesDelay
     }
   }
 )

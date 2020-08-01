@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  chainxNodesDelaySelector,
   chainxNodesSelector,
   currentChainxNodeSelector,
   setCurrentChainXNode
@@ -39,7 +38,6 @@ const ActiveFlag = styled(FlagPlaceHolder)`
 export default function() {
   const nodeList = useSelector(chainxNodesSelector)
   const currentNode = useSelector(currentChainxNodeSelector)
-  const nodesDelay = useSelector(chainxNodesDelaySelector)
   const dispatch = useDispatch()
   const chainId = useSelector(networkSelector)
   const history = useHistory()
@@ -83,7 +81,7 @@ export default function() {
             </IconWrapper>
           )}
         </div>
-        <Delay delay={nodesDelay[item.url]} />
+        <Delay delay={item.delay} />
       </div>
     </div>
   ))

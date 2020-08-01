@@ -5,10 +5,7 @@ import {
 } from '../../store/reducers/statusSlice'
 import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  chainxNodesDelaySelector,
-  currentChainxNodeSelector
-} from '../../store/reducers/nodeSlice'
+import { currentChainxNodeSelector } from '../../store/reducers/nodeSlice'
 import { useOutsideClick } from '../../shared'
 import styled from 'styled-components'
 
@@ -42,7 +39,6 @@ export default function() {
   const refNodeList = useRef(null)
   const dispatch = useDispatch()
   const showNodeMenu = useSelector(showNodeMenuSelector)
-  const nodesDelay = useSelector(chainxNodesDelaySelector)
   const currentNode = useSelector(currentChainxNodeSelector)
 
   useOutsideClick(refNodeList, () => {
@@ -57,7 +53,7 @@ export default function() {
         dispatch(setShowAccountMenu(false))
       }}
     >
-      <Dot delay={nodesDelay[currentNode.url]} />
+      <Dot delay={currentNode && currentNode.delay} />
       <span>{currentNode && currentNode.name}</span>
     </Wrapper>
   )
