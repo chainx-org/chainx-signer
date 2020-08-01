@@ -23,6 +23,29 @@ const LoadingWrapper = styled.div`
   margin-top: 40px;
 `
 
+const NativeAssetWrapper = styled.div`
+  padding: 32px 0;
+  border-top: 1px solid #dce0e2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  span {
+    margin-top: 16px;
+    font-size: 12px;
+    color: #8e9193;
+    text-align: center;
+    line-height: 1;
+  }
+
+  p {
+    font-size: 20px;
+    color: #3f3f3f;
+    margin: 8px 0 0;
+  }
+`
+
 const Wrapper = styled.ul`
   margin: 0;
   padding: 0;
@@ -76,24 +99,46 @@ export default function() {
     )
   }
 
-  return (
-    <Wrapper>
-      {assets.map(({ name, precision, details }) => {
-        const value = Object.values(details).reduce(
-          (result, v) => result + v,
-          0
-        )
+  const nativeTokenName = token.PCX
+  const nativeAsset = assets.find(asset => asset.name === nativeTokenName)
+  const otherAssets = assets.filter(asset => asset.name !== nativeTokenName)
+  const nativeValue =
+    nativeAsset &&
+    Object.values(nativeAsset.details).reduce((result, v) => result + v, 0)
 
-        return (
-          <li key={name}>
-            <AssetIcon name={name} />
-            <span>
-              {localString(toPrecision(value, precision))} {replaceBTC(name)}
-            </span>
-          </li>
-        )
-      })}
-    </Wrapper>
+  return (
+    <>
+      {nativeAsset && (
+        <NativeAssetWrapper>
+          <AssetIcon name={token.PCX} />
+          <span>Total Balance</span>
+          <p>
+            <b>
+              {localString(toPrecision(nativeValue, nativeAsset.precision))}{' '}
+              {replaceBTC(nativeAsset.name)}
+            </b>
+          </p>
+        </NativeAssetWrapper>
+      )}
+
+      <Wrapper>
+        {otherAssets.map(({ name, precision, details }) => {
+          const value = Object.values(details).reduce(
+            (result, v) => result + v,
+            0
+          )
+
+          return (
+            <li key={name}>
+              <AssetIcon name={name} />
+              <span>
+                {localString(toPrecision(value, precision))} {replaceBTC(name)}
+              </span>
+            </li>
+          )
+        })}
+      </Wrapper>
+    </>
   )
 }
 
