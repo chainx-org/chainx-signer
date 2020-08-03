@@ -6,7 +6,7 @@ import {
   networkSelector
 } from '../../store/reducers/settingSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import getDelay from '../../shared/updateNodeStatus'
+import updateChainxNodesDelay from '@shared/updateNodeStatus'
 import { TextInput } from '@chainx/ui'
 import {
   ButtonLine,
@@ -94,7 +94,7 @@ function AddNode(props) {
 
     try {
       dispatch(addNode({ chainId, node: { name, url } }))
-      getDelay()
+      updateChainxNodesDelay()
         .then(() => console.log('Delay info updated'))
         .catch(() => console.log('Failed to update delay info'))
       setErrMsg('')

@@ -1,3 +1,3 @@
 export { default as useOutsideClick } from './useClickOutside'
-export { default as getDelay } from './updateNodeStatus'
+export { default as updateChainxNodesDelay } from './updateNodeStatus'
 export { setChainx, sleep } from './chainx'

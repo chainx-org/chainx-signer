@@ -6,7 +6,7 @@ import { sleep } from './chainx'
 
 const TIMEOUT = 10000
 
-const getDelay = async () => {
+const updateChainxNodesDelay = async () => {
   const state = store.getState()
   const nodes = chainxNodesSelector(state)
   const chainId = networkSelector(state)
@@ -46,4 +46,4 @@ const testNet = async instance => {
   return typeof result === 'number' ? result : 'timeout'
 }
 
-export default getDelay
+export default updateChainxNodesDelay
