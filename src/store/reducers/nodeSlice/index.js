@@ -1,41 +1,29 @@
 /* eslint-disable */
 import { createSelector, createSlice } from '@reduxjs/toolkit'
-import { CHAINX_MAIN, CHAINX_TEST, events, NODE_STORE_KEY } from './constants'
-import { chainxNetwork, networkSelector } from './settingSlice'
 import {
-  removeInstance,
+  CHAINX2_TEST,
+  CHAINX_MAIN,
+  CHAINX_TEST,
+  events,
+  NODE_STORE_KEY
+} from '../constants'
+import { chainxNetwork, networkSelector } from '../settingSlice'
+import {
+  removeChainxInstance,
   setChainxInstances
-} from '../../shared/chainxInstances'
+} from '@shared/chainxInstances'
+import _ from 'lodash'
+import {
+  chainx2TestNetInitNodes,
+  chainxMainNetInitNodes,
+  chainxTestNetInitNodes
+} from '@store/reducers/nodeSlice/constants'
+import {
+  removeChainx2Instance,
+  setChainx2Instances
+} from '@shared/chainx2Instances'
 
-export const mainNetInitNodes = [
-  {
-    name: 'w1.org',
-    url: 'wss://w1.chainx.org/ws'
-  },
-  {
-    name: 'w2.org',
-    url: 'wss://w2.chainx.org/ws'
-  },
-  {
-    name: 'HashQuark',
-    url: 'wss://chainx.hashquark.io'
-  },
-  {
-    name: 'BuildLinks',
-    url: 'wss://chainx.buildlinks.org'
-  },
-  {
-    name: 'w1.cn',
-    url: 'wss://w1.chainx.org.cn/ws'
-  }
-]
-
-export const testNetInitNodes = [
-  {
-    name: 'testnet.w1.org.cn',
-    url: 'wss://testnet.w1.chainx.org.cn/ws'
-  }
-]
+const chainxInitNodes = [...chainxMainNetInitNodes, ...chainxTestNetInitNodes]
 
 const defaultNodeInitialState = {
   /**
@@ -44,16 +32,28 @@ const defaultNodeInitialState = {
    * 2. 将delay信息直接保存在node对象中
    */
   version: 1,
-  chainxMainNetNodes: mainNetInitNodes,
-  currentChainXMainNetNode: mainNetInitNodes[0],
-  chainxTestNetNodes: testNetInitNodes,
-  currentChainXTestNetNode: testNetInitNodes[0]
+  chainxMainNetNodes: chainxMainNetInitNodes,
+  currentChainXMainNetNode: chainxMainNetInitNodes[0],
+  chainxTestNetNodes: chainxTestNetInitNodes,
+  currentChainXTestNetNode: chainxTestNetInitNodes[0],
+  chainx2TestNetNodes: chainx2TestNetInitNodes,
+  currentChainX2TestNetNode: chainx2TestNetInitNodes[0]
 }
 
 const initialState = do {
   const storedState = window.nodeStore.get(NODE_STORE_KEY)
-  if (storedState.version < 1 || !storedState) {
+  if (!storedState) {
     defaultNodeInitialState
+  } else if (storedState.version < 1) {
+    ;({
+      ...defaultNodeInitialState,
+      ..._.pick(storedState, [
+        'chainxMainNetNodes',
+        'currentChainXMainNetNode',
+        'chainxTestNetNodes',
+        'currentChainXTestNetNode'
+      ])
+    })
   } else {
     storedState
   }
@@ -68,12 +68,34 @@ export const initChainxInstances = () => {
   )
 }
 
+export function initChainx2Instances() {
+  setChainx2Instances(initialState.chainx2TestNetNodes.map(node => node.url))
+}
+
+export function removeInstance(chainId, url = '') {
+  if (CHAINX2_TEST === chainId) {
+    removeChainx2Instance(url)
+  } else if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
+    removeChainxInstance(url)
+  }
+}
+
+function setInstances(chainId, urls = []) {
+  if (CHAINX2_TEST === chainId) {
+    setChainx2Instances(urls)
+  } else if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
+    setChainxInstances(urls)
+  }
+}
+
 function findTargetNodes(state, chainId) {
   let targetNodes
   if (CHAINX_MAIN === chainId) {
     targetNodes = state.chainxMainNetNodes
   } else if (CHAINX_TEST === chainId) {
     targetNodes = state.chainxTestNetNodes
+  } else if (CHAINX2_TEST === chainId) {
+    targetNodes = state.chainx2TestNetNodes
   } else {
     throw new Error(`Invalid chainId: ${chainId}`)
   }
@@ -102,7 +124,7 @@ const nodeSlice = createSlice({
 
       const newNode = { name, url }
       targetNodes.push(newNode)
-      setChainxInstances([url])
+      setInstances(chainId, [url])
 
       let pre
       if (CHAINX_MAIN === chainId) {
@@ -111,6 +133,9 @@ const nodeSlice = createSlice({
       } else if (CHAINX_TEST === chainId) {
         pre = state.currentChainXTestNetNode
         state.currentChainXTestNetNode = newNode
+      } else if (CHAINX2_TEST === chainId) {
+        pre = state.currentChainX2TestNetNode
+        state.currentChainX2TestNetNode = newNode
       }
 
       if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
@@ -132,6 +157,8 @@ const nodeSlice = createSlice({
         state.currentChainXTestNetNode.delay = delay
       } else if (url === state.currentChainXMainNetNode.url) {
         state.currentChainXMainNetNode.delay = delay
+      } else if (url === state.currentChainX2TestNetNode) {
+        state.currentChainX2TestNetNode.delay = delay
       }
       window.nodeStore.set(NODE_STORE_KEY, state)
     },
@@ -156,6 +183,9 @@ const nodeSlice = createSlice({
       } else if (CHAINX_TEST === chainId) {
         pre = state.currentChainXTestNetNode
         state.currentChainXTestNetNode = targetNodes[0] || null
+      } else if (CHAINX2_TEST === chainId) {
+        pre = state.currentChainX2TestNetNode
+        state.currentChainX2TestNetNode = targetNodes[0] || null
       }
 
       if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
@@ -169,7 +199,7 @@ const nodeSlice = createSlice({
 
       // TODO: 处理不存在url的情况
     },
-    setCurrentChainXNode(state, { payload: { chainId, url } }) {
+    setCurrentNode(state, { payload: { chainId, url } }) {
       const targetNodes = findTargetNodes(state, chainId)
       if (!targetNodes) {
         return
@@ -187,6 +217,9 @@ const nodeSlice = createSlice({
       } else if (CHAINX_TEST === chainId) {
         pre = state.currentChainXTestNetNode
         state.currentChainXTestNetNode = target
+      } else if (CHAINX2_TEST === chainId) {
+        pre = state.currentChainX2TestNetNode
+        state.currentChainX2TestNetNode = target
       }
 
       window.nodeStore.set(NODE_STORE_KEY, state)
@@ -201,15 +234,13 @@ const nodeSlice = createSlice({
 export const {
   addNode,
   removeNode,
-  setCurrentChainXNode,
+  setCurrentNode,
   setNodeDelay
 } = nodeSlice.actions
 
 export const chainxMainNetNodesSelector = state =>
   state.node.chainxMainNetNodes.map(node => {
-    const isInit = [...mainNetInitNodes, ...testNetInitNodes].some(
-      n => n.url === node.url
-    )
+    const isInit = chainxInitNodes.some(n => n.url === node.url)
 
     return {
       ...node,
@@ -218,29 +249,54 @@ export const chainxMainNetNodesSelector = state =>
   })
 export const chainxTestNetNodesSelector = state =>
   state.node.chainxTestNetNodes.map(node => {
-    const isInit = [...mainNetInitNodes, ...testNetInitNodes].some(
-      n => n.url === node.url
-    )
+    const isInit = chainxInitNodes.some(n => n.url === node.url)
 
     return {
       ...node,
       isInit
     }
   })
+
+export const chainx2TestNetNodesSelector = state =>
+  state.node.chainx2TestNetNodes.map(node => {
+    const isInit = chainx2TestNetInitNodes.some(n => n.url === node.url)
+    return { ...node, isInit }
+  })
 export const currentChainXMainNetNodeSelector = state =>
   state.node.currentChainXMainNetNode
 export const currentChainXTestNetNodeSelector = state =>
   state.node.currentChainXTestNetNode
+export const currentChainx2TestNetNodeSelector = state =>
+  state.node.currentChainX2TestNetNode
 
-export const chainxNodesSelector = createSelector(
+export const nodesSelector = createSelector(
   networkSelector,
   chainxMainNetNodesSelector,
   chainxTestNetNodesSelector,
-  (network, mainNetNodes, testNetNodes) => {
+  chainx2TestNetNodesSelector,
+  (network, mainNetNodes, testNetNodes, chainx2TestNetNodes) => {
     if (network === chainxNetwork.TEST) {
       return testNetNodes
     } else if (network === chainxNetwork.MAIN) {
       return mainNetNodes
+    } else if (network === CHAINX2_TEST) {
+      return chainx2TestNetNodes
+    }
+  }
+)
+
+export const currentNodeSelector = createSelector(
+  networkSelector,
+  currentChainXMainNetNodeSelector,
+  currentChainXTestNetNodeSelector,
+  currentChainx2TestNetNodeSelector,
+  (network, chainxMainNet, chainxTestNet, chainx2TestNet) => {
+    if (network === chainxNetwork.TEST) {
+      return chainxTestNet
+    } else if (network === chainxNetwork.MAIN) {
+      return chainxMainNet
+    } else if (network === CHAINX2_TEST) {
+      return chainx2TestNet
     }
   }
 )

@@ -5,7 +5,7 @@ import { codes } from '../error'
 import { setToSign, toSignSelector } from '../store/reducers/txSlice'
 import { Extrinsic } from '@chainx/types'
 import { methods } from '../constants'
-import { currentChainxNodeSelector } from '../store/reducers/nodeSlice'
+import { currentChainxNodeSelector } from '@store/reducers/nodeSlice'
 
 function getAccount() {
   const state = store.getState()

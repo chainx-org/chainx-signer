@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Redirect, Route, Switch } from 'react-router'
 import Home from '../Home'
 import Header from '../Header'
@@ -28,6 +28,18 @@ import ExportKeystore from '@pages/ExportKeystore'
 import RemoveNode from '@pages/NodeAction/RemoveNode'
 import styled from 'styled-components'
 import initChainx from '@pages/App/initChainx'
+import {
+  CHAINX2_TEST,
+  CHAINX_MAIN,
+  CHAINX_TEST
+} from '@store/reducers/constants'
+import useInit from '@pages/App/init'
+import useInitChainx2 from '@pages/App/initChainx2'
+import { networkSelector } from '@store/reducers/settingSlice'
+import {
+  initChainx2Instances,
+  initChainxInstances
+} from '@store/reducers/nodeSlice'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -62,7 +74,22 @@ export default function App() {
     console.log('state', state)
   }
 
-  initChainx()
+  const chainId = useSelector(networkSelector)
+
+  useEffect(() => {
+    if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
+      initChainxInstances()
+    } else if ([CHAINX2_TEST].includes(chainId)) {
+      initChainx2Instances()
+    }
+  }, [chainId])
+
+  useInit()
+  if ([CHAINX_TEST, CHAINX_MAIN].includes(chainId)) {
+    initChainx()
+  } else if (CHAINX2_TEST === chainId) {
+    useInitChainx2()
+  }
 
   const forceUpdate = useSelector(forceUpdateSelector)
 

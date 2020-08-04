@@ -11,7 +11,7 @@ function ImportPrivateKey(props) {
   const [errMsg, setErrMsg] = useState('')
 
   const checkStep1 = () => {
-    if (!pk) {
+    if (!pk || !/^0x[\da-fA-f]{64}$/.test(pk)) {
       setErrMsg('Private key is not correct')
       return
     }

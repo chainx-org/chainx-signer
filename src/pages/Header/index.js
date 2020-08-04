@@ -18,6 +18,7 @@ import AccountsPanel from './AccountsPanel'
 import newVersion from '../../assets/new-version.svg'
 import { useHistory } from 'react-router'
 import useUpdateChainxNodesDelay from '@pages/Header/useUpdateChainxNodesDelay'
+import useUpdateChainx2NodesDelay from '@pages/Header/useUpdateChainx2NodesDelay'
 
 function Header() {
   const refAccountList = useRef(null)
@@ -27,6 +28,7 @@ function Header() {
   const updateInfo = useSelector(updateInfoSelector)
 
   const history = useHistory()
+  useUpdateChainx2NodesDelay()
   useUpdateChainxNodesDelay()
 
   useOutsideClick(refAccountList, () => {

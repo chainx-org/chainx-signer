@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Confirm from '../Drawers/Confirm'
-import { chainxNodesSelector, removeNode } from '../../store/reducers/nodeSlice'
+import { nodesSelector, removeNode } from '@store/reducers/nodeSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { networkSelector } from '../../store/reducers/settingSlice'
 import { useHistory, useLocation } from 'react-router'
@@ -10,7 +10,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 
 export default function() {
   const [errMsg, setErrMsg] = useState('')
-  const nodeList = useSelector(chainxNodesSelector)
+  const nodeList = useSelector(nodesSelector)
   const dispatch = useDispatch()
   const chainId = useSelector(networkSelector)
   const history = useHistory()

@@ -11,11 +11,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { importedKeystoreSelector } from '../../store/reducers/statusSlice'
 import { isKeystoreV1 } from '../../utils'
 import ErrorMessage from '../../components/ErrorMessage'
-import { isTestNetSelector } from '../../store/reducers/settingSlice'
+import {
+  isTestNetSelector,
+  networkSelector
+} from '../../store/reducers/settingSlice'
 import KeyStore from '@chainx/keystore'
 import { addAccount } from '../../store/reducers/accountSlice'
-import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
+import {
+  CHAINX2_TEST,
+  CHAINX_MAIN,
+  CHAINX_TEST
+} from '../../store/reducers/constants'
 import { Account } from 'chainx.js'
+import { Account as V2Account } from '@chainx-v2/account'
 
 export default function ImportKeystore() {
   const history = useHistory()
@@ -29,6 +37,7 @@ export default function ImportKeystore() {
   const isTestNet = useSelector(isTestNetSelector)
   const keystore = useSelector(importedKeystoreSelector)
   const [encoded, setEncoded] = useState(null)
+  const chainId = useSelector(networkSelector)
 
   useEffect(() => {
     if (keystore) {
@@ -59,23 +68,28 @@ export default function ImportKeystore() {
       return false
     }
 
-    let account
+    let privateKey
     try {
-      Account.setNet(isTestNet ? 'testnet' : 'mainnet')
-      account = Account.from(KeyStore.decrypt(encoded, keystorePass))
+      privateKey = KeyStore.decrypt(encoded, keystorePass)
     } catch (e) {
       setErrMsg('Invalid password or keystore')
       return
     }
 
+    let account, keystore
+    if ([CHAINX_TEST, CHAINX_MAIN].includes(chainId)) {
+      Account.setNet(isTestNet ? 'testnet' : 'mainnet')
+      account = Account.from(privateKey)
+      keystore = account.encrypt(accountPass)
+    } else if ([CHAINX2_TEST].includes(chainId)) {
+      account = V2Account.from(privateKey)
+      keystore = KeyStore.encrypt(privateKey, accountPass)
+    }
+
     dispatch(
       addAccount({
-        chainId: isTestNet ? CHAINX_TEST : CHAINX_MAIN,
-        account: {
-          name,
-          address: account.address(),
-          keystore: account.encrypt(accountPass)
-        }
+        chainId,
+        account: { name, address: account.address(), keystore }
       })
     )
 

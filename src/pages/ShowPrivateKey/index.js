@@ -3,9 +3,9 @@ import StaticWarning from '../../components/StaticWarning'
 import styled from 'styled-components'
 import { Container, Title } from '../../components/styled'
 import { useSelector } from 'react-redux'
-import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
-import { Account } from 'chainx.js'
+import { currentAccountSelector } from '../../store/reducers/accountSlice'
 import PasswordInput from '../../components/PasswordInput'
+import KeyStore from '@chainx/keystore'
 
 const StyledContainer = styled(Container)`
   .pk {
@@ -37,8 +37,9 @@ const KeyWrapper = styled.span`
 function ShowPrivateKey() {
   const [privateKey, setPrivateKey] = useState(null)
   const [errMsg, setErrMsg] = useState('')
+  const account = useSelector(currentAccountSelector)
 
-  const { keystore: keyStore } = useSelector(currentChainxAccountSelector) || {}
+  const { keystore: keyStore } = account || {}
 
   function exportPrivateKey(pass) {
     if (!keyStore) {
@@ -46,7 +47,7 @@ function ShowPrivateKey() {
     }
 
     try {
-      const pk = Account.fromKeyStore(keyStore, pass).privateKey()
+      const pk = KeyStore.decrypt(keyStore, pass)
       setPrivateKey(pk)
     } catch (e) {
       setErrMsg(e.message)

@@ -1,5 +1,5 @@
 import store from '../store'
-import { chainxNodesSelector, setNodeDelay } from '../store/reducers/nodeSlice'
+import { nodesSelector, setNodeDelay } from '@store/reducers/nodeSlice'
 import { networkSelector } from '../store/reducers/settingSlice'
 import { instances } from './chainxInstances'
 import { sleep } from './chainx'
@@ -8,7 +8,7 @@ const TIMEOUT = 10000
 
 const updateChainxNodesDelay = async () => {
   const state = store.getState()
-  const nodes = chainxNodesSelector(state)
+  const nodes = nodesSelector(state)
   const chainId = networkSelector(state)
 
   async function updateNodeDelay(node) {

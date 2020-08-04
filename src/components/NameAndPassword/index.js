@@ -1,17 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Account } from 'chainx.js'
+import { Account as V2Account } from '@chainx-v2/account'
 import ErrorMessage from '../ErrorMessage'
 import WarningMessage from '../WarningMessage'
 import { useDispatch, useSelector } from 'react-redux'
-import { isTestNetSelector } from '../../store/reducers/settingSlice'
-import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
+  isTestNetSelector,
+  networkSelector
+} from '../../store/reducers/settingSlice'
+import {
+  CHAINX2_TEST,
+  CHAINX_MAIN,
+  CHAINX_TEST
+} from '../../store/reducers/constants'
+import {
+  accountsSelector,
   addAccount,
   chainxAccountsSelector
 } from '../../store/reducers/accountSlice'
 import { PasswordInput, PrimaryButton, TextInput } from '@chainx/ui'
 import ButtonLine from '../../pages/RequestSign/components/ButtonLine'
 import { Container, SubTitle, Title } from '../styled'
+import KeyStore from '@chainx/keystore'
+import { chainx2TestNetAccountsSelector } from '@store/reducers/accountSlice'
 
 function NameAndPassword({ secret, onSuccess }) {
   const [name, setName] = useState('')
@@ -19,15 +30,37 @@ function NameAndPassword({ secret, onSuccess }) {
   const [confirmation, setConfirmation] = useState('')
   const [errMsg, setErrMsg] = useState('')
   const accounts = useSelector(chainxAccountsSelector)
+  const chainx2Accounts = useSelector(chainx2TestNetAccountsSelector)
   const isTestNet = useSelector(isTestNetSelector)
   const dispatch = useDispatch()
+  const chainId = useSelector(networkSelector)
+  const [sameAccount, setSameAccount] = useState(null)
+  const [account, setAccount] = useState(null)
 
-  Account.setNet(isTestNet ? 'testnet' : 'mainnet')
-  const account = Account.from(secret)
-  const address = account.address()
-  const sameAccount = (accounts || []).find(
-    account => account.address === address
-  )
+  useEffect(() => {
+    if ([CHAINX_TEST, CHAINX_MAIN].includes(chainId)) {
+      Account.setNet(isTestNet ? 'testnet' : 'mainnet')
+      const account = Account.from(secret)
+      setAccount(account)
+      const address = account.address()
+      const sameAccount = (accounts || []).find(
+        account => account.address === address
+      )
+      setSameAccount(sameAccount || null)
+    } else if ([CHAINX2_TEST].includes(chainId)) {
+      const account = V2Account.from(secret)
+      setAccount(account)
+      const address = account.address()
+      const sameAccount = (chainx2Accounts || []).find(
+        a => a.address === address
+      )
+      setSameAccount(sameAccount || null)
+    } else {
+      throw new Error('Unknown chain')
+    }
+  }, [chainId, accounts, chainx2Accounts, isTestNet, secret])
+
+  const targetAccounts = useSelector(accountsSelector)
 
   const check = () => {
     if (!name || !password || !confirmation) {
@@ -46,7 +79,7 @@ function NameAndPassword({ secret, onSuccess }) {
       setErrMsg('password is not match')
       return false
     }
-    if ((accounts || []).find(a => a.name === name)) {
+    if ((targetAccounts || []).find(a => a.name === name)) {
       setErrMsg('name already exist')
       return false
     }
@@ -58,14 +91,14 @@ function NameAndPassword({ secret, onSuccess }) {
       return
     }
 
-    const keystore = account.encrypt(password)
-
+    const keystore = KeyStore.encrypt(account.privateKey(), password)
     dispatch(
       addAccount({
-        chainId: isTestNet ? CHAINX_TEST : CHAINX_MAIN,
+        chainId,
         account: { name: name, address: account.address(), keystore }
       })
     )
+
     onSuccess()
   }
 

@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  chainxNodesSelector,
-  currentChainxNodeSelector,
-  setCurrentChainXNode
-} from '../../store/reducers/nodeSlice'
+  currentNodeSelector,
+  nodesSelector,
+  setCurrentNode
+} from '@store/reducers/nodeSlice'
 import Icon from '../../components/Icon'
 import React from 'react'
 import { setShowNodeMenu } from '../../store/reducers/statusSlice'
@@ -33,22 +33,22 @@ const ActiveFlag = styled(FlagPlaceHolder)`
 `
 
 export default function() {
-  const nodeList = useSelector(chainxNodesSelector)
-  const currentNode = useSelector(currentChainxNodeSelector)
+  const currentNode = useSelector(currentNodeSelector)
   const dispatch = useDispatch()
   const chainId = useSelector(networkSelector)
   const history = useHistory()
+  const nodes = useSelector(nodesSelector)
 
   async function setNode(url) {
     if (currentNode.url === url) {
       return
     }
 
-    dispatch(setCurrentChainXNode({ chainId, url }))
+    dispatch(setCurrentNode({ chainId, url }))
     dispatch(setShowNodeMenu(false))
   }
 
-  return (nodeList || []).map((item, index) => (
+  return (nodes || []).map((item, index) => (
     <div
       className="node-item"
       style={item.url === currentNode.url ? { backgroundColor: '#F2F3F4' } : {}}

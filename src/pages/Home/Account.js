@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux'
-import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
 import styled from 'styled-components'
 import React, { useEffect, useRef, useState } from 'react'
 import Address from './Address'
 import Icon from '../../components/Icon'
 import ReactTooltip from 'react-tooltip'
 import ClipboardJS from 'clipboard'
+import { currentAccountSelector } from '@store/reducers/accountSlice'
 
 const Wrapper = styled.section`
   display: flex;
@@ -35,8 +35,8 @@ const Wrapper = styled.section`
 `
 
 export default function() {
-  const { name, address } = useSelector(currentChainxAccountSelector)
   const [copyText, setCopyText] = useState('Copy')
+  const { name, address } = useSelector(currentAccountSelector)
 
   const mounted = useRef(false)
 

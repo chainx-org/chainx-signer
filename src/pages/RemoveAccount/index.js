@@ -5,20 +5,20 @@ import {
   isTestNetSelector,
   networkSelector
 } from '../../store/reducers/settingSlice'
-import {
-  currentChainxAccountSelector,
-  removeAccount
-} from '../../store/reducers/accountSlice'
+import { removeAccount } from '../../store/reducers/accountSlice'
 import PasswordInput from '../../components/PasswordInput'
 import Confirm from '../Drawers/Confirm'
+import KeyStore from '@chainx/keystore'
+import { CHAINX_MAIN, CHAINX_TEST } from '@store/reducers/constants'
+import { currentAccountSelector } from '@store/reducers/accountSlice'
 
 function RemoveAccount(props) {
   const [errMsg, setErrMsg] = useState('')
   const isTestNet = useSelector(isTestNetSelector)
   const dispatch = useDispatch()
   const chainId = useSelector(networkSelector)
-  const currentAccount = useSelector(currentChainxAccountSelector)
   const [showConfirm, setShowConfirm] = useState(false)
+  const currentAccount = useSelector(currentAccountSelector)
 
   function _removeAccount() {
     const address = currentAccount.address
@@ -28,14 +28,17 @@ function RemoveAccount(props) {
 
   const enter = function(pass) {
     const keystore = currentAccount.keystore
+    if ([CHAINX_MAIN, CHAINX_TEST].includes(chainId)) {
+      Account.setNet(isTestNet ? 'testnet' : 'mainnet')
+    }
 
     try {
-      Account.setNet(isTestNet ? 'testnet' : 'mainnet')
-      Account.fromKeyStore(keystore, pass)
-      setShowConfirm(true)
+      KeyStore.decrypt(keystore, pass)
     } catch (e) {
       setErrMsg('Invalid password')
     }
+
+    setShowConfirm(true)
   }
 
   return (

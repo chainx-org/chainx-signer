@@ -4,16 +4,15 @@ import switchImg from '../../assets/switch.svg'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  setInitLoading,
   setShowNodeMenu,
   showNodeMenuSelector
 } from '../../store/reducers/statusSlice'
 import {
   currentChainXMainNetNodeSelector,
-  currentChainxNodeSelector,
   currentChainXTestNetNodeSelector,
-  setCurrentChainXNode
-} from '../../store/reducers/nodeSlice'
+  currentNodeSelector,
+  setCurrentNode
+} from '@store/reducers/nodeSlice'
 import {
   isTestNetSelector,
   networkSelector,
@@ -27,22 +26,21 @@ import { fetchIntentions } from '../../store/reducers/intentionSlice'
 
 export default function() {
   const showNodeMenu = useSelector(showNodeMenuSelector)
-  const currentNode = useSelector(currentChainxNodeSelector)
+  const currentNode = useSelector(currentNodeSelector)
   const isTestNet = useSelector(isTestNetSelector)
   const dispatch = useDispatch()
   const history = useHistory()
   const currentMainNetNode = useSelector(currentChainXMainNetNodeSelector)
   const currentTestNetNode = useSelector(currentChainXTestNetNodeSelector)
-
   const chainId = useSelector(networkSelector)
+  const isChainx = [CHAINX_MAIN, CHAINX_TEST].includes(chainId)
 
   async function setNode(url) {
     if (currentNode.url === url) {
       return
     }
 
-    dispatch(setInitLoading(true))
-    dispatch(setCurrentChainXNode({ chainId, url }))
+    dispatch(setCurrentNode({ chainId, url }))
     dispatch(setShowNodeMenu(false))
   }
 
@@ -61,7 +59,9 @@ export default function() {
     <div className={(showNodeMenu ? '' : 'hide ') + 'node-list-area'}>
       <div className="node-list">{currentNode && <Nodes />}</div>
       <div
-        className="add-node node-action-item"
+        className={`add-node node-action-item ${
+          !isChainx ? 'radius-bottom' : ''
+        }`}
         onClick={() => {
           history.push(paths.addNode)
           dispatch(setShowNodeMenu(false))
@@ -70,15 +70,21 @@ export default function() {
         <Icon name="Add" className="add-node-icon node-action-item-img" />
         <span>Add node</span>
       </div>
-      <div
-        className="switch-net node-action-item"
-        onClick={() => {
-          switchNet().then(() => console.log('Net switched'))
-        }}
-      >
-        <img className="node-action-item-img" src={switchImg} alt="switchImg" />
-        <span>Switch to {isTestNet ? 'Mainnet' : 'Testnet'}</span>
-      </div>
+      {isChainx && (
+        <div
+          className="radius-bottom node-action-item"
+          onClick={() => {
+            switchNet().then(() => console.log('Net switched'))
+          }}
+        >
+          <img
+            className="node-action-item-img"
+            src={switchImg}
+            alt="switchImg"
+          />
+          <span>Switch to {isTestNet ? 'Mainnet' : 'Testnet'}</span>
+        </div>
+      )}
     </div>
   )
 }

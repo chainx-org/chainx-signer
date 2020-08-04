@@ -1,29 +1,29 @@
-import { useEffect } from 'react'
-import { setChainx, sleep } from '../shared'
-import { paths } from '../constants'
-import { setInitLoading } from '../store/reducers/statusSlice'
-import { useHistory } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { CHAINX2_TEST } from '@store/reducers/constants'
+import { setInitLoading } from '@store/reducers/statusSlice'
+import { sleep } from '@shared/chainx'
+import { setChainx2 } from '@shared/chainx2'
+import { paths } from '../constants'
+import { useHistory } from 'react-router'
 import { currentNodeSelector } from '@store/reducers/nodeSlice'
-import { CHAINX_MAIN, CHAINX_TEST } from '@store/reducers/constants'
 import { networkSelector } from '@store/reducers/settingSlice'
 
-export default function useInitChainx() {
-  const history = useHistory()
-  const { url: currentNodeUrl } = useSelector(currentNodeSelector) || {}
+export default function useInitChainx2Instance() {
   const dispatch = useDispatch()
   const chain = useSelector(networkSelector)
+  const { url: currentNodeUrl } = useSelector(currentNodeSelector)
+  const history = useHistory()
 
   useEffect(() => {
-    if (![CHAINX_MAIN, CHAINX_TEST].includes(chain)) {
+    if (CHAINX2_TEST !== chain) {
       return
     }
 
-    console.log('init chainx')
     dispatch(setInitLoading(true))
-    Promise.race([setChainx(currentNodeUrl), sleep(10000)])
-      .then(chainx => {
-        if (!chainx) {
+    Promise.race([setChainx2(currentNodeUrl), sleep(10000)])
+      .then(instance => {
+        if (!instance) {
           history.push(paths.nodeError)
         } else if (history.location.pathname === paths.nodeError) {
           history.push('/')

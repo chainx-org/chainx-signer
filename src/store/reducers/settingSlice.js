@@ -1,5 +1,6 @@
-import { createSlice, createSelector } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import {
+  CHAINX2_TEST,
   CHAINX_MAIN,
   CHAINX_TEST,
   events,
@@ -13,7 +14,7 @@ export const chainxNetwork = {
 
 const defaultSettingInitialState = {
   version: 0,
-  network: chainxNetwork.MAIN
+  network: CHAINX2_TEST
 }
 
 let initialState =
@@ -43,6 +44,19 @@ export const networkSelector = state => state.setting.network
 
 export const isTestNetSelector = createSelector(networkSelector, network => {
   return network === chainxNetwork.TEST
+})
+
+export const chainNameSelector = createSelector(networkSelector, chain => {
+  switch (chain) {
+    case CHAINX2_TEST:
+      return 'ChainX2 testnet'
+    case CHAINX_MAIN:
+      return 'ChainX mainnet'
+    case CHAINX_TEST:
+      return 'ChainX testnet'
+    default:
+      return ''
+  }
 })
 
 export default settingSlice.reducer

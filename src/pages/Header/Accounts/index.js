@@ -1,12 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  chainxAccountsSelector,
-  currentChainxAccountSelector,
-  setCurrentChainXMainNetAccount,
-  setCurrentChainXTestNetAccount
-} from '../../../store/reducers/accountSlice'
 import React from 'react'
-import { isTestNetSelector } from '../../../store/reducers/settingSlice'
+import { networkSelector } from '../../../store/reducers/settingSlice'
 import { setShowAccountMenu } from '../../../store/reducers/statusSlice'
 import {
   Account,
@@ -17,21 +11,28 @@ import {
   Name
 } from './styledComponents'
 import AddressItem from './AddressItem'
+import { useHistory } from 'react-router'
+import {
+  accountsSelector,
+  currentAccountSelector,
+  setCurrentAccount
+} from '@store/reducers/accountSlice'
 
-export default function({ history }) {
-  const accounts = useSelector(chainxAccountsSelector)
-  const isTestNet = useSelector(isTestNetSelector)
-  const currentAccount = useSelector(currentChainxAccountSelector)
+export default function() {
+  const history = useHistory()
+  const currentAccount = useSelector(currentAccountSelector)
   const dispatch = useDispatch()
+  const chainId = useSelector(networkSelector)
+  const accounts = useSelector(accountsSelector)
 
   const setAccount = address => {
-    if (isTestNet) {
-      dispatch(setCurrentChainXTestNetAccount({ address }))
-    } else {
-      dispatch(setCurrentChainXMainNetAccount({ address }))
-    }
+    dispatch(setCurrentAccount({ chainId, address }))
     dispatch(setShowAccountMenu(false))
     history.push('/')
+  }
+
+  if (accounts.length <= 0) {
+    return null
   }
 
   return (

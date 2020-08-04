@@ -11,7 +11,6 @@ const statusSlice = createSlice({
     },
     loading: false,
     initLoading: true,
-    homeLoading: true,
     showAccountMenu: false,
     showNodeMenu: false,
     showAccountAction: false,
@@ -31,9 +30,6 @@ const statusSlice = createSlice({
     },
     setInitLoading: (state, action) => {
       state.initLoading = action.payload
-    },
-    setHomeLoading: (state, action) => {
-      state.homeLoading = action.payload
     },
     setShowAccountMenu: (state, action) => {
       state.showAccountMenu = action.payload
@@ -61,7 +57,6 @@ export const {
   setLatestVersion,
   setLoading,
   setInitLoading,
-  setHomeLoading,
   setShowAccountMenu,
   setShowNodeMenu,
   setShowAccountAction,

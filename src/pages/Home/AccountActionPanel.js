@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { currentChainxAccountSelector } from '../../store/reducers/accountSlice'
+import { currentAccountSelector } from '../../store/reducers/accountSlice'
 import { useHistory } from 'react-router'
 import { setShowAccountAction } from '../../store/reducers/statusSlice'
 import styled from 'styled-components'
@@ -33,7 +33,7 @@ const Wrapper = styled.ul`
 `
 
 export default function() {
-  const currentAccount = useSelector(currentChainxAccountSelector)
+  const currentAccount = useSelector(currentAccountSelector)
   const history = useHistory()
   const dispatch = useDispatch()
 

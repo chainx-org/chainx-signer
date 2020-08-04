@@ -1,10 +1,13 @@
-import logo from '../../assets/extension_logo.svg'
+import chainx2Logo from '@assets/chainx2-logo.svg'
+import chainxLogo from '@assets/svg/PCX.svg'
 import React from 'react'
 import styled from 'styled-components'
 import { WhiteButton } from '@chainx/ui'
 import { useHistory } from 'react-router'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setShowImportMenu } from '../../store/reducers/statusSlice'
+import { CHAINX2_TEST } from '@store/reducers/constants'
+import { networkSelector } from '@store/reducers/settingSlice'
 
 const Wrapper = styled.div`
   padding: 60px 20px 0;
@@ -16,8 +19,9 @@ const Wrapper = styled.div`
 
 export default React.memo(function() {
   const history = useHistory()
-
   const dispatch = useDispatch()
+  const chainId = useSelector(networkSelector)
+  const logo = [CHAINX2_TEST].includes(chainId) ? chainx2Logo : chainxLogo
 
   return (
     <Wrapper>

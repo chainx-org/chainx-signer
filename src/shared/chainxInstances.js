@@ -17,7 +17,7 @@ export const setChainxInstances = urls => {
   }
 }
 
-export const removeInstance = url => {
+export const removeChainxInstance = url => {
   if (!instances.has(url)) {
     return
   }
