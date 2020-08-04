@@ -7,6 +7,7 @@ import statusReducer from './statusSlice'
 import intentionSlice from './intentionSlice'
 import tradeSlice from './tradeSlice'
 import assetReducer from './assetSlice'
+import chainx2Asset from './chainx2AssetSlice'
 
 export default {
   assets: assetReducer,
@@ -17,5 +18,6 @@ export default {
   account,
   node,
   setting,
-  tx
+  tx,
+  chainx2Asset
 }

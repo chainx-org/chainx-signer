@@ -6,65 +6,23 @@ import {
   normalizedAssetsSelector
 } from '../../store/reducers/assetSlice'
 import styled from 'styled-components'
-import dotLogo from '../../assets/svg/DOT.svg'
-import btcLogo from '../../assets/svg/X-BTC.svg'
-import lbtcLogo from '../../assets/svg/L-BTC.svg'
-import pcxLogo from '../../assets/svg/PCX.svg'
 import { token } from '../../constants'
 import toPrecision, { localString } from '../../shared/toPrecision'
 import { replaceBTC } from '../../shared/chainx'
 import { fetchAssetLoadingSelector } from '../../store/reducers/statusSlice'
 import MiniLoading from '../../components/MiniLoading'
 import { currentAddressSelector } from '../../store/reducers/accountSlice'
+import {
+  NativeAssetWrapper,
+  OtherAssetsWrapper
+} from '@pages/Home/styledComponents'
+import { AssetIcon } from '@pages/Home/utils'
+import useFetchAssets from '@pages/Home/useFetchAsset'
 
 const LoadingWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   margin-top: 40px;
-`
-
-const NativeAssetWrapper = styled.div`
-  padding: 32px 0;
-  border-top: 1px solid #dce0e2;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  span {
-    margin-top: 16px;
-    font-size: 12px;
-    color: #8e9193;
-    text-align: center;
-    line-height: 1;
-  }
-
-  p {
-    font-size: 20px;
-    color: #3f3f3f;
-    margin: 8px 0 0;
-  }
-`
-
-const Wrapper = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  li {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    border-top: 1px solid #dce0e2;
-    span {
-      font-weight: bold;
-      font-size: 14px;
-      color: #3f3f3f;
-      text-align: right;
-      line-height: 20px;
-    }
-  }
 `
 
 export default function() {
@@ -77,19 +35,7 @@ export default function() {
     dispatch(fetchAssetsInfo())
   }, [dispatch])
 
-  useEffect(() => {
-    if (!address) {
-      return
-    }
-
-    dispatch(fetchAccountAssets(address, true))
-
-    const intervalId = setInterval(() => {
-      dispatch(fetchAccountAssets(address))
-    }, 5000)
-
-    return () => clearInterval(intervalId)
-  }, [dispatch, address])
+  useFetchAssets(address, fetchAccountAssets)
 
   if (loading) {
     return (
@@ -121,7 +67,7 @@ export default function() {
         </NativeAssetWrapper>
       )}
 
-      <Wrapper>
+      <OtherAssetsWrapper>
         {otherAssets.map(({ name, precision, details }) => {
           const value = Object.values(details).reduce(
             (result, v) => result + v,
@@ -137,27 +83,7 @@ export default function() {
             </li>
           )
         })}
-      </Wrapper>
+      </OtherAssetsWrapper>
     </>
   )
-}
-
-function AssetIcon({ name }) {
-  const logo = do {
-    if (token.XBTC === name) {
-      // eslint-disable-next-line no-unused-expressions
-      btcLogo
-    } else if (token.LBTC === name) {
-      // eslint-disable-next-line no-unused-expressions
-      lbtcLogo
-    } else if (token.SDOT === name) {
-      // eslint-disable-next-line no-unused-expressions
-      dotLogo
-    } else {
-      // eslint-disable-next-line no-unused-expressions
-      pcxLogo
-    }
-  }
-
-  return <img src={logo} alt="asset icon" width="32" height="32" />
 }

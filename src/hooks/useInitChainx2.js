@@ -16,7 +16,7 @@ export default function useInitChainx2Instance() {
   const history = useHistory()
 
   useEffect(() => {
-    if (CHAINX2_TEST !== chain) {
+    if (![CHAINX2_TEST].includes(chain)) {
       return
     }
 

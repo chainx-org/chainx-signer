@@ -7,7 +7,8 @@ export const methods = {
 }
 
 export const token = {
-  XBTC: 'BTC',
+  BTC: 'BTC',
+  XBTC: 'XBTC',
   LBTC: 'L-BTC',
   SDOT: 'SDOT',
   PCX: 'PCX'

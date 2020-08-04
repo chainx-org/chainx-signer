@@ -257,6 +257,11 @@ export const currentAccountSelector = createSelector(
   }
 )
 
+export const currentAddressSelector = createSelector(
+  currentAccountSelector,
+  account => account.address
+)
+
 export const currentChainxAccountSelector = createSelector(
   networkSelector,
   currentChainXMainNetAccountSelector,
@@ -267,13 +272,6 @@ export const currentChainxAccountSelector = createSelector(
     } else if (network === chainxNetwork.MAIN) {
       return mainNetAccount
     }
-  }
-)
-
-export const currentAddressSelector = createSelector(
-  currentChainxAccountSelector,
-  account => {
-    return account ? account.address : null
   }
 )
 

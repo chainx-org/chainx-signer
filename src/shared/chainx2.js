@@ -1,9 +1,9 @@
 import { getChainx2Instances } from '@shared/chainx2Instances'
 
-let chainx2 = null
+let instance = null
 
 export const setChainx2 = async nodeUrl => {
-  const instance = getChainx2Instances().get(nodeUrl)
+  instance = getChainx2Instances().get(nodeUrl)
   if (!instance) {
     throw new Error('Can not find target ChainX2 instance')
   }
@@ -12,4 +12,4 @@ export const setChainx2 = async nodeUrl => {
   return instance
 }
 
-export const getChainx2 = () => chainx2
+export const getChainx2 = () => (instance || {}).api

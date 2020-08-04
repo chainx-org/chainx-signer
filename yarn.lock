@@ -1193,10 +1193,10 @@
     bs58 "^4.0.1"
     tweetnacl "^1.0.0"
 
-"@chainx-v2/account@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.npm.taobao.org/@chainx-v2/account/download/@chainx-v2/account-0.0.11.tgz#559d99d9d0b5cf83d5595a809e467e6197c6fc9c"
-  integrity sha1-VZ2Z2dC1z4PVWVqAnkZ+YZfG/Jw=
+"@chainx-v2/account@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.npm.taobao.org/@chainx-v2/account/download/@chainx-v2/account-0.0.12.tgz#149959c5e5c8cb4fd6de75acc4ae9e07b70f836e"
+  integrity sha1-FJlZxeXIy0/W3nWsxK6eB7cPg24=
   dependencies:
     "@chainx-v2/keyring" "0.0.3-beta.26"
     "@types/node" "^14.0.23"
@@ -1240,10 +1240,10 @@
     eventemitter3 "^4.0.4"
     rxjs "^6.5.5"
 
-"@chainx-v2/api@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.npm.taobao.org/@chainx-v2/api/download/@chainx-v2/api-0.0.11.tgz#a54f9b61cace0cb0b6905e737df0c4b041b98b6e"
-  integrity sha1-pU+bYcrODLC2kF5zffDEsEG5i24=
+"@chainx-v2/api@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.npm.taobao.org/@chainx-v2/api/download/@chainx-v2/api-0.0.12.tgz#ad912b6e30f6180e990f0d54ec8ba193e3f8982b"
+  integrity sha1-rZErbjD2GA6ZDw1U7Iuhk+P4mCs=
   dependencies:
     "@babel/runtime" "^7.10.3"
     "@chainx-v2/account" "0.0.3-beta.26"
@@ -1288,10 +1288,10 @@
     "@chainx-v2/crypto" "0.0.3-beta.26"
     "@chainx-v2/util" "0.0.3-beta.16"
 
-"@chainx-v2/keyring@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.npm.taobao.org/@chainx-v2/keyring/download/@chainx-v2/keyring-0.0.11.tgz#7965ad7e2d34ee64dc2197637da142af7c65cb33"
-  integrity sha1-eWWtfi007mTcIZdjfaFCr3xlyzM=
+"@chainx-v2/keyring@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.npm.taobao.org/@chainx-v2/keyring/download/@chainx-v2/keyring-0.0.12.tgz#d83bdef86e04d7ac9789063d849c66b703592427"
+  integrity sha1-2Dve+G4E16yXiQY9hJxmtwNZJCc=
   dependencies:
     "@babel/runtime" "^7.10.5"
     "@chainx-v2/crypto" "0.0.3-beta.26"
