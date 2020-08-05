@@ -111,7 +111,7 @@ export default function App() {
               <Route path="/importMnemonic" component={ImportMnemonic} />
               <Route path="/importPrivateKey" component={ImportPrivateKey} />
               <Route path="/importKeystore" component={ImportKeystore} />
-              <Route path="/requestSign" component={RequestSign} />
+              <Route path={paths.chianxSign} component={RequestSign} />
               <Route path={paths.showPrivateKey} component={ShowPrivateKey} />
               <Route path={paths.removeAccount} component={RemoveAccount} />
               <Route path={paths.addNode} component={NodeAction} />

@@ -21,5 +21,6 @@ export const paths = {
   nodeError: '/nodeError',
   home: '/',
   removeNode: '/removeNode',
-  addNode: '/addNode'
+  addNode: '/addNode',
+  chianxSign: '/requestSign'
 }

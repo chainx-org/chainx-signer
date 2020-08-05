@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { useSelector } from 'react-redux'
+import { paths } from '@constants'
 
 export default function useListenSignRequest() {
   const toSign = useSelector(state => state.tx.toSign)
@@ -10,7 +11,7 @@ export default function useListenSignRequest() {
     try {
       if (toSign) {
         history.push({
-          pathname: '/requestSign'
+          pathname: paths.chianxSign
         })
       }
     } catch (error) {
