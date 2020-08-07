@@ -301,17 +301,4 @@ export const currentNodeSelector = createSelector(
   }
 )
 
-export const currentChainxNodeSelector = createSelector(
-  networkSelector,
-  currentChainXMainNetNodeSelector,
-  currentChainXTestNetNodeSelector,
-  (network, mainNetNode, testNetNode) => {
-    if (network === chainxNetwork.TEST) {
-      return testNetNode
-    } else if (network === chainxNetwork.MAIN) {
-      return mainNetNode
-    }
-  }
-)
-
 export default nodeSlice.reducer

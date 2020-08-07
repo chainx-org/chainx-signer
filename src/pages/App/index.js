@@ -40,6 +40,7 @@ import {
   initChainx2Instances,
   initChainxInstances
 } from '@store/reducers/nodeSlice'
+import Chainx2Sign from '@pages/Sign/Chainx2'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -111,7 +112,8 @@ export default function App() {
               <Route path="/importMnemonic" component={ImportMnemonic} />
               <Route path="/importPrivateKey" component={ImportPrivateKey} />
               <Route path="/importKeystore" component={ImportKeystore} />
-              <Route path={paths.chianxSign} component={RequestSign} />
+              <Route path={paths.chainxSign} component={RequestSign} />
+              <Route path={paths.chainx2Sign} component={Chainx2Sign} />
               <Route path={paths.showPrivateKey} component={ShowPrivateKey} />
               <Route path={paths.removeAccount} component={RemoveAccount} />
               <Route path={paths.addNode} component={NodeAction} />

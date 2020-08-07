@@ -22,5 +22,6 @@ export const paths = {
   home: '/',
   removeNode: '/removeNode',
   addNode: '/addNode',
-  chianxSign: '/requestSign'
+  chainxSign: '/requestSign',
+  chainx2Sign: '/requestChainx2Sign'
 }

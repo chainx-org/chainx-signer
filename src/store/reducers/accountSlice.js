@@ -127,22 +127,6 @@ const accountSlice = createSlice({
         to: extractAccountInfo(target)
       })
     },
-    setCurrentChainXMainNetAccount(state, { payload: { address } }) {
-      const target = state.chainxMainNetAccounts.find(
-        a => a.address === address
-      )
-      if (!target) {
-        throw new Error(`No ChainX mainnet account with address ${address}`)
-      }
-
-      const pre = state.currentChainXMainNetAccount
-      state.currentChainXMainNetAccount = target
-      window.accountStore.set(ACCOUNT_STORE_KEY, state)
-      window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
-        from: extractAccountInfo(pre),
-        to: extractAccountInfo(target)
-      })
-    },
     removeAccount(state, { payload: { chainId, address } }) {
       const targetAccounts = findTargetAccounts(state, chainId)
       const index = targetAccounts.findIndex(a => a.address === address)
@@ -171,22 +155,6 @@ const accountSlice = createSlice({
       })
 
       // TODO: 处理不存在address的情况
-    },
-    setCurrentChainXTestNetAccount(state, { payload: { address } }) {
-      const target = state.chainxTestNetAccounts.find(
-        a => a.address === address
-      )
-      if (!target) {
-        throw new Error(`No ChainX testnet account with address ${address}`)
-      }
-
-      const pre = state.currentChainXMainNetAccount
-      state.currentChainxTestNetAccount = target
-      window.accountStore.set(ACCOUNT_STORE_KEY, state)
-      window.sockets.broadcastEvent(events.ACCOUNT_CHANGE, {
-        from: extractAccountInfo(pre),
-        to: extractAccountInfo(target)
-      })
     }
   }
 })
@@ -194,9 +162,7 @@ const accountSlice = createSlice({
 export const {
   setCurrentAccount,
   addAccount,
-  removeAccount,
-  setCurrentChainXMainNetAccount,
-  setCurrentChainXTestNetAccount
+  removeAccount
 } = accountSlice.actions
 
 export const chainxMainNetAccountsSelector = state =>
