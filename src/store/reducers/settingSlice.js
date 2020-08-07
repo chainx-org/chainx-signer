@@ -14,13 +14,15 @@ export const chainxNetwork = {
 
 const defaultSettingInitialState = {
   version: 0,
-  // network: CHAINX2_TEST
-  network: CHAINX_MAIN
+  network: CHAINX2_TEST
+  // network: CHAINX_MAIN
   // network: CHAINX_TEST,
 }
 
 let initialState =
-  window.settingStore.get(SETTING_STORE_KEY) || defaultSettingInitialState
+  // FIXME: use stored settings
+  // window.settingStore.get(SETTING_STORE_KEY) || defaultSettingInitialState
+  defaultSettingInitialState
 
 const settingSlice = createSlice({
   name: 'setting',
