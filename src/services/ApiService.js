@@ -1,11 +1,17 @@
 import store from '../store'
 import _ from 'lodash'
 import { codes } from '../error'
-import { setToSign, toSignSelector } from '../store/reducers/txSlice'
+import {
+  chainx2ToSignSelector,
+  setToSign,
+  toSignSelector
+} from '../store/reducers/txSlice'
 import { Extrinsic } from '@chainx/types'
 import { methods } from '../constants'
 import { currentNodeSelector } from '@store/reducers/nodeSlice'
 import { currentAccountSelector } from '@store/reducers/accountSlice'
+import { networkSelector } from '@store/reducers/settingSlice'
+import { CHAINX2_TEST } from '@store/reducers/constants'
 
 function getAccount() {
   const state = store.getState()
@@ -105,8 +111,13 @@ export default class ApiService {
       })
     }
 
-    const currentToSign = toSignSelector(state)
-    if (currentToSign) {
+    const chainx2ToSign = chainx2ToSignSelector(state)
+    const chainxToSign = toSignSelector(state)
+    const chainId = networkSelector(state)
+    const hasToSign = [CHAINX2_TEST].includes(chainId)
+      ? !!chainx2ToSign
+      : !!chainxToSign
+    if (hasToSign) {
       return this.emit({
         error: {
           code: codes.SIGN_BUSY,

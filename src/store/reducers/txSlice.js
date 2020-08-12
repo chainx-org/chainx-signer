@@ -4,10 +4,12 @@ import { stringCamelCase } from '@chainx/util'
 import { Token, Address } from '@chainx/types'
 import { isTestNetSelector } from './settingSlice'
 import { Account } from 'chainx.js'
+import { CHAINX2_TEST } from '@store/reducers/constants'
 
 const initialState = {
   version: 0,
-  toSign: null
+  toSign: null,
+  chainx2ToSign: null
 }
 
 const txSlice = createSlice({
@@ -15,7 +17,13 @@ const txSlice = createSlice({
   initialState,
   reducers: {
     setToSign(state, { payload }) {
-      state.toSign = payload
+      const { chainId } = payload
+
+      if ([CHAINX2_TEST].includes(chainId)) {
+        state.chainx2ToSign = payload
+      } else {
+        state.toSign = payload
+      }
     },
     clearToSign(state) {
       state.toSign = null
@@ -24,6 +32,8 @@ const txSlice = createSlice({
 })
 
 export const { setToSign, clearToSign } = txSlice.actions
+
+export const chainx2ToSignSelector = state => state.tx.chainx2ToSign
 
 export const toSignSelector = state => state.tx.toSign
 export const toSignExtrinsicSelector = createSelector(
