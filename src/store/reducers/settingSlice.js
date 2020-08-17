@@ -14,8 +14,8 @@ export const chainxNetwork = {
 
 const defaultSettingInitialState = {
   version: 0,
-  // network: CHAINX2_TEST
-  network: CHAINX_MAIN
+  network: CHAINX2_TEST
+  // network: CHAINX_MAIN
   // network: CHAINX_TEST,
 }
 

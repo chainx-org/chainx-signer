@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchChainx2Assets,
   fetchChainx2AssetsInfo,
-  normalizedChainx2AssetsSelector
+  fetchChainx2NativeAsset,
+  fetchChainx2NativeAssetInfo,
+  normalizedChainx2AssetsSelector,
+  normalizedChainx2NativeAssetSelector
 } from '@store/reducers/chainx2AssetSlice'
 import { token } from '../../constants'
 import {
   NativeAssetWrapper,
   OtherAssetsWrapper
 } from '@pages/Home/styledComponents'
-import toPrecision, { localString } from '@shared/toPrecision'
+import toPrecision, { bigAdd, localString } from '@shared/toPrecision'
 import { replaceBTC } from '@shared/chainx'
 import { AssetIcon } from '@pages/Home/utils'
 import { currentAddressSelector } from '@store/reducers/accountSlice'
@@ -21,16 +24,18 @@ export default function() {
 
   const assets = useSelector(normalizedChainx2AssetsSelector)
   const nativeTokenName = token.PCX
-  const nativeAsset = assets.find(asset => asset.token === nativeTokenName)
   const otherAssets = assets.filter(asset => asset.token !== nativeTokenName)
+  const nativeAsset = useSelector(normalizedChainx2NativeAssetSelector)
 
   const address = useSelector(currentAddressSelector)
 
   useEffect(() => {
     dispatch(fetchChainx2AssetsInfo())
+    dispatch(fetchChainx2NativeAssetInfo())
   }, [dispatch])
 
-  useFetchAsset(address, fetchChainx2Assets)
+  useFetchAsset(address, useCallback(fetchChainx2Assets, []))
+  useFetchAsset(address, useCallback(fetchChainx2NativeAsset, []))
 
   return (
     <>
@@ -41,7 +46,10 @@ export default function() {
           <p>
             <b>
               {localString(
-                toPrecision(nativeAsset.balance, nativeAsset.precision)
+                toPrecision(
+                  bigAdd(nativeAsset.data.free, nativeAsset.data.reserved),
+                  nativeAsset.precision
+                )
               )}{' '}
               {replaceBTC(nativeAsset.token)}
             </b>

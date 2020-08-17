@@ -12,6 +12,17 @@ const emptyAsset = {
 const chainx2AssetSlice = createSlice({
   name: 'chainx2Asset',
   initialState: {
+    nativeTokenInfo: {
+      ss58Format: 42,
+      tokenDecimals: 8,
+      tokenSymbol: 'PCX'
+    },
+    nativeAsset: {
+      free: '0',
+      reserved: '0',
+      miscFrozen: '0',
+      feeFrozen: '0'
+    },
     assetsInfo: [],
     assets: []
   },
@@ -21,11 +32,39 @@ const chainx2AssetSlice = createSlice({
     },
     setAssets(state, action) {
       state.assets = action.payload
+    },
+    setNativeAsset(state, action) {
+      state.nativeAsset = action.payload
+    },
+    setNativeTokenInfo(state, action) {
+      state.nativeTokenInfo = action.payload
     }
   }
 })
 
-export const { setInfo, setAssets } = chainx2AssetSlice.actions
+export const {
+  setInfo,
+  setAssets,
+  setNativeAsset,
+  setNativeTokenInfo
+} = chainx2AssetSlice.actions
+
+export const fetchChainx2NativeAssetInfo = () => async dispatch => {
+  const api = getChainx2()
+  const systemProperties = await api.rpc.system.properties()
+  dispatch(setNativeTokenInfo(systemProperties.toJSON()))
+}
+
+export const fetchChainx2NativeAsset = address => async dispatch => {
+  const api = getChainx2()
+  const asset = await api.query.system.account(address)
+  let nativeAsset = {}
+  for (let [key, value] of asset.data.entries()) {
+    nativeAsset[key] = value.toString()
+  }
+
+  dispatch(setNativeAsset(nativeAsset))
+}
 
 export const fetchChainx2AssetsInfo = () => async dispatch => {
   const api = getChainx2()
@@ -55,6 +94,22 @@ export const fetchChainx2Assets = address => async dispatch => {
 
 export const chainx2AssetsInfoSelector = state => state.chainx2Asset.assetsInfo
 export const chainx2AssetsSelector = state => state.chainx2Asset.assets
+export const chainx2NativeAssetSelector = state =>
+  state.chainx2Asset.nativeAsset
+export const chainx2NativeTokenInfoSelector = state =>
+  state.chainx2Asset.nativeTokenInfo
+
+export const normalizedChainx2NativeAssetSelector = createSelector(
+  chainx2NativeTokenInfoSelector,
+  chainx2NativeAssetSelector,
+  (info, asset) => {
+    return {
+      data: asset,
+      precision: info.tokenDecimals,
+      token: info.tokenSymbol
+    }
+  }
+)
 
 export const normalizedChainx2AssetsSelector = createSelector(
   chainx2AssetsSelector,

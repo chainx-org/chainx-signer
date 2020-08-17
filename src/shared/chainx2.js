@@ -8,7 +8,7 @@ export const setChainx2 = async nodeUrl => {
     throw new Error('Can not find target ChainX2 instance')
   }
 
-  await instance.isReady
+  await instance.api.isReady
   return instance
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchAccountAssets,
@@ -35,7 +35,7 @@ export default function() {
     dispatch(fetchAssetsInfo())
   }, [dispatch])
 
-  useFetchAssets(address, fetchAccountAssets)
+  useFetchAssets(address, useCallback(fetchAccountAssets, []))
 
   if (loading) {
     return (
