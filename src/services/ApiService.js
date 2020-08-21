@@ -12,6 +12,7 @@ import { currentNodeSelector } from '@store/reducers/nodeSlice'
 import { currentAccountSelector } from '@store/reducers/accountSlice'
 import { networkSelector } from '@store/reducers/settingSlice'
 import { CHAINX2_TEST } from '@store/reducers/constants'
+import { setChainx2ToSign } from '@store/reducers/txSlice'
 
 function getAccount() {
   const state = store.getState()
@@ -72,6 +73,12 @@ export default class ApiService {
       case methods.signChainxExtrinsic: {
         return this.sign(data.id, ...data.params, false)
       }
+      case methods.signAndSendChainX2Extrinsic: {
+        return this.signChainx2(data.id, ...data.params, true)
+      }
+      case methods.signChainx2Extrinsic: {
+        return this.signChainx2(data.id, ...data.params, false)
+      }
       default: {
         return {
           error: {
@@ -88,6 +95,51 @@ export default class ApiService {
       id: this.request.data.payload.id,
       ...data
     })
+  }
+
+  async signChainx2(id, from, data, needBroadcast) {
+    const state = store.getState()
+    const currentAccount = currentAccountSelector(state)
+    if (!currentAccount || currentAccount.address !== from) {
+      this.emit({
+        error: {
+          code: codes.INVALID_ADDRESS,
+          message: `${from} not found`
+        }
+      })
+    }
+
+    if (!from || !data) {
+      return this.emit({
+        error: {
+          code: codes.INVALID_SIGN_DATA,
+          message: 'invalid sign params'
+        }
+      })
+    }
+
+    const chainx2ToSign = chainx2ToSignSelector(state)
+    if (chainx2ToSign) {
+      return this.emit({
+        error: {
+          code: codes.SIGN_BUSY,
+          message: 'sign busy'
+        }
+      })
+    }
+
+    store.dispatch(
+      setChainx2ToSign({
+        origin: this.request.data.origin,
+        id: this.id,
+        dataId: id,
+        address: from,
+        data,
+        needBroadcast: !!needBroadcast
+      })
+    )
+
+    this.sockets.activateWindow()
   }
 
   async sign(id, from, data, needBroadcast) {
@@ -139,6 +191,7 @@ export default class ApiService {
 
     store.dispatch(
       setToSign({
+        chainId,
         origin: this.request.data.origin,
         id: this.id,
         dataId: id,

@@ -25,15 +25,32 @@ const txSlice = createSlice({
         state.toSign = payload
       }
     },
+    setChainx2ToSign(state, { payload }) {
+      state.chainx2ToSign = payload
+    },
     clearToSign(state) {
       state.toSign = null
+    },
+    clearChainx2ToSign(state) {
+      state.chainx2ToSign = null
     }
   }
 })
 
-export const { setToSign, clearToSign } = txSlice.actions
+export const {
+  setToSign,
+  clearToSign,
+  setChainx2ToSign,
+  clearChainx2ToSign
+} = txSlice.actions
 
 export const chainx2ToSignSelector = state => state.tx.chainx2ToSign
+export const chainx2ToSignParamsSelector = createSelector(
+  chainx2ToSignSelector,
+  toSign => {
+    return toSign ? toSign.data.params : null
+  }
+)
 
 export const toSignSelector = state => state.tx.toSign
 export const toSignExtrinsicSelector = createSelector(

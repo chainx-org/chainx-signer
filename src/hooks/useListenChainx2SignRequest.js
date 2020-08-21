@@ -1,23 +1,23 @@
 import { useEffect } from 'react'
-import { useHistory } from 'react-router'
+import { useHistory, useLocation } from 'react-router'
 import { useSelector } from 'react-redux'
 import { paths } from '@constants'
 import { chainx2ToSignSelector } from '@store/reducers/txSlice'
 
-export default function useListenSignRequest() {
-  const toSign = useSelector(state => state.tx.toSign)
+export default function useListenChainx2SignRequest() {
   const chainx2ToSign = useSelector(chainx2ToSignSelector)
   const history = useHistory()
+  const { pathname } = useLocation()
 
   useEffect(() => {
     try {
       if (chainx2ToSign) {
         history.push({ pathname: paths.chainx2Sign })
-      } else if (toSign) {
-        history.push({ pathname: paths.chainxSign })
+      } else if (pathname === paths.chainx2Sign) {
+        history.push({ pathname: paths.home })
       }
     } catch (error) {
       console.log('sign request error occurs ', error)
     }
-  }, [toSign, history, chainx2ToSign])
+  }, [history, chainx2ToSign, pathname])
 }

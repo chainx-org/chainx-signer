@@ -57,6 +57,7 @@ export const fetchChainx2NativeAssetInfo = () => async dispatch => {
 
 export const fetchChainx2NativeAsset = address => async dispatch => {
   const api = getChainx2()
+  await api.isReady
   const asset = await api.query.system.account(address)
   let nativeAsset = {}
   for (let [key, value] of asset.data.entries()) {
@@ -92,12 +93,16 @@ export const fetchChainx2Assets = address => async dispatch => {
   dispatch(setAssets(normalized))
 }
 
+export const ss58FormatSelector = state =>
+  state.chainx2Asset.assetsInfo.ss58Format
 export const chainx2AssetsInfoSelector = state => state.chainx2Asset.assetsInfo
 export const chainx2AssetsSelector = state => state.chainx2Asset.assets
 export const chainx2NativeAssetSelector = state =>
   state.chainx2Asset.nativeAsset
 export const chainx2NativeTokenInfoSelector = state =>
   state.chainx2Asset.nativeTokenInfo
+export const chainx2PcxPrecisionSelector = state =>
+  state.chainx2Asset.nativeTokenInfo.tokenDecimals
 
 export const normalizedChainx2NativeAssetSelector = createSelector(
   chainx2NativeTokenInfoSelector,
