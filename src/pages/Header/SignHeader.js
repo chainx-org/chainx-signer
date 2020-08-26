@@ -1,7 +1,7 @@
 import React from 'react'
-import { toSignExtrinsicSelector } from '../../store/reducers/txSlice'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { chainx2ToSignSelector } from '@store/reducers/txSlice'
 
 const Wrapper = styled.div`
   font-weight: 500;
@@ -14,8 +14,8 @@ const Wrapper = styled.div`
 `
 
 export default function() {
-  const extrinsic = useSelector(toSignExtrinsicSelector)
-  const methodName = extrinsic && extrinsic.methodName
+  const extrinsic = useSelector(chainx2ToSignSelector)
+  const methodName = extrinsic?.data?.method
 
   return (
     <Wrapper>

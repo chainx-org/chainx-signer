@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useLocation, withRouter } from 'react-router-dom'
 import { useOutsideClick } from '../../shared'
 import './header.scss'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,9 +16,9 @@ import AccountPanelSwitch from './AccountPanelSwitch'
 import NodesPanel from './NodesPanel'
 import AccountsPanel from './AccountsPanel'
 import newVersion from '../../assets/new-version.svg'
-import { useHistory } from 'react-router'
 import useUpdateChainxNodesDelay from '@pages/Header/useUpdateChainxNodesDelay'
 import useUpdateChainx2NodesDelay from '@pages/Header/useUpdateChainx2NodesDelay'
+import { paths } from '@constants'
 
 function Header() {
   const refAccountList = useRef(null)
@@ -27,7 +27,8 @@ function Header() {
   const dispatch = useDispatch()
   const updateInfo = useSelector(updateInfoSelector)
 
-  const history = useHistory()
+  const location = useLocation()
+
   useUpdateChainx2NodesDelay()
   useUpdateChainxNodesDelay()
 
@@ -35,7 +36,9 @@ function Header() {
     dispatch(setShowAccountMenu(false))
   })
 
-  const nowInSignPage = history.location.pathname.includes('requestSign')
+  const nowInSignPage = [paths.chainxSign, paths.chainx2Sign].includes(
+    location.pathname
+  )
 
   return (
     <div className="header">

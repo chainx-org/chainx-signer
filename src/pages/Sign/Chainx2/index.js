@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useRef, useState } from 'react'
 import { Wrapper } from '@pages/Sign/Chainx2/styledComponents'
 import { TxDetail } from '@pages/Sign/components'
@@ -13,6 +14,7 @@ import ErrorMessage from '../../../components/ErrorMessage'
 import { currentAccountSelector } from '@store/reducers/accountSlice'
 import KeyStore from '@chainx/keystore'
 import { signExtrinsic } from '@pages/Sign/Chainx2/sign'
+import VoteUnVote from '@pages/Sign/Chainx2/VoteUnVote'
 
 export default function Chainx2Sign() {
   const inputWrapperRef = useRef(null)
@@ -74,10 +76,26 @@ export default function Chainx2Sign() {
     })
   }
 
+  if (!toSign || !toSign.data) {
+    return <></>
+  }
+
   return (
     <Wrapper>
       <TxDetail>
-        <NativeTokenTransfer />
+        {do {
+          const { data: { section, method } = {} } = toSign
+          if (method === 'transfer') {
+            ;<NativeTokenTransfer />
+          } else if (
+            section === 'xStaking' &&
+            ['bond', 'unbond'].includes(method)
+          ) {
+            ;<VoteUnVote />
+          } else {
+            ;<NativeTokenTransfer />
+          }
+        }}
       </TxDetail>
 
       <div ref={inputWrapperRef}>
