@@ -45,6 +45,10 @@ export const {
 } = txSlice.actions
 
 export const chainx2ToSignSelector = state => state.tx.chainx2ToSign
+export const chainx2ToSignDataSelector = createSelector(
+  chainx2ToSignSelector,
+  toSign => toSign?.data
+)
 export const chainx2ToSignParamsSelector = createSelector(
   chainx2ToSignSelector,
   toSign => {

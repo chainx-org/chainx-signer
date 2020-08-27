@@ -15,6 +15,7 @@ import { currentAccountSelector } from '@store/reducers/accountSlice'
 import KeyStore from '@chainx/keystore'
 import { signExtrinsic } from '@pages/Sign/Chainx2/sign'
 import VoteUnVote from '@pages/Sign/Chainx2/VoteUnVote'
+import CommonTx from '@pages/Sign/Chainx2/CommonTx'
 
 export default function Chainx2Sign() {
   const inputWrapperRef = useRef(null)
@@ -93,7 +94,7 @@ export default function Chainx2Sign() {
           ) {
             ;<VoteUnVote />
           } else {
-            ;<NativeTokenTransfer />
+            ;<CommonTx />
           }
         }}
       </TxDetail>
