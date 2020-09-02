@@ -10,3 +10,11 @@ export const removeCurrentSign = (dispatch, history) => {
     history.push('/')
   }
 }
+
+export const getToken = (id, assetsInfo = []) => {
+  if (String(id) === '0') {
+    return 'PCX'
+  }
+
+  return assetsInfo.find(a => a.id === String(id))?.info?.token
+}
