@@ -120,7 +120,7 @@ export const normalizedChainx2AssetsSelector = createSelector(
   chainx2AssetsSelector,
   chainx2AssetsInfoSelector,
   (assets, infoArr) => {
-    return infoArr.map(({ id, info: { token, precision } }) => {
+    return infoArr.map(({ id, info: { token, decimals: precision } }) => {
       const target = assets.find(a => a.id === id)
       const details = target ? target.details : emptyAsset
 
