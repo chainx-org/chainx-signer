@@ -18,6 +18,7 @@ import VoteUnVote from '@pages/Sign/Chainx2/VoteUnVote'
 import CommonTx from '@pages/Sign/Chainx2/CommonTx'
 import CancelOrder from '@pages/Sign/Chainx2/CancelOrder'
 import UnlockUnbonded from '@pages/Sign/Chainx2/UnlockUnbonded'
+import TokenTransfer from '@pages/Sign/Chainx2/TokenTransfer'
 
 export default function Chainx2Sign() {
   const inputWrapperRef = useRef(null)
@@ -88,8 +89,10 @@ export default function Chainx2Sign() {
       <TxDetail>
         {do {
           const { data: { section, method } = {} } = toSign
-          if (method === 'transfer') {
+          if (section === 'balances' && method === 'transfer') {
             ;<NativeTokenTransfer />
+          } else if (section === 'xAssets' && method === 'transfer') {
+            ;<TokenTransfer />
           } else if (
             section === 'xStaking' &&
             ['bond', 'unbond'].includes(method)
