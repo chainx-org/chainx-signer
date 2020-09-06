@@ -19,6 +19,7 @@ import CommonTx from '@pages/Sign/Chainx2/CommonTx'
 import CancelOrder from '@pages/Sign/Chainx2/CancelOrder'
 import UnlockUnbonded from '@pages/Sign/Chainx2/UnlockUnbonded'
 import TokenTransfer from '@pages/Sign/Chainx2/TokenTransfer'
+import Withdraw from '@pages/Sign/Chainx2/Withdraw'
 
 export default function Chainx2Sign() {
   const inputWrapperRef = useRef(null)
@@ -93,6 +94,8 @@ export default function Chainx2Sign() {
             ;<NativeTokenTransfer />
           } else if (section === 'xAssets' && method === 'transfer') {
             ;<TokenTransfer />
+          } else if (section === 'xGatewayCommon' && method === 'withdraw') {
+            ;<Withdraw />
           } else if (
             section === 'xStaking' &&
             ['bond', 'unbond'].includes(method)

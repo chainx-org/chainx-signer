@@ -18,7 +18,6 @@ export default function() {
     <>
       <DetailAmount token="PCX" value={toPrecision(params[1], precision)} />
       <DetailItem label="Dest node" value={params[0]} />
-      <DetailItem label="Memo" value={params[2]} />
     </>
   )
 }
