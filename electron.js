@@ -96,7 +96,7 @@ function createWindow() {
 
   mainWindow.on('closed', () => (mainWindow = null))
 
-  electron.globalShortcut.register('CommandOrControl+O', () => {
+  electron.globalShortcut.register('Control+Shift+O', () => {
     mainWindow.openDevTools()
   })
   electron.globalShortcut.register('CommandOrControl+Shift+I', () => {
