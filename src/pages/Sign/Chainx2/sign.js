@@ -5,7 +5,7 @@ import { getChainx2 } from '@shared/chainx2'
 import { service } from '../../../services/socketService'
 import { codes } from '../../../error'
 import KeyStore from '@chainx/keystore'
-import Keyring from '@chainx-v2/keyring'
+import Keyring from '@polkadot/keyring'
 import { ss58FormatSelector } from '@store/reducers/chainx2AssetSlice'
 import { events as socketsEvents } from '@store/reducers/constants'
 
