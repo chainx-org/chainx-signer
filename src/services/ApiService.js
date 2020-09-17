@@ -6,7 +6,7 @@ import {
   setToSign,
   toSignSelector
 } from '../store/reducers/txSlice'
-import { Extrinsic } from '@chainx/types'
+import { Extrinsic } from '@polkadot/types'
 import { methods } from '../constants'
 import { currentNodeSelector } from '@store/reducers/nodeSlice'
 import { currentAccountSelector } from '@store/reducers/accountSlice'

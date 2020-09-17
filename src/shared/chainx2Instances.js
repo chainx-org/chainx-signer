@@ -1,5 +1,5 @@
-const { ApiPromise, WsProvider } = require('@chainx-v2/api')
-
+const { ApiPromise, WsProvider } = require('@polkadot/api')
+const { options } = require('@chainx-v2/api')
 const instances = new Map()
 
 export function getChainx2Instances() {
@@ -13,7 +13,7 @@ export const setChainx2Instances = urls => {
     }
 
     const wsProvider = new WsProvider(url)
-    const api = new ApiPromise({ provider: wsProvider })
+    const api = new ApiPromise(options({ provider: wsProvider }))
     instances.set(url, { api, provider: wsProvider })
   }
 }
