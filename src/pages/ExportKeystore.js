@@ -1,39 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PasswordInput from '../components/PasswordInput'
 import { useSelector } from 'react-redux'
 import {
   currentChainxAccountSelector,
   chainxAccountsSelector
 } from '../store/reducers/accountSlice'
-import { importedKeystoreSelector } from '../store/reducers/statusSlice'
-import { default as downloadFile } from 'downloadjs'
+
 import { useHistory } from 'react-router'
 import KeyStore from '@chainx/keystore'
 import FileSaver from 'file-saver'
 import { paths } from '../constants'
 import Account from '@chainx/account'
-import { isKeystoreV1, KeyStoreV2Encrypt } from '../utils'
+import { KeyStoreV2Encrypt } from '../utils'
 
 export default function ExportKeystore() {
   const [errMsg, setErrMsg] = useState('')
   const currentAccount = useSelector(currentChainxAccountSelector)
   const accounts = useSelector(chainxAccountsSelector)
   const history = useHistory()
-  const [name, setName] = useState('')
-
-  const keystore = useSelector(importedKeystoreSelector)
-  const [encoded, setEncoded] = useState(null)
-
-  useEffect(() => {
-    if (keystore) {
-      const isV1 = isKeystoreV1(keystore)
-
-      setEncoded(isV1 ? keystore.encoded : keystore)
-      if (isV1) {
-        setName(keystore.tag)
-      }
-    }
-  }, [keystore])
 
   const enter = function(pass) {
     if (!pass) {

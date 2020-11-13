@@ -4,8 +4,6 @@ import ErrorMessage from '../ErrorMessage'
 import WarningMessage from '../WarningMessage'
 import { useDispatch, useSelector } from 'react-redux'
 import { isTestNetSelector } from '../../store/reducers/settingSlice'
-import { KeyStoreV2Encrypt } from '../../utils'
-import { isKeystoreV1 } from '../../utils'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import {
   addAccount,
