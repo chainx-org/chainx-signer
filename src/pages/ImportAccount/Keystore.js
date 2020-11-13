@@ -16,6 +16,7 @@ import KeyStore from '@chainx/keystore'
 import { addAccount } from '../../store/reducers/accountSlice'
 import { CHAINX_MAIN, CHAINX_TEST } from '../../store/reducers/constants'
 import { Account } from 'chainx.js'
+import { KeyStoreV2Encrypt } from '../../utils'
 
 export default function ImportKeystore() {
   const history = useHistory()

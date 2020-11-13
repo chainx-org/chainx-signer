@@ -1,3 +1,4 @@
+import { Keyring } from '@polkadot/keyring'
 export const nonFunc = () => {}
 
 const keystoreV1Keys = ['address', 'tag', 'encoded', 'net']
@@ -16,4 +17,16 @@ export const isKeystoreKeysRight = (keystoreObject = {}) => {
     keystoreV0Keys.every(key => keys.includes(key)) ||
     keystoreV1Keys.every(key => keys.includes(key))
   )
+}
+
+export const KeyStoreV2Encrypt = (account, password) => {
+  console.log(`account: ${account}`)
+  const keyring = new Keyring({ type: 'ed25519', ss58Format: 44 })
+
+  const result = keyring.addFromUri(account, { name: 'chainx-v2' }, 'ed25519')
+
+  const keystore = new Blob([JSON.stringify(result.toJson(password))], {
+    type: 'application/json; charset=utf-8'
+  })
+  return keystore
 }
