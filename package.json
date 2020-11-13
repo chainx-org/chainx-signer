@@ -97,7 +97,7 @@
     "electron": "electron .",
     "publish": "electron-builder build .",
     "fix": "electron-fix start",
-    "dist": "yarn build && rimraf dist && electron-builder"
+    "dist": "yarn build && rimraf dist && electron-builder  -mwl"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -159,11 +159,6 @@
             "ia32"
           ]
         }
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage"
       ]
     },
     "publish": {
