@@ -78,15 +78,15 @@ function createWindow() {
     webPreferences: { preload: path.join(__dirname, 'preload.js') }
   })
   mainWindow.removeMenu() // only work for linux and windows
-  if (isDev) {
-    mainWindow
-      .loadURL('http://localhost:3002')
-      .then(() => console.log('url loaded'))
-  } else {
-    mainWindow
-      .loadFile(path.join(__dirname, './build/index.html'))
-      .then(() => console.log('index.html loaded'))
-  }
+  // if (isDev) {
+  //   mainWindow
+  //     .loadURL('http://localhost:3002')
+  //     .then(() => console.log('url loaded'))
+  // } else {
+  mainWindow
+    .loadFile(path.join(__dirname, './build/index.html'))
+    .then(() => console.log('index.html loaded'))
+  // }
 
   if (isDev) {
     // Open the DevTools.
