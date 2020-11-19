@@ -24,7 +24,6 @@ export default function ExportKeystore() {
       setErrMsg('Invalid password')
       return
     }
-    console.log(JSON.stringify(accounts))
 
     if (!currentAccount) {
       return setErrMsg('No account')
@@ -34,20 +33,13 @@ export default function ExportKeystore() {
 
     try {
       const result = KeyStore.decrypt(keystore, pass)
-
-      console.log('正常解析.....' + JSON.stringify(result))
-
       const json = KeyStoreV2Encrypt(Account.from(result).privateKey(), pass)
-
-      console.log(json)
-
       FileSaver.saveAs(json, address)
 
       history.push(paths.home)
     } catch (err) {
       setErrMsg('Invalid password')
 
-      console.log('解析出错...' + JSON.stringify(err))
       history.push(paths.home)
     }
   }

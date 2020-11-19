@@ -20,7 +20,6 @@ export const isKeystoreKeysRight = (keystoreObject = {}) => {
 }
 
 export const KeyStoreV2Encrypt = (account, password) => {
-  console.log(`account: ${account}`)
   const keyring = new Keyring({ type: 'ed25519', ss58Format: 44 })
 
   const result = keyring.addFromUri(account, { name: 'chainx-v2' }, 'ed25519')

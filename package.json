@@ -1,6 +1,6 @@
 {
   "name": "chainx-signer",
-  "version": "2.0.2",
+  "version": "2.0.5",
   "private": true,
   "main": "electron.js",
   "dependencies": {
@@ -97,7 +97,7 @@
     "electron": "electron .",
     "publish": "electron-builder build .",
     "fix": "electron-fix start",
-    "dist": "yarn build && rimraf dist && electron-builder"
+    "dist": "yarn build && rimraf dist && electron-builder -w"
   },
   "eslintConfig": {
     "extends": "react-app"
