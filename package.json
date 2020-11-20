@@ -97,7 +97,7 @@
     "electron": "electron .",
     "publish": "electron-builder build .",
     "fix": "electron-fix start",
-    "dist": "yarn build && rimraf dist && electron-builder -w"
+    "dist": "yarn build && rimraf dist && electron-builder"
   },
   "eslintConfig": {
     "extends": "react-app"
