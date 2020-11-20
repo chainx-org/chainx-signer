@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
 import PasswordInput from '../components/PasswordInput'
 import { useSelector } from 'react-redux'
-import {
-  currentChainxAccountSelector,
-  chainxAccountsSelector
-} from '../store/reducers/accountSlice'
+import { currentChainxAccountSelector } from '../store/reducers/accountSlice'
 
 import { useHistory } from 'react-router'
 import KeyStore from '@chainx/keystore'
