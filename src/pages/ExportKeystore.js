@@ -16,7 +16,6 @@ import { KeyStoreV2Encrypt } from '../utils'
 export default function ExportKeystore() {
   const [errMsg, setErrMsg] = useState('')
   const currentAccount = useSelector(currentChainxAccountSelector)
-  const accounts = useSelector(chainxAccountsSelector)
   const history = useHistory()
 
   const enter = function(pass) {
