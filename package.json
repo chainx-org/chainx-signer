@@ -95,7 +95,6 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "electron": "electron .",
-    "publish": "electron-builder build .",
     "fix": "electron-fix start",
     "dist": "yarn build && rimraf dist && electron-builder"
   },
@@ -117,7 +116,6 @@
   "devDependencies": {
     "electron": "^9.0.0",
     "electron-builder": "^22.6.1",
-    "electron-winstaller": "^4.0.1",
     "husky": "^3.1.0",
     "lint-staged": "^9.4.3",
     "node-sass": "^4.13.0",
@@ -159,6 +157,11 @@
             "ia32"
           ]
         }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
       ]
     },
     "publish": {
